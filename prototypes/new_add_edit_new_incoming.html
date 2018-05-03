@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <title>Dodaj korespondencję przychodzącą</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="ms.css" type="text/css" media="screen">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="row">
+    <h1 class="col-md-8 mx-auto">Dodaj korespondencję przychodzącą</h1>
+  </div>
+
+<form>
+
+  <div class="row mb-3">
+    <div class="col-md-8 mx-auto bg-light py-3">
+       <div id="danePodmiotu">
+          <h2 class="row px-3"><span class="col-sm-auto mr-auto px-0">Dane nadawcy</span> <a href="#" id="dodajPodmiot" class="btn btn-success col-sm-auto">Dodaj nadawcę</a></h2>
+
+          <div class="form-group row">
+            <label for="nazwaPodmiotu" class="col-sm-4 col-form-label">Nazwa:</label>
+            <input type="text" class="form-control col-sm-8" id="nazwaPodmiotu" name="nazwaPodmiotu" list="listaPodmiotow">
+          </div>
+
+          <div class="form-group row">
+            <label for="adresPodmiotu" class="col-sm-4 col-form-label">Ulica (miejscowość):</label>
+            <input type="text" class="form-control col-sm-8" id="adresPodmiotu" name="adresPodmiotu" placeholder="" disabled>
+          </div>
+
+          <div class="form-group row">
+            <label for="pocztaPodmiotu" class="col-sm-4 col-form-label">Kod pocztowy i poczta:</label>
+            <input type="text" class="form-control col-sm-8" id="pocztaPodmiotu" name="pocztaPodmiotu" placeholder="" disabled>
+          </div>
+       </div><!-- /danePodmiotu -->
+    </div>
+  </div><!-- /row podmiot -->
+
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+
+      <div class="form-group row">
+        <label for="oznaczeniePisma" class="col-sm-4 col-form-label">Oznaczenie pisma:</label>
+        <input type="text" class="form-control col-sm-8" id="oznaczeniePisma" name="oznaczeniePisma" placeholder="wpisz brak jeżeli pismo nie ma oznaczenia">
+      </div>
+
+      <div class="form-group row">
+        <label for="dataPisma" class="col-5 col-sm-4 col-form-label">Data pisma:</label>
+        <input type="date" class="form-control col-6 col-sm-5" id="dataPisma" name="dataPisma">
+      </div>
+
+      <div class="form-group row">
+        <label for="dataWplywu" class="col-5 col-sm-4 col-form-label">Data wpływu:</label>
+        <input type="date" class="form-control col-6 col-sm-5" id="dataWplywu" name="dataWplywu">
+      </div>
+
+      <div class="form-group row">
+        <label for="dotyczy" class="col-sm-4 col-form-label">Dotyczy:</label>
+        <textarea class="form-control col-sm-8" id="dotyczy" name="dotyczy" rows="3"></textarea>
+      </div>
+
+    </div>
+  </div><!-- /część wspólna -->
+
+  <div class="row mb-3">
+    <div class="col-md-8 mx-auto bg-light py-3">
+
+        <div class="form-group row py-2">
+          <div class="form-check form-check-inline offset-3">
+            <input class="form-check-input" type="radio" name="czyPismo" id="radioPismo" value="0" checked>
+            <label class="form-check-label" for="radioPismo">Pismo</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="czyPismo" id="radioFaktura" value="1">
+            <label class="form-check-label" for="radioFaktura">Faktura</label>
+          </div>
+        </div>
+
+        <div class="form-group row" id="pismoRow1">
+          <label for="liczbaZalacznikow" class="col-6 col-sm-4 col-form-label">Liczba załączników:</label>
+          <input type="number" class="form-control col-6 col-sm-3" id="liczbaZalacznikow" name="liczbaZalacznikow" min="0" max="99">
+        </div>
+
+        <div class="form-group row" id="pismoRow2">
+          <label for="dekretacja" class="col-sm-4 col-form-label">Zadekretowane do:</label>
+          <input type="text" class="form-control col-sm-7" id="dekretacja" name="dekretacja" placeholder="">
+        </div>
+
+        <div class="form-group row" id="fakturaRow1">
+          <label for="kwota" class="col-4 col-form-label">Kwota:</label>
+          <input type="number" class="form-control col-8 col-sm-5" id="kwota" name="kwota">
+        </div>
+
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-4 offset-sm-4">
+      <button type="submit" class="btn btn-primary">Dodaj</button>
+    </div>
+  </div>
+
+    </div>
+  </div>
+
+        <datalist id="listaPodmiotow">
+          <option value="2# Powiatowy Zarząd Drogowy w Oławie">
+          <option value="3# Starostwo Powiatowe w Oławie">
+          <option value="4# Urząd Miasta Oława">
+        </datalist>
+
+</form>
+
+</div><!-- /main container -->
+
+
+
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="ms.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <title>Dodaj pismo przychodzące</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+i <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <meta rel="stylesheet" href="ms.css" type="text/css" media="screen">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="row"><!-- main content row -->
+    <!--- add/edit form -->
+    <div class="col-md-7">
+      <h1>Dodaj pismo przychodzące</h1>
+      <form>
+        <div class="form-group row">
+          <label for="oznaczeniePisma" class="col-sm-4 col-form-label">Oznaczenie pisma:</label>
+          <div class="col-sm-8">
+          <input type="text" class="form-control" id="oznaczeniePisma" name="oznaczeniePisma" placeholder="wpisz brak jeżeli pismo nie ma oznaczenia">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="dataPisma" class="col-sm-4 col-form-label">Data pisma:</label>
+          <div class="col-sm-6">
+          <input type="date" class="form-control" id="dataPisma" name="dataPisma">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="dataWplywu" class="col-sm-4 col-form-label">Data wpływu:</label>
+          <div class="col-sm-6">
+          <input type="date" class="form-control" id="dataWplywu" name="dataWplywu">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="nazwaPodmiotu" class="col-sm-4 col-form-label">Nazwa nadawcy:</label>
+          <div class="col-sm-8">
+          <input type="text" class="form-control" id="nazwaPodmiotu" name="nazwaPodmiotu" placeholder="imię i nazwisko lub nazwa firmy">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="adresPodmiotu" class="col-sm-4 col-form-label">Ulica (miejscowość):</label>
+          <div class="col-sm-8">
+          <input type="text" class="form-control" id="adresPodmiotu" name="adresPodmiotu" placeholder="">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="pocztaPodmiotu" class="col-sm-4 col-form-label">Kod pocztowy i poczta:</label>
+          <div class="col-sm-8">
+          <input type="text" class="form-control" id="pocztaPodmiotu" name="pocztaPodmiotu" placeholder="">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="dotyczy" class="col-sm-4 col-form-label">Dotyczy:</label>
+          <div class="col-sm-8">
+          <textarea class="form-control" id="dotyczy" name="dotyczy" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="liczbaZalacznikow" class="col-sm-4 col-form-label">Liczba załączników:</label>
+          <div class="col-sm-3">
+          <input type="number" class="form-control" id="liczbaZalacznikow" name="liczbaZalacznikow" min="0" max="99">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="dekretacja" class="col-sm-4 col-form-label">Zadekretowane do:</label>
+          <div class="col-sm-8">
+          <input type="text" class="form-control" id="dekretacja" name="dekretacja" placeholder="">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-4 offset-sm-4">
+            <button type="submit" class="btn btn-primary">Dodaj pismo</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <!--- /add/edit form -->
+
+    <!-- info about incoming mail -->
+    <div class="col-md-5">
+      <h1>Najnowsza zarejestrowana korespondencja</h1>
+    </div>
+    <!-- /info about incoming mail -->
+  </div><!-- /main content row -->
+
+</div>
+
+
+
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
