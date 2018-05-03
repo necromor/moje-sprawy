@@ -46,13 +46,7 @@
           $this->nadawcaModel->dodajNadawce($data);
 
           // tymczasowo
-        $data = [
-          'title' => 'Nadawca dodany',
-          'nazwa_podmiotu' => '',
-          'adres_podmiotu' => '',
-          'poczta_podmiotu' => '',
-        ];
-          $this->view('nadawcy/dodaj', $data);
+          redirect('pages');
 
         } else {
 
