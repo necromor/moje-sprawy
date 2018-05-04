@@ -46,7 +46,7 @@
           $this->nadawcaModel->dodajNadawce($data);
 
           // tymczasowo
-          redirect('pages');
+          redirect('nadawcy/zestawienie');
 
         } else {
 
@@ -72,6 +72,18 @@
 
     }
 
+
+   public function zestawienie() {
+
+     $podmioty = $this->nadawcaModel->pobierzNadawcow();
+
+     $data = [
+       'title' => 'Zestawienie podmiotów',
+       'podmioty' => $podmioty
+     ];
+
+     $this->view('nadawcy/zestawienie', $data); 
+   }
 
 
   }

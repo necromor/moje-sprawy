@@ -23,6 +23,14 @@
       }
     }
 
+   public function pobierzNadawcow() {
+
+     $sql = "SELECT * FROM nadawcy ORDER BY id ASC";
+     $this->db->query($sql);
+
+     return $this->db->resultSet(); 
+   }
+
 
 
   }
