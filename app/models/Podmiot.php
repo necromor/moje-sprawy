@@ -1,6 +1,6 @@
 <?php
 
-  class Nadawca {
+  class Podmiot {
 
     private $db;
 
@@ -8,9 +8,9 @@
       $this->db = new Database;
     }
 
-    public function dodajNadawce($data) {
+    public function dodajPodmiot($data) {
 
-      $sql = "INSERT INTO nadawcy (nazwa, adres_1, adres_2) VALUES (:nazwa, :adres_1, :adres_2)";
+      $sql = "INSERT INTO podmioty (nazwa, adres_1, adres_2) VALUES (:nazwa, :adres_1, :adres_2)";
       $this->db->query($sql);
       $this->db->bind(':nazwa', $data['nazwa_podmiotu']);
       $this->db->bind(':adres_1', $data['adres_podmiotu']);
@@ -23,9 +23,9 @@
       }
     }
 
-   public function pobierzNadawcow() {
+   public function pobierzPodmioty() {
 
-     $sql = "SELECT * FROM nadawcy ORDER BY id ASC";
+     $sql = "SELECT * FROM podmioty ORDER BY id ASC";
      $this->db->query($sql);
 
      return $this->db->resultSet(); 

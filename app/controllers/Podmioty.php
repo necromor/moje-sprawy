@@ -1,11 +1,11 @@
 <?php
 
-  class Nadawcy extends Controller {
+  class Podmioty extends Controller {
 
     public function __construct() {
 
 
-      $this->nadawcaModel = $this->model('Nadawca');
+      $this->podmiotModel = $this->model('Podmiot');
     }
 
     public function dodaj() {
@@ -43,22 +43,22 @@
         if (empty($data['nazwa_podmiotu_err']) && empty($data['adres_podmiotu_err']) && empty($data['poczta_podmiotu_err'])) {
 
           // Pomyślna walidacja - dodaj do bazy danych
-          $this->nadawcaModel->dodajNadawce($data);
+          $this->podmiotModel->dodajPodmiot($data);
 
           // tymczasowo
-          redirect('nadawcy/zestawienie');
+          redirect('podmioty/zestawienie');
 
         } else {
 
           // Wyświetl powtórnie formularz z podanymi danymi i błędami
-          $this->view('nadawcy/dodaj', $data);
+          $this->view('podmioty/dodaj', $data);
         }
 
 
       } else {
 
         $data = [
-          'title' => 'Dodaj nadawcę',
+          'title' => 'Dodaj podmiot',
           'nazwa_podmiotu' => '',
           'adres_podmiotu' => '',
           'poczta_podmiotu' => '',
@@ -67,7 +67,7 @@
           'poczta_podmiotu_err' => ''
         ];
 
-        $this->view('nadawcy/dodaj', $data);
+        $this->view('podmioty/dodaj', $data);
       }
 
     }
@@ -75,14 +75,14 @@
 
    public function zestawienie() {
 
-     $podmioty = $this->nadawcaModel->pobierzNadawcow();
+     $podmioty = $this->podmiotModel->pobierzPodmioty();
 
      $data = [
        'title' => 'Zestawienie podmiotów',
        'podmioty' => $podmioty
      ];
 
-     $this->view('nadawcy/zestawienie', $data); 
+     $this->view('podmioty/zestawienie', $data); 
    }
 
 

@@ -2,7 +2,7 @@
 
 
 
-<form action="<?php echo URLROOT; ?>/nadawcy/dodaj" method="post">
+<form action="<?php echo URLROOT; ?>/podmioty/dodaj" method="post">
   <div class="row mb-3">
     <div class="col-md-8 mx-auto py-3">
 

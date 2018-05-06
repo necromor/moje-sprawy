@@ -8,7 +8,7 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo URLROOT; ?>/nadawcy/dodaj">Dodaj nadawcę</a>
+            <a class="nav-link" href="<?php echo URLROOT; ?>/podmioty/dodaj">Dodaj podmiot</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="<?php echo URLROOT; ?>/pages/about">About</a>
