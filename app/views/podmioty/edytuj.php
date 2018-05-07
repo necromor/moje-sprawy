@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
-<form action="<?php echo URLROOT; ?>/podmioty/dodaj" method="post">
+<form action="<?php echo URLROOT; ?>/podmioty/edytuj/<?php echo $data['id']; ?>" method="post">
   <div class="row mb-3">
     <div class="col-md-8 mx-auto py-3">
 
@@ -24,7 +24,7 @@
             <span class="invalid-feedback offset-sm-4"><?php echo $data['poczta_podmiotu_err']; ?></span>
           </div>
 
-          <button type="submit" class="col-sm-4 offset-sm-4 btn btn-primary">Dodaj</button>
+          <button type="submit" class="col-sm-4 offset-sm-4 btn btn-primary">Zmień</button>
 
     </div>
   </div><!-- /row podmiot -->

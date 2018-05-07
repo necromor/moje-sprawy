@@ -7,7 +7,7 @@
   </tr>
   <?php foreach($data['podmioty'] as $podmiot) : ?>
     <tr>
-      <td> <a href="<?php echo URLROOT; ?>/podmioty/edytuj/ <?php echo $podmiot->id; ?>" title="Edytuj podmiot"> <?php echo $podmiot->id; ?></a></td>
+      <td> <a href="<?php echo URLROOT; ?>/podmioty/edytuj/ <?php echo $podmiot->id; ?>" title="Zmień dane podmiotu"> <?php echo $podmiot->id; ?></a></td>
       <td> <?php echo $podmiot->nazwa; ?> </td>
       <td> <?php echo $podmiot->adres_1; ?> <br> 
            <?php echo $podmiot->adres_2; ?> </td> 
