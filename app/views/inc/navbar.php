@@ -7,11 +7,12 @@
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo URLROOT; ?>/podmioty/dodaj">Dodaj podmiot</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo URLROOT; ?>/pages/about">About</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dodaj" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dodaj</a>
+            <div class="dropdown-menu" aria-labelledby="zestawienia">
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/przychodzace/dodaj">Przychodzące</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/podmioty/dodaj">Podmioty</a>
+            </div>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="zestawienia" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zestawienia</a>
@@ -20,6 +21,9 @@
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/faktury/zestawienie/<?php echo date("Y"); ?>">Faktury</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/podmioty/zestawienie">Podmioty</a>
             </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo URLROOT; ?>/pages/about">About</a>
           </li>
         </ul>
 

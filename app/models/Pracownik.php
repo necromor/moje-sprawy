@@ -18,5 +18,13 @@
 
       return $row->imie . ' ' . $row->nazwisko;
     }
+
+    public function pobierzPracownikow() {
+
+     $sql = "SELECT id, imie, nazwisko FROM pracownicy ORDER BY nazwisko ASC";
+     $this->db->query($sql);
+
+     return $this->db->resultSet(); 
+    }
   
   }
