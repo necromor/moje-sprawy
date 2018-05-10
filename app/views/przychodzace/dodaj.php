@@ -63,9 +63,7 @@
 
       <div class="form-group row">
         <label for="dotyczy" class="col-sm-4 col-form-label">Dotyczy:</label>
-        <textarea class="form-control col-sm-8" id="dotyczy" name="dotyczy" rows="3">
-<?php echo $data['dotyczy']; ?>
-        </textarea>
+        <textarea class="form-control col-sm-8" id="dotyczy" name="dotyczy" rows="3"><?php echo $data['dotyczy']; ?></textarea>
         <span class="invalid-feedback offset-sm-4 d-block"><?php echo $data['dotyczy_err']; ?></span>
       </div>
 

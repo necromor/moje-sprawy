@@ -74,13 +74,22 @@
         $data['data_pisma_err'] = $this->sprawdzDatePisma($data['data_pisma']);
         $data['data_wplywu_err'] = $this->sprawdzDateWplywu($data['data_wplywu']);
         $data['dotyczy_err'] = $this->sprawdzDotyczy($data['dotyczy']);
-        $data['liczba_zalacznikow_err'] = $this->sprawdzLiczbaZalacznikow($data['liczba_zalacznikow']);
-        $data['dekretacja_err'] = $this->sprawdzDekretacja($data['dekretacja']);
-        $data['kwota_err'] = $this->sprawdzKwota($data['kwota']);
+        $data['liczba_zalacznikow_err'] = $this->sprawdzLiczbaZalacznikow($data['liczba_zalacznikow'], $data['czy_faktura']);
+        $data['dekretacja_err'] = $this->sprawdzDekretacja($data['dekretacja'], $data['czy_faktura']);
+        $data['kwota_err'] = $this->sprawdzKwota($data['kwota'], $data['czy_faktura']);
 
+        // Dodaj do bazy danych gdy nie ma błędów
+        if (empty($data['podmiot_nazwa_err']) && empty($data['znak_err']) && empty($data['data_pisma_err']) && empty($data['data_wplywu_err']) && empty($data['dotyczy_err']) && empty($data['liczba_zalacznikow_err']) && empty($data['dekretacja_err']) && empty($data['kwota_err'])) {
 
-        //tymczasowo bez walidacji
-        $this->view('przychodzace/dodaj', $data);
+          $this->przychodzacaModel->dodajPrzychodzaca($data);
+   
+          // na czas testów
+          redirect('przychodzace/zestawienie/'. date('Y'));
+
+        } else {
+          // wyświetl formularz z błędami
+          $this->view('przychodzace/dodaj', $data);
+        }
 
       } else {
 
@@ -111,6 +120,9 @@
         $this->view('przychodzace/dodaj', $data);
       }
    }
+
+
+
 
 
    /*
@@ -168,9 +180,14 @@
      return $error;
    }
 
-   private function sprawdzLiczbaZalacznikow($lzal) {
+   private function sprawdzLiczbaZalacznikow($lzal, $czyFaktura) {
 
      $error = '';
+     // dodawana faktura - wartość pola nie ma znaczenia
+     if ($czyFaktura == '1') {
+       return $error;
+     }
+
      if ($lzal == '') {
        $error = "Wpisz 0 jeżeli pismo nie ma załączników.";
      }
@@ -178,9 +195,14 @@
      return $error;
    }
 
-   private function sprawdzDekretacja($dekretacja) {
+   private function sprawdzDekretacja($dekretacja, $czyFaktura) {
 
      $error = '';
+     // dodawana faktura - wartość pola nie ma znaczenia
+     if ($czyFaktura == '1') {
+       return $error;
+     }
+
      if ($dekretacja == '') {
        $error = "Każde pismo posiada dekretację.";
      }
@@ -188,9 +210,15 @@
      return $error;
    }
 
-   private function sprawdzKwota($kwota) {
+   private function sprawdzKwota($kwota, $czyFaktura) {
 
      $error = '';
+
+     // dodawane pismo - wartość pola nie ma znaczenia
+     if ($czyFaktura == '1') {
+       return $error;
+     }
+
      if ($kwota == '') {
        $error = "Każda faktura posiada kwotę.";
      }
