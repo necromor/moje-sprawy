@@ -59,13 +59,13 @@
 
       // dodaj nowy podmiot lub wybierz istniejący
       // sprawdzanie upewnia się że podmiot z id istnieje
-      if ($data['czy_nowy'] == '0') {
+      //if ($data['czy_nowy'] == '0') {
         $id_podmiot = pobierzIdNazwy($data['podmiot_nazwa']);
-      } else {
+      //} else {
         // dodaj podmiot do bazy
         // ustaw wartość zmiennej
          
-      }
+      //}
 
       $sql = "INSERT INTO przychodzace (nr_rejestru, znak, data_pisma, data_wplywu, dotyczy, id_podmiot, czy_faktura, id_pracownik, liczba_zalacznikow, kwota, nr_rejestru_faktur) VALUES (:nr_rejestru, :znak, :data_pisma, :data_wplywu, :dotyczy, :id_podmiot, :czy_faktura, :id_pracownik, :liczba_zalacznikow, :kwota, :nr_rejestru_faktur)";
       $this->db->query($sql);

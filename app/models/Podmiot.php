@@ -56,6 +56,16 @@
      return $this->db->single();
    }
 
+   public function pobierzDanePodmiotuPoNazwie($nazwa) {
+
+     // nazwa nie jest unikalna
+     // pobierany jest ten najnowszy
+     $sql = "SELECT * FROM podmioty WHERE nazwa=:nazwa ORDER BY id DESC LIMIT 1";
+     $this->db->query($sql);
+     $this->db->bind(':nazwa', $nazwa);
+     
+     return $this->db->single();
+   }
 
 
   }

@@ -51,6 +51,8 @@
           'pracownicy' => $listaPracownikow,
           'czy_nowy' => $_POST['czyNowy'],
           'podmiot_nazwa' => trim($_POST['nazwaPodmiotu']),
+          'podmiot_adres' => trim($_POST['adresPodmiotu']),
+          'podmiot_poczta' => trim($_POST['pocztaPodmiotu']),
           'znak' => trim($_POST['znak']),
           'data_pisma' => trim($_POST['dataPisma']),
           'data_wplywu' => trim($_POST['dataWplywu']),
@@ -60,6 +62,8 @@
           'dekretacja' => trim($_POST['dekretacja']),
           'kwota' => trim($_POST['kwota']),
           'podmiot_nazwa_err' => '',
+          'podmiot_adres_err' => '',
+          'podmiot_poczta_err' => '',
           'znak_err' => '',
           'data_pisma_err' => '',
           'data_wplywu_err' => '',
@@ -70,6 +74,8 @@
         ];
 
         $data['podmiot_nazwa_err'] = $this->sprawdzNazwePodmiotu($data['podmiot_nazwa'], $data['czy_nowy']);
+        $data['podmiot_adres_err'] = $this->sprawdzAdresPodmiotu($data['podmiot_adres'], $data['czy_nowy']);
+        $data['podmiot_poczta_err'] = $this->sprawdzPocztaPodmiotu($data['podmiot_poczta'], $data['czy_nowy']);
         $data['znak_err'] = $this->sprawdzZnak($data['znak']);
         $data['data_pisma_err'] = $this->sprawdzDatePisma($data['data_pisma']);
         $data['data_wplywu_err'] = $this->sprawdzDateWplywu($data['data_wplywu']);
@@ -79,7 +85,23 @@
         $data['kwota_err'] = $this->sprawdzKwota($data['kwota'], $data['czy_faktura']);
 
         // Dodaj do bazy danych gdy nie ma błędów
-        if (empty($data['podmiot_nazwa_err']) && empty($data['znak_err']) && empty($data['data_pisma_err']) && empty($data['data_wplywu_err']) && empty($data['dotyczy_err']) && empty($data['liczba_zalacznikow_err']) && empty($data['dekretacja_err']) && empty($data['kwota_err'])) {
+        if (empty($data['podmiot_nazwa_err']) && empty($data['podmiot_adres_err']) && empty($data['podmiot_poczta_err']) && empty($data['znak_err']) && empty($data['data_pisma_err']) && empty($data['data_wplywu_err']) && empty($data['dotyczy_err']) && empty($data['liczba_zalacznikow_err']) && empty($data['dekretacja_err']) && empty($data['kwota_err'])) {
+
+          // sprawdz czy nowy podmiot
+          if ($data['czy_nowy'] == '1') {
+            // przekszałć dane na format podmiotu
+            $podm = [
+              'nazwa_podmiotu' => $data['podmiot_nazwa'],
+              'adres_podmiotu' => $data['podmiot_adres'],
+              'poczta_podmiotu' => $data['podmiot_poczta']
+            ];
+            // dodaj nowy podmiot
+            if ($this->podmiotModel->dodajPodmiot($podm)) {
+              $podmiot = $this->podmiotModel->pobierzDanePodmiotuPoNazwie($data['podmiot_nazwa']);
+              // wstaw nazwę z id do danych
+              $data['podmiot_nazwa'] = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+            }
+          }
 
           $this->przychodzacaModel->dodajPrzychodzaca($data);
    
@@ -100,6 +122,8 @@
           'czy_nowy' => '0',
           'czy_faktura' => '0',
           'podmiot_nazwa' => '',
+          'podmiot_adres' => '',
+          'podmiot_poczta' => '',
           'znak' => '',
           'data_pisma' => '',
           'data_wplywu' => '',
@@ -108,6 +132,8 @@
           'dekretacja' => '',
           'kwota' => '0.00',
           'podmiot_nazwa_err' => '',
+          'podmiot_adres_err' => '',
+          'podmiot_poczta_err' => '',
           'znak_err' => '',
           'data_pisma_err' => '',
           'data_wplywu_err' => '',
@@ -135,6 +161,36 @@
 
      if ($nazwa == '') {
        $error = "Nazwa nie może pozostać pusta.";
+     }
+
+     return $error;
+   }
+
+   private function sprawdzAdresPodmiotu($adres, $nowy) {
+
+     $error = '';
+     // istniejący podmiot - wartość pola nie ma znaczenia 
+     if ($nowy == '0') {
+       return $error;
+     }
+
+     if ($adres == '') {
+       $error = "Pole adresu nie może pozostać puste.";
+     }
+
+     return $error;
+   }
+
+   private function sprawdzPocztaPodmiotu($poczta, $nowy) {
+
+     $error = '';
+     // istniejący podmiot - wartość pola nie ma znaczenia 
+     if ($nowy == '0') {
+       return $error;
+     }
+
+     if ($poczta == '') {
+       $error = "Pole poczty nie może pozostać puste.";
      }
 
      return $error;

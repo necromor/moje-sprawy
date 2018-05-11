@@ -1,5 +1,10 @@
-// na dzień dobry ukryj pole dotyczące faktury
-$('#fakturaRow1').hide();
+// na dzień dobry ukryj pola w zależności które radio jest zaznaczone
+if ($('#radioPismo').is(':checked')) {
+    $('#fakturaRow1').hide();
+} else {
+    $('#pismoRow1').hide();
+    $('#pismoRow2').hide();
+}
 
 // obsługa zmiany opcji pismo czy faktura
 $('input[name=czyFaktura]:radio').on('click', function(e) {

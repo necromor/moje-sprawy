@@ -29,12 +29,14 @@
 
           <div class="form-group row">
             <label for="adresPodmiotu" class="col-sm-4 col-form-label">Ulica (miejscowość):</label>
-            <input type="text" class="form-control col-sm-8" id="adresPodmiotu" name="adresPodmiotu" disabled>
+            <input type="text" class="form-control col-sm-8" id="adresPodmiotu" name="adresPodmiotu" value="<?php echo $data['podmiot_adres']; ?>" <?php echo ($data['czy_nowy'] == '0') ? 'disabled' : ''; ?>>
+            <span class="invalid-feedback offset-sm-4 d-block"><?php echo $data['podmiot_adres_err']; ?></span>
           </div>
 
           <div class="form-group row">
             <label for="pocztaPodmiotu" class="col-sm-4 col-form-label">Kod pocztowy i poczta:</label>
-            <input type="text" class="form-control col-sm-8" id="pocztaPodmiotu" name="pocztaPodmiotu" disabled>
+            <input type="text" class="form-control col-sm-8" id="pocztaPodmiotu" name="pocztaPodmiotu" value="<?php echo $data['podmiot_poczta']; ?>" <?php echo ($data['czy_nowy'] == '0') ? 'disabled' : ''; ?>>
+            <span class="invalid-feedback offset-sm-4 d-block"><?php echo $data['podmiot_poczta_err']; ?></span>
           </div>
        </div><!-- /danePodmiotu -->
     </div>
