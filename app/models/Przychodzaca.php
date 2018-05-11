@@ -57,15 +57,7 @@
         $nr_rejestru_faktur = $this->tworzNrRejestruFaktur($data['data_wplywu']);
       }
 
-      // dodaj nowy podmiot lub wybierz istniejący
-      // sprawdzanie upewnia się że podmiot z id istnieje
-      //if ($data['czy_nowy'] == '0') {
-        $id_podmiot = pobierzIdNazwy($data['podmiot_nazwa']);
-      //} else {
-        // dodaj podmiot do bazy
-        // ustaw wartość zmiennej
-         
-      //}
+      $id_podmiot = pobierzIdNazwy($data['podmiot_nazwa']);
 
       $sql = "INSERT INTO przychodzace (nr_rejestru, znak, data_pisma, data_wplywu, dotyczy, id_podmiot, czy_faktura, id_pracownik, liczba_zalacznikow, kwota, nr_rejestru_faktur) VALUES (:nr_rejestru, :znak, :data_pisma, :data_wplywu, :dotyczy, :id_podmiot, :czy_faktura, :id_pracownik, :liczba_zalacznikow, :kwota, :nr_rejestru_faktur)";
       $this->db->query($sql);
@@ -83,12 +75,15 @@
 
       // dodaj do bazy i zwróć tablicę z numerem rejestru i nr rejestru faktur
       // jeżeli błąd to zwróć -1 jako wartości
+      $numery = [
+        'nr_rejestru' => '-1',
+        'nr_rejestru_faktur' => '-1'
+      ];
       if ($this->db->execute()) {
-        return array('nr_rejestru' => $nr_rejestru, 'nr_rejestru_faktur' => $nr_rejestru_faktur);
-      } else {
-        return array('nr_rejestru' => -1, 'nr_rejestru_faktur' => -1);
+        $numery['nr_rejestru'] = $nr_rejestru;
+        $numery['nr_rejestru_faktur'] = $nr_rejestru_faktur;
       }
-
+      return $numery;
     }
 
     private function tworzNrRejestru($data) {

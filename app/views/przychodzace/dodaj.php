@@ -6,6 +6,12 @@
     <h1 class="col-md-8 mx-auto"><?php echo $data['title'] ?></h1>
   </div>
 
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+    <?php echo flash('korespondencja_dodaj'); ?>
+    </div>
+  </div>
+
   <div class="row mb-3"><!-- nadawca -->
     <div class="col-md-8 mx-auto bg-light py-3">
        <div id="danePodmiotu">

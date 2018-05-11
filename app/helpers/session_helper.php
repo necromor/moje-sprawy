@@ -23,7 +23,7 @@
 
         // display message
         $class = !empty($_SESSION[$name . '_class']) ? $_SESSION[$name . '_class'] : '';
-        echo '<div class="'.$class.'" id="msg-flash">'.$_SESSION[$name].'</div>';
+        echo '<p class="'.$class.'" id="msg-flash">'.$_SESSION[$name].'</p>';
         unset($_SESSION[$name]);
         unset($_SESSION[$name . '_class']);
       }

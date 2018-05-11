@@ -103,10 +103,15 @@
             }
           }
 
-          $this->przychodzacaModel->dodajPrzychodzaca($data);
-   
-          // na czas testów
-          redirect('przychodzace/zestawienie/'. date('Y'));
+          $numery = $this->przychodzacaModel->dodajPrzychodzaca($data);
+
+          // utwórz wiadomość zwrotną w zależności do zostało dodane
+          $wiadomosc = "Korespondencja dodana pomyślnie z numerem rejestru: <strong>" . $numery['nr_rejestru'] . "</strong>";
+          if ($data['czy_faktura'] == '1') {
+            $wiadomosc.= "<br>Numer w rejestrze faktur: <strong>" . $numery['nr_rejestru_faktur'] . "</strong>";
+          }
+          flash('korespondencja_dodaj', $wiadomosc);
+          redirect('przychodzace/dodaj');
 
         } else {
           // wyświetl formularz z błędami
