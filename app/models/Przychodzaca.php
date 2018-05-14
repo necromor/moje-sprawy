@@ -10,7 +10,6 @@
 
     public function pobierzPrzychodzace($rok) {
 
-      //$sql = "SELECT * FROM przychodzace WHERE data_wplywu LIKE :rok ORDER BY nr_rejestru ASC";
       $sql = "SELECT  
               przychodzace.id, 
               przychodzace.data_pisma, 
@@ -30,6 +29,31 @@
               WHERE data_wplywu LIKE :rok 
                 AND przychodzace.id_podmiot=podmioty.id 
               ORDER BY nr_rejestru ASC";
+      $this->db->query($sql);
+      $this->db->bind(':rok', $rok . '%');
+
+      return $this->db->resultSet();
+    }
+
+    public function pobierzFaktury($rok) {
+
+      $sql = "SELECT  
+              przychodzace.id, 
+              przychodzace.data_pisma, 
+              przychodzace.data_wplywu, 
+              przychodzace.nr_rejestru, 
+              przychodzace.znak,
+              przychodzace.dotyczy, 
+              przychodzace.kwota, 
+              przychodzace.nr_rejestru_faktur,
+              podmioty.nazwa,
+              podmioty.adres_1,
+              podmioty.adres_2
+              FROM przychodzace, podmioty
+              WHERE data_wplywu LIKE :rok 
+                AND przychodzace.id_podmiot=podmioty.id 
+                AND czy_faktura=1 
+              ORDER BY nr_rejestru_faktur ASC";
       $this->db->query($sql);
       $this->db->bind(':rok', $rok . '%');
 

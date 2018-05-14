@@ -36,6 +36,26 @@
       $this->view('przychodzace/zestawienie', $data);
     }
 
+    public function faktury($rok) {
+
+      // sprawdź czy nastąpiła zmiana roku
+      // jeżeli tak to przekieruj 
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        redirect('przychodzace/faktury/' . $_POST['rok']);
+      }
+
+      $faktury = $this->przychodzacaModel->pobierzFaktury($rok);
+
+      $data = [
+        'title' => 'Zestawienie faktur',
+        'faktury' => $faktury,
+        'rok' => $rok
+      ];
+
+      $this->view('przychodzace/faktury', $data);
+    }
+
 
    public function dodaj() {
 

@@ -18,7 +18,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="zestawienia" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zestawienia</a>
             <div class="dropdown-menu" aria-labelledby="zestawienia">
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/przychodzace/zestawienie/<?php echo date("Y"); ?>">Przychodzące</a>
-              <a class="dropdown-item" href="<?php echo URLROOT; ?>/faktury/zestawienie/<?php echo date("Y"); ?>">Faktury</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/przychodzace/faktury/<?php echo date("Y"); ?>">Faktury</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/podmioty/zestawienie">Podmioty</a>
             </div>
           </li>

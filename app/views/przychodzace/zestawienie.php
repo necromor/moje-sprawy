@@ -13,7 +13,7 @@
   <thead class="thead-dark">
   <tr>
     <th class="align-middle">Nr rejestru</th>
-    <th class="align-middle">Data pisma<br>Data wpływu</th>
+    <th class="align-middle">Data pisma/wpływu</th>
     <th class="align-middle">Znak</th>
     <th class="align-middle">Nadawca</th>
     <th class="align-middle">Dotyczy</th>
