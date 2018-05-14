@@ -34,7 +34,7 @@
   </thead>
   <tbody>
   <?php foreach($data['faktury'] as $faktura) : ?>
-  <tr>
+  <tr <?php if($faktura->ujemna) {echo 'class="table-danger"';} ?>>
     <td class="align-middle"><?php echo $faktura->nr_rejestru_faktur; ?>
     (<a href="<?php echo URLROOT; ?>/przychodzace/edytuj/<?php echo $faktura->id; ?>" title="Zmień dane faktury"><?php echo $faktura->nr_rejestru; ?></a>)</td>
     <td class="align-middle"><?php echo $faktura->data_pisma; ?><br>

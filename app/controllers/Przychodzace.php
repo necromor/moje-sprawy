@@ -61,12 +61,25 @@
         $wybrany_podmiot = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
       }
 
+      // oblicz sumę i zmień formatowanie liczb
+      $suma = 0;
+      foreach($faktury as $faktura) {
+        $suma+= $faktura->kwota;
+        if ($faktura->kwota < 0) {
+          $faktura->ujemna = true;
+        } else {
+          $faktura->ujemna = false;
+        }
+        $faktura->kwota = formatujKwote($faktura->kwota);
+      }
+
       $data = [
         'title' => 'Zestawienie faktur',
         'faktury' => $faktury,
         'rok' => $rok,
         'podmioty' => $listaPodmiotow,
-        'wybrany' => $wybrany_podmiot
+        'wybrany' => $wybrany_podmiot,
+        'suma' => $suma
       ];
 
       $this->view('przychodzace/faktury', $data);
