@@ -36,21 +36,37 @@
       $this->view('przychodzace/zestawienie', $data);
     }
 
-    public function faktury($rok) {
+    public function faktury($rok, $id=0) {
 
       // sprawdź czy nastąpiła zmiana roku
       // jeżeli tak to przekieruj 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        redirect('przychodzace/faktury/' . $_POST['rok']);
+        // sprawdź czy przesłany został wykonawca
+        if (isset($_POST['wystawca']) && trim($_POST['wystawca']) != '') {
+  
+          $idp = pobierzIdNazwy($_POST['wystawca']);
+          redirect('przychodzace/faktury/' . $_POST['rok'] . '/' . $idp);
+        } else {
+          redirect('przychodzace/faktury/' . $_POST['rok']);
+        }
       }
 
-      $faktury = $this->przychodzacaModel->pobierzFaktury($rok);
+      $faktury = $this->przychodzacaModel->pobierzFaktury($rok, $id);
+      $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
+      $wybrany_podmiot = '';
+
+      if ($id != 0) {
+        $podmiot = $this->podmiotModel->pobierzDanePodmiotu($id);
+        $wybrany_podmiot = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+      }
 
       $data = [
         'title' => 'Zestawienie faktur',
         'faktury' => $faktury,
-        'rok' => $rok
+        'rok' => $rok,
+        'podmioty' => $listaPodmiotow,
+        'wybrany' => $wybrany_podmiot
       ];
 
       $this->view('przychodzace/faktury', $data);
