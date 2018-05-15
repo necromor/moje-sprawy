@@ -2,6 +2,12 @@
 
 <h1><?php echo $data['title'] ?> z <?php echo $data['rok']; ?> roku</h1>
 
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+    <?php echo flash('korespondencja_edytuj'); ?>
+    </div>
+  </div>
+
 <form class="form-inline" action="<?php echo URLROOT; ?>/przychodzace/zestawienie" method="post">
   <label for="rok" class="sr-only">Rok</label>
   <input type="number" name="rok" id="rok" class="form-control mr-sm-2 mb-2" value="<?php echo $data['rok']; ?>" min="2016" max="2100" step="1">

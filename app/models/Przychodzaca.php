@@ -86,10 +86,18 @@
       return $this->db->resultSet();
     }
 
+    public function pobierzPrzychodzacaPoId($id) {
+
+      $sql = "SELECT * FROM przychodzace, podmioty WHERE przychodzace.id=:id AND przychodzace.id_podmiot=podmioty.id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      return $this->db->single();
+    }
+
     public function dodajPrzychodzaca($data) {
 
       // pobierz kolejny numer rejestru w danym roku
-      // tymczasowo
       $nr_rejestru = $this->tworzNrRejestru($data['data_wplywu']);
 
       // ustaw wartości domyślne na pozostałe pola
@@ -135,6 +143,45 @@
       }
       return $numery;
     }
+
+    public function edytujPrzychodzaca($data) {
+
+      // NUMERY REJESTRÓW NIE PODLEGAJĄ ZMIANIE
+
+      // ustaw wartości domyślne na pozostałe pola
+      // w zależności od tego czy dodawane pismo czy faktura
+      if ($data['czy_faktura'] == '0') {
+        $liczba_zalacznikow = $data['liczba_zalacznikow'];
+        $id_pracownik = pobierzIdNazwy($data['dekretacja']);
+        $kwota = 0.00;
+      } else {
+        $liczba_zalacznikow = 0;
+        $id_pracownik = 0;
+        $kwota = $data['kwota'];
+      }
+
+      $id_podmiot = pobierzIdNazwy($data['podmiot_nazwa']);
+
+      $sql = "UPDATE przychodzace SET znak=:znak, data_pisma=:data_pisma, data_wplywu=:data_wplywu, dotyczy=:dotyczy, id_podmiot=:id_podmiot, id_pracownik=:id_pracownik, liczba_zalacznikow=:liczba_zalacznikow, kwota=:kwota WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $data['id']);
+      $this->db->bind(':znak', $data['znak']);
+      $this->db->bind(':data_pisma', $data['data_pisma']);
+      $this->db->bind(':data_wplywu', $data['data_wplywu']);
+      $this->db->bind(':dotyczy', $data['dotyczy']);
+      $this->db->bind(':id_podmiot', $id_podmiot);
+      $this->db->bind(':id_pracownik', $id_pracownik);
+      $this->db->bind(':liczba_zalacznikow', $liczba_zalacznikow);
+      $this->db->bind(':kwota', $kwota);
+
+      // zmień dane w bazie
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
 
     private function tworzNrRejestru($data) {
       /*

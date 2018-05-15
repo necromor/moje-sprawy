@@ -202,8 +202,155 @@
    }
 
 
+   public function edytuj($id) {
 
+      $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
+      $listaPracownikow = $this->pracownikModel->pobierzPracownikow();
 
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        // pola disabled nie wysyłają danych więc trzeba pobrać dane podmiotu
+        if ($_POST['czyNowy'] == '0') {
+          $podmiot = $this->pobierzPodmiot($_POST['nazwaPodmiotu']);
+          $nazwa = $podmiot->nazwa;
+          $adres = $podmiot->adres_1;
+          $poczta = $podmiot->adres_2;
+        } else {
+          $nazwa = trim($_POST['nazwaPodmiotu']);
+          $adres = trim($_POST['adresPodmiotu']);
+          $poczta = trim($_POST['pocztaPodmiotu']);
+        }
+        
+
+        $data = [
+          'title' => 'Zmień dane korespondencji przychodzącej',
+          'podmioty' => $listaPodmiotow,
+          'pracownicy' => $listaPracownikow,
+          'id' => $id,
+          'czy_nowy' => $_POST['czyNowy'],
+          'podmiot_nazwa' => $nazwa,
+          'podmiot_adres' => $adres,
+          'podmiot_poczta' => $poczta,
+          'znak' => trim($_POST['znak']),
+          'data_pisma' => trim($_POST['dataPisma']),
+          'data_wplywu' => trim($_POST['dataWplywu']),
+          'dotyczy' => trim($_POST['dotyczy']),
+          'czy_faktura' => $_POST['czyFaktura'],
+          'liczba_zalacznikow' => trim($_POST['liczbaZalacznikow']),
+          'dekretacja' => trim($_POST['dekretacja']),
+          'kwota' => trim($_POST['kwota']),
+          'podmiot_nazwa_err' => '',
+          'podmiot_adres_err' => '',
+          'podmiot_poczta_err' => '',
+          'znak_err' => '',
+          'data_pisma_err' => '',
+          'data_wplywu_err' => '',
+          'dotyczy_err' => '',
+          'liczba_zalacznikow_err' => '',
+          'dekretacja_err' => '',
+          'kwota_err' => ''
+        ];
+
+        $data['podmiot_nazwa_err'] = $this->sprawdzNazwePodmiotu($data['podmiot_nazwa'], $data['czy_nowy']);
+        $data['podmiot_adres_err'] = $this->sprawdzAdresPodmiotu($data['podmiot_adres'], $data['czy_nowy']);
+        $data['podmiot_poczta_err'] = $this->sprawdzPocztaPodmiotu($data['podmiot_poczta'], $data['czy_nowy']);
+        $data['znak_err'] = $this->sprawdzZnak($data['znak']);
+        $data['data_pisma_err'] = $this->sprawdzDatePisma($data['data_pisma']);
+        $data['data_wplywu_err'] = $this->sprawdzDateWplywu($data['data_wplywu']);
+        $data['dotyczy_err'] = $this->sprawdzDotyczy($data['dotyczy']);
+        $data['liczba_zalacznikow_err'] = $this->sprawdzLiczbaZalacznikow($data['liczba_zalacznikow'], $data['czy_faktura']);
+        $data['dekretacja_err'] = $this->sprawdzDekretacja($data['dekretacja'], $data['czy_faktura']);
+        $data['kwota_err'] = $this->sprawdzKwota($data['kwota'], $data['czy_faktura']);
+
+        // Dodaj do bazy danych gdy nie ma błędów
+        if (empty($data['podmiot_nazwa_err']) && empty($data['podmiot_adres_err']) && empty($data['podmiot_poczta_err']) && empty($data['znak_err']) && empty($data['data_pisma_err']) && empty($data['data_wplywu_err']) && empty($data['dotyczy_err']) && empty($data['liczba_zalacznikow_err']) && empty($data['dekretacja_err']) && empty($data['kwota_err'])) {
+
+          // sprawdz czy nowy podmiot
+          if ($data['czy_nowy'] == '1') {
+            // przekszałć dane na format podmiotu
+            $podm = [
+              'nazwa_podmiotu' => $data['podmiot_nazwa'],
+              'adres_podmiotu' => $data['podmiot_adres'],
+              'poczta_podmiotu' => $data['podmiot_poczta']
+            ];
+            // dodaj nowy podmiot
+            if ($this->podmiotModel->dodajPodmiot($podm)) {
+              $podmiot = $this->podmiotModel->pobierzDanePodmiotuPoNazwie($data['podmiot_nazwa']);
+              // wstaw nazwę z id do danych
+              $data['podmiot_nazwa'] = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+            }
+          }
+
+          $this->przychodzacaModel->edytujPrzychodzaca($data);
+
+          $wiadomosc = "Dane korespondencji zostały zmienione pomyślnie.";
+          flash('korespondencja_edytuj', $wiadomosc);
+          redirect('przychodzace/zestawienie/'. date("Y"));
+
+        } else {
+          // wyświetl formularz z błędami
+          $this->view('przychodzace/edytuj', $data);
+        }
+
+      } else {
+
+        $pismo = $this->przychodzacaModel->pobierzPrzychodzacaPoId($id);
+
+        // zamień dane pracownika jeżeli to pismo nie faktura
+        if($pismo->id_pracownik != 0) {
+          $imie_nazwisko = $this->pracownikModel->pobierzImieNazwisko($pismo->id_pracownik);
+          $pismo->id_pracownik = utworzIdNazwa($pismo->id_pracownik, $imie_nazwisko);
+        }
+
+        $data = [
+          'title' => 'Zmień dane korespondencji przychodzącej',
+          'podmioty' => $listaPodmiotow,
+          'pracownicy' => $listaPracownikow,
+          'id' => $id,
+          'czy_nowy' => '0',
+          'czy_faktura' => $pismo->czy_faktura,
+          'podmiot_nazwa' => utworzIdNazwa($pismo->id_podmiot, $pismo->nazwa),
+          'podmiot_adres' => $pismo->adres_1,
+          'podmiot_poczta' => $pismo->adres_2,
+          'znak' => $pismo->znak,
+          'data_pisma' => $pismo->data_pisma,
+          'data_wplywu' => $pismo->data_wplywu,
+          'dotyczy' => $pismo->dotyczy,
+          'liczba_zalacznikow' => $pismo->liczba_zalacznikow,
+          'dekretacja' => $pismo->id_pracownik,
+          'kwota' => $pismo->kwota,
+          'podmiot_nazwa_err' => '',
+          'podmiot_adres_err' => '',
+          'podmiot_poczta_err' => '',
+          'znak_err' => '',
+          'data_pisma_err' => '',
+          'data_wplywu_err' => '',
+          'dotyczy_err' => '',
+          'liczba_zalacznikow_err' => '',
+          'dekretacja_err' => '',
+          'kwota_err' => ''
+        ];
+ 
+        $this->view('przychodzace/edytuj', $data);
+      }
+   }
+
+   /*
+    * FUNKCJE POMOCNICE
+    */
+
+   private function pobierzPodmiot($nazwa) {
+
+     $idp = pobierzIdNazwy($nazwa);
+     $podmiot = $this->podmiotModel->pobierzDanePodmiotu($idp);
+     // na wypadek gdyby id było ok a nazwa zmieniona
+     // przywróc tą z bazy danych
+     $podmiot->nazwa = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+    
+     return $podmiot;
+   }
+   
 
    /*
     * FUNKCJE SPRAWDZAJĄCE
