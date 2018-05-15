@@ -94,14 +94,26 @@
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
+        // pola disabled nie wysyłają danych więc trzeba pobrać dane podmiotu
+        if ($_POST['czyNowy'] == '0') {
+          $podmiot = $this->pobierzPodmiot($_POST['nazwaPodmiotu']);
+          $nazwa = $podmiot->nazwa;
+          $adres = $podmiot->adres_1;
+          $poczta = $podmiot->adres_2;
+        } else {
+          $nazwa = trim($_POST['nazwaPodmiotu']);
+          $adres = trim($_POST['adresPodmiotu']);
+          $poczta = trim($_POST['pocztaPodmiotu']);
+        }
+
         $data = [
           'title' => 'Dodaj korespondencję przychodzącą',
           'podmioty' => $listaPodmiotow,
           'pracownicy' => $listaPracownikow,
           'czy_nowy' => $_POST['czyNowy'],
-          'podmiot_nazwa' => trim($_POST['nazwaPodmiotu']),
-          'podmiot_adres' => trim($_POST['adresPodmiotu']),
-          'podmiot_poczta' => trim($_POST['pocztaPodmiotu']),
+          'podmiot_nazwa' => $nazwa,
+          'podmiot_adres' => $adres,
+          'podmiot_poczta' => $poczta,
           'znak' => trim($_POST['znak']),
           'data_pisma' => trim($_POST['dataPisma']),
           'data_wplywu' => trim($_POST['dataWplywu']),
@@ -343,10 +355,17 @@
    private function pobierzPodmiot($nazwa) {
 
      $idp = pobierzIdNazwy($nazwa);
-     $podmiot = $this->podmiotModel->pobierzDanePodmiotu($idp);
-     // na wypadek gdyby id było ok a nazwa zmieniona
-     // przywróc tą z bazy danych
-     $podmiot->nazwa = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+
+     // sprawdź czy istnieje taki podmiot
+     if ($this->podmiotModel->czyIstniejePodmiot($idp)) {
+       $podmiot = $this->podmiotModel->pobierzDanePodmiotu($idp);
+       // na wypadek gdyby id było ok a nazwa zmieniona
+       // przywróc tą z bazy danych
+       $podmiot->nazwa = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+     } else {
+       // zwróć pusty obiekt
+       $podmiot = (object) ['nazwa' => '', 'adres_1' => '', 'adres_2' => ''];
+     }
     
      return $podmiot;
    }

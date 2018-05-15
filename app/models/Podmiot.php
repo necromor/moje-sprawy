@@ -67,5 +67,18 @@
      return $this->db->single();
    }
 
+   public function czyIstniejePodmiot($id) {
+
+     $sql = "SELECT * FROM podmioty WHERE id=:id";
+     $this->db->query($sql);
+     $this->db->bind(':id', $id);
+     
+     if ($this->db->single()) {
+       return true;
+     } else {
+       return false;
+     }
+   }
+
 
   }
