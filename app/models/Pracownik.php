@@ -21,10 +21,21 @@
 
     public function pobierzPracownikow() {
 
-     $sql = "SELECT id, imie, nazwisko FROM pracownicy ORDER BY nazwisko ASC";
+     $sql = "SELECT id, imie, nazwisko FROM pracownicy WHERE aktywny=1 ORDER BY nazwisko ASC";
      $this->db->query($sql);
 
      return $this->db->resultSet(); 
     }
   
+    public function pobierzWszystkichPracownikow() {
+
+     $sql = "SELECT * FROM pracownicy ORDER BY id ASC";
+     $this->db->query($sql);
+
+     return $this->db->resultSet(); 
+    }
+
+
+
+
   }
