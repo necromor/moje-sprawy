@@ -50,6 +50,20 @@
       
     }
 
+    public function czyAktywny($id) {
+
+      $sql = "SELECT aktywny FROM pracownicy WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+      if ($row->aktywny == 0) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
     public function dodajPracownika($data) {
 
       // wartości stałe
@@ -73,6 +87,18 @@
       }
     }
 
+    public function zmienStatus($id, $status) {
 
+      $sql = "UPDATE pracownicy SET aktywny=:status WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':status', $status);
+      $this->db->bind(':id', $id);
+
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
   }

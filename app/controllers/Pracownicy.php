@@ -92,6 +92,23 @@
     }
 
 
+   public function aktywuj($id) {
+
+     $status = 1;
+     $tekst = "aktywny";
+
+     if ($this->pracownikModel->czyAktywny($id)) {
+       $status = 0;
+       $tekst = "nieaktywny";
+     } 
+
+     $this->pracownikModel->zmienStatus($id, $status);
+     $wiadomosc = "Status pracownika został zmieniony pomyślnie na <strong>$tekst</strong>.";
+     flash('pracownicy_wiadomosc', $wiadomosc);
+     redirect('pracownicy/zestawienie'); 
+   }
+
+
    /*
     * FUNKCJE SPRAWDZAJĄCE
     */
