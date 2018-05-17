@@ -108,6 +108,19 @@
      redirect('pracownicy/zestawienie'); 
    }
 
+   public function resetuj($id) {
+
+     $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
+     $haslo = password_hash($pracownik->login, PASSWORD_DEFAULT);
+
+     $this->pracownikModel->zmienHaslo($id, $haslo);
+     $wiadomosc = "Hasło pracownika zostało ustawione na domyślne.";
+     flash('pracownicy_wiadomosc', $wiadomosc);
+     redirect('pracownicy/zestawienie'); 
+   }
+
+
+
 
    /*
     * FUNKCJE SPRAWDZAJĄCE

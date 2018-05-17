@@ -44,3 +44,9 @@ $('input[name=czyNowy]:radio').on('click', function(e) {
     $('#adresPodmiotu').val('');
     $('#pocztaPodmiotu').val('');
 });
+
+
+// potwierdzenie kliknięcia w link resetu
+$('.reset').on('click', function() {
+  return confirm('Operacja jest nieodwracalna!. Jesteś pewny?');
+});

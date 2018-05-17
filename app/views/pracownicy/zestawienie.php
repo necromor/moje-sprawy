@@ -43,7 +43,7 @@
       <?php if (password_verify($pracownik->login, $pracownik->haslo)) : ?>
       hasło domyślne
       <?php else : ?>
-      <a href="<?php echo URLROOT; ?>/pracownicy/resetuj/<?php echo $pracownik->id; ?>" class="btn btn-danger" title="Resetuj hasło pracownikowi. UWAGA - operacja jest nieodwracalna!">Resetuj hasło</a>
+      <a href="<?php echo URLROOT; ?>/pracownicy/resetuj/<?php echo $pracownik->id; ?>" class="btn btn-danger reset" title="Resetuj hasło pracownikowi. UWAGA - operacja jest nieodwracalna!">Resetuj hasło</a>
       <?php endif; ?>
     </td>
   </tr>

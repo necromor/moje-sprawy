@@ -8,6 +8,15 @@
       $this->db = new Database;
     }
 
+    public function pobierzPracownikaPoId($id) {
+
+      $sql = "SELECT * FROM pracownicy WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      return $this->db->single();
+    }
+
     public function pobierzImieNazwisko($id) {
 
       $sql = "SELECT imie, nazwisko FROM pracownicy WHERE id=:id";
@@ -92,6 +101,20 @@
       $sql = "UPDATE pracownicy SET aktywny=:status WHERE id=:id";
       $this->db->query($sql);
       $this->db->bind(':status', $status);
+      $this->db->bind(':id', $id);
+
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function zmienHaslo($id, $haslo) {
+
+      $sql = "UPDATE pracownicy SET haslo=:haslo WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':haslo', $haslo);
       $this->db->bind(':id', $id);
 
       if ($this->db->execute()) {
