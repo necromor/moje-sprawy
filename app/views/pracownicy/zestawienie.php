@@ -28,12 +28,22 @@
     <td><?php echo $pracownik->imie; ?> <?php echo $pracownik->nazwisko; ?></td>
     <td><?php echo $pracownik->login; ?></td>
     <td class="align-middle"><?php echo $pracownik->poziom; ?></td>
-    <td class="align-middle"><?php echo $pracownik->aktywny; ?></td>
     <td class="align-middle">
-      <?php if ($pracownik->login == $pracownik->haslo) : ?>
+      <div class="btn-group" role="group" aria-label="Przyciski aktywacji deaktywacji">
+      <?php if ($pracownik->aktywny == "Tak") : ?>
+        <button type="button" class="btn btn-success">Tak</button>
+        <a href="<?php echo URLROOT; ?>/pracownicy/aktywuj/<?php echo $pracownik->id; ?>" class="btn btn-danger" title="Ustaw pracownika jako nieaktywnego">Deaktywuj</a>
+      <?php else : ?>
+        <button type="button" class="btn btn-danger">Nie</button>
+        <a href="<?php echo URLROOT; ?>/pracownicy/aktywuj/<?php echo $pracownik->id; ?>" class="btn btn-success" title="Ustaw pracownika jako aktywnego">Aktywuj</a>
+      <?php endif; ?>
+      </div>
+    </td>
+    <td class="align-middle">
+      <?php if (password_verify($pracownik->login, $pracownik->haslo)) : ?>
       hasło domyślne
       <?php else : ?>
-      <a href="<?php echo URLROOT; ?>/pracownicy/resetuj/<?php echo $pracownik->id; ?>" class="btn btn-danger" title="Resetuj hasło pracownikowi. UWAGA - operacja jest nieodwracalna!">Resetuj hasło
+      <a href="<?php echo URLROOT; ?>/pracownicy/resetuj/<?php echo $pracownik->id; ?>" class="btn btn-danger" title="Resetuj hasło pracownikowi. UWAGA - operacja jest nieodwracalna!">Resetuj hasło</a>
       <?php endif; ?>
     </td>
   </tr>
