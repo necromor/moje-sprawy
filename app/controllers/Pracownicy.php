@@ -91,6 +91,61 @@
       }
     }
 
+    public function edytuj($id) {
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data = [
+          'title' => 'Zmień dane pracownika',
+          'id' => $_POST['id'],
+          'poziomy' => $this->POZIOMY,
+          'imie' => trim($_POST['imie']),
+          'nazwisko' => trim($_POST['nazwisko']),
+          'login' => trim($_POST['login']),
+          'poziom' => $_POST['poziom'],
+          'imie_err' => '',
+          'nazwisko_err' => '',
+          'login_err' => '',
+        ];
+
+        $data['imie_err'] = $this->sprawdzImie($data['imie']);
+        $data['nazwisko_err'] = $this->sprawdzNazwisko($data['nazwisko']);
+        $data['login_err'] = $this->sprawdzLogin($data['login'], $id);
+
+        if (empty($data['imie_err']) && empty($data['nazwisko_err']) && empty($data['login_err'])) {
+
+          $this->pracownikModel->edytujPracownika($data);
+
+          $wiadomosc = "Dane pracownika <strong>" . $data['imie'] . " " . $data['nazwisko'] . " [" . $data['login'] . "]</strong> zostały zmienione pomyślnie.";
+          flash('pracownicy_wiadomosc', $wiadomosc);
+          redirect('pracownicy/zestawienie'); 
+
+        } else {
+          $this->view('pracownicy/edytuj', $data);
+        }
+
+      } else {
+
+        $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
+
+        $data = [
+          'title' => 'Zmień dane pracownika',
+          'id' => $id,
+          'poziomy' => $this->POZIOMY,
+          'imie' => $pracownik->imie,
+          'nazwisko' => $pracownik->nazwisko,
+          'login' => $pracownik->login,
+          'poziom' => $pracownik->poziom,
+          'imie_err' => '',
+          'nazwisko_err' => '',
+          'login_err' => '',
+        ];
+
+        $this->view('pracownicy/edytuj', $data);
+
+      }
+    }
 
    public function aktywuj($id) {
 
@@ -152,7 +207,7 @@
      return $error;
    }
 
-   private function sprawdzLogin($tekst) {
+   private function sprawdzLogin($tekst, $id=0) {
 
      $error = '';
 
@@ -160,7 +215,7 @@
        $error = "Pracownik musi mieć login.";
      } elseif (strlen($tekst) < 2) {
        $error = "Login musi mieć przynajmniej 2 znaki.";
-     } elseif ($this->pracownikModel->czyIstniejeLogin($tekst)) {
+     } elseif ($this->pracownikModel->czyIstniejeLogin($tekst, $id)) {
        $error = "Podany login jest już zajęty.";
      }
 

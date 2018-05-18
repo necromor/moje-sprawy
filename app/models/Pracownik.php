@@ -44,11 +44,12 @@
      return $this->db->resultSet(); 
     }
 
-    public function czyIstniejeLogin($login) {
+    public function czyIstniejeLogin($login, $id) {
 
-      $sql = "SELECT id FROM pracownicy WHERE login=:login";
+      $sql = "SELECT id FROM pracownicy WHERE login=:login AND id!=:id";
       $this->db->query($sql);
       $this->db->bind(':login', $login);
+      $this->db->bind(':id', $id);
 
       $row = $this->db->single();
       if ($this->db->rowCount() == 0) {
@@ -56,7 +57,6 @@
       } else {
         return true;
       }
-      
     }
 
     public function czyAktywny($id) {
@@ -89,6 +89,23 @@
       $this->db->bind(':poziom', $data['poziom']);
       $this->db->bind(':aktywny', $aktywny);
 
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function edytujPracownika($data) {
+
+      $sql = "UPDATE pracownicy SET imie=:imie, nazwisko=:nazwisko, login=:login, poziom=:poziom WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':imie', $data['imie']);
+      $this->db->bind(':nazwisko', $data['nazwisko']);
+      $this->db->bind(':login', $data['login']);
+      $this->db->bind(':poziom', $data['poziom']);
+      $this->db->bind(':id', $data['id']);
+   
       if ($this->db->execute()) {
         return true;
       } else {
