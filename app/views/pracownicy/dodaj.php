@@ -36,7 +36,7 @@
           <button type="submit" class="col-sm-4 offset-sm-4 btn btn-primary">Dodaj</button>
 
     </div>
-  </div><!-- /row podmiot -->
+  </div>
 
 </form>
 

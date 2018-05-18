@@ -147,6 +147,70 @@
       }
     }
 
+    public function zmien_haslo($id) {
+
+      ///////////////////////////////
+      // TYLKO ZALOGOWANY MOŻE ZMIEŃIĆ SWOJE HASŁO
+      // USTAW SPRAWDZANIE PO STWORZENIU LOGOWANIA
+      // ID Z SESJI NIE Z ADRESU
+      //////////////////////////////
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data = [
+          'title' => 'Zmień hasło',
+          'id' => $id,
+          'hasloS' => trim($_POST['hasloS']),
+          'hasloN1' => trim($_POST['hasloN1']),
+          'hasloN2' => trim($_POST['hasloN2']),
+          'hasloS_err' => '',
+          'hasloN1_err' => '',
+          'hasloN2_err' => '',
+        ];
+
+        $data['hasloS_err'] = $this->sprawdzStareHaslo($data['hasloS'], $id);
+        $data['hasloN1_err'] = $this->sprawdzNoweHaslo($data['hasloN1']);
+        if ($data['hasloN2'] != $data['hasloN1']) {
+          $data['hasloN2_err'] = 'Podane hasła się różnią';
+        }
+
+        if (empty($data['hasloS_err']) && empty($data['hasloN1_err']) && empty($data['hasloN2_err'])) {
+
+          $haslo = password_hash($data['hasloN1'], PASSWORD_DEFAULT);
+          $this->pracownikModel->zmienHaslo($data['id'], $haslo);
+
+          // tymczasowo przekierowanie na zestawienie
+          // docelowo ma być strona główna użytkownika
+          $wiadomosc = "Hasło zmienione pomyślnie.";
+          flash('pracownicy_wiadomosc', $wiadomosc);
+          redirect('pracownicy/zestawienie'); 
+
+        } else {
+          $this->view('pracownicy/zmien_haslo', $data);
+        }
+
+      } else {
+
+        //$pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
+
+        $data = [
+          'title' => 'Zmień hasło',
+          'id' => $id,
+          'hasloS' => '',
+          'hasloN1' => '',
+          'hasloN2' => '',
+          'hasloS_err' => '',
+          'hasloN1_err' => '',
+          'hasloN2_err' => ''
+        ];
+
+        $this->view('pracownicy/zmien_haslo', $data);
+
+      }
+    }
+
+
    public function aktywuj($id) {
 
      $status = 1;
@@ -222,6 +286,32 @@
      return $error;
    }
 
+
+   private function sprawdzStareHaslo($haslo, $id) {
+
+     $error = '';
+
+     if ($haslo == '') {
+       $error = "Musisz podać stare hasło.";
+     } elseif (!$this->pracownikModel->sprawdzHaslo($haslo, $id)) {
+       $error = "Podano nieporawne hasło.";
+     }
+
+     return $error;
+   }
+
+   private function sprawdzNoweHaslo($haslo) {
+
+     $error = '';
+
+     if ($haslo == '') {
+       $error = "Musisz podać nowe hasło.";
+     } elseif (strlen($haslo) < 6) {
+       $error = "Hasło musi mieć przynajmniej 6 znaków.";
+     }
+
+     return $error;
+   }
 
 
   }

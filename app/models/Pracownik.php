@@ -59,6 +59,16 @@
       }
     }
 
+    public function sprawdzHaslo($haslo, $id) {
+
+      $sql = "SELECT haslo FROM pracownicy WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+      $row = $this->db->single();
+
+      return password_verify($haslo, $row->haslo);
+    }
+
     public function czyAktywny($id) {
 
       $sql = "SELECT aktywny FROM pracownicy WHERE id=:id";
