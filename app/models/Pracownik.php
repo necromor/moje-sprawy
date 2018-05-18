@@ -1,14 +1,43 @@
 <?php
+  /*
+   * Model Pracownik obsługuje wszystkie funkcje związane z pracownikami, 
+   * zarówno od strony admina jak i samego pracownika.
+   * Admin ma możliwość:
+   * - dodania nowego pracownika
+   * - edycji istniejącego
+   * - resetu hasła
+   * - zmiany statusu na nieaktywny - USUWANIE nie jest możliwe ze względu
+   * na istniejące sprawy i przypisane pisma do pracownika
+   * Pracownik ma możliwości:
+   * - zmiany hasła
+   * - ustawienia znaku sprawy
+   *
+   * Dodatkowo model obejmuje funkcje związane z logowaniem pracownika
+   * i pobieraniem jego danych na różne sposoby
+   *
+   */
 
   class Pracownik {
 
     private $db;
 
     public function __construct() {
+      /*
+       * Konstruktor klasy - tworzy połączenie z bazą danych
+       */
+
       $this->db = new Database;
     }
 
     public function pobierzPracownikaPoId($id) {
+      /*
+       * Pobiera wszystkie dane o pracowniku na podstawie podanego id.
+       *
+       * Parametry: 
+       *  - id => id szukanego pracownika
+       * Zwraca: 
+       *  - wiersz z bazy zawierający wszystkie dane pracownika
+       */
 
       $sql = "SELECT * FROM pracownicy WHERE id=:id";
       $this->db->query($sql);
@@ -18,6 +47,14 @@
     }
 
     public function pobierzImieNazwisko($id) {
+      /*
+       * Pobiera imię i nazwisko pracownika na podstawie podanego id.
+       *
+       * Parametry: 
+       *  - id => id szukanego pracownika
+       * Zwraca: 
+       *  - string w postaci "IMIĘ NAZWISKO" 
+       */
 
       $sql = "SELECT imie, nazwisko FROM pracownicy WHERE id=:id";
       $this->db->query($sql);
@@ -29,6 +66,14 @@
     }
 
     public function pobierzPracownikow() {
+      /*
+       * Pobiera listę danych aktywnych pracowników posortowaną rosnąco po nazwisku.
+       *
+       * Parametry: 
+       *  - brak 
+       * Zwraca: 
+       *  - set zawierający id, imię, nazwisko aktywnych pracowników 
+       */
 
      $sql = "SELECT id, imie, nazwisko FROM pracownicy WHERE aktywny=1 ORDER BY nazwisko ASC";
      $this->db->query($sql);
@@ -37,6 +82,14 @@
     }
   
     public function pobierzWszystkichPracownikow() {
+      /*
+       * Pobiera listę wszystkich pracowników posortowaną rosnąco po id.
+       *
+       * Parametry: 
+       *  - brak 
+       * Zwraca: 
+       *  - set zawierający wszystkie dane o pracowniku 
+       */
 
      $sql = "SELECT * FROM pracownicy ORDER BY id ASC";
      $this->db->query($sql);
@@ -45,6 +98,18 @@
     }
 
     public function czyIstniejeLogin($login, $id) {
+      /*
+       * Sprawdza czy w bazie danych istnieje już podany login.
+       * W celu uniknięcia błędu podczas edycji ze sprawdzania wyłączony
+       * jest login aktualnie edytowanego pracownika.
+       * Przy dodawaniu nowego pracownika wartość ta ustawiona jest na 0.
+       *
+       * Parametry: 
+       *  - login => login do sprawdzenia 
+       *  - id => id sprawdzanego pracownika
+       * Zwraca: 
+       *  - boolean 
+       */
 
       $sql = "SELECT id FROM pracownicy WHERE login=:login AND id!=:id";
       $this->db->query($sql);
@@ -60,6 +125,16 @@
     }
 
     public function sprawdzHaslo($haslo, $id) {
+      /*
+       * Sprawdza czy podane hasło jest zgodne z tym w bazie danych dla pracownika z id.
+       * Hasła w bazie są kodowane więc użyta do porównania użyta jest funkcja password_verify()
+       *
+       * Parametry: 
+       *  - hasło => hasło do sprawdzenia
+       *  - id => id pracownika dla którego sprawdzamy hasło  
+       * Zwraca: 
+       *  - boolean 
+       */
 
       $sql = "SELECT haslo FROM pracownicy WHERE id=:id";
       $this->db->query($sql);
@@ -70,6 +145,14 @@
     }
 
     public function czyAktywny($id) {
+      /*
+       * Sprawdza czy pracownik z danym id ma status aktywny.
+       *
+       * Parametry: 
+       *  - id => id pracownika dla którego sprawdzamy status  
+       * Zwraca: 
+       *  - boolean 
+       */
 
       $sql = "SELECT aktywny FROM pracownicy WHERE id=:id";
       $this->db->query($sql);
@@ -84,6 +167,17 @@
     }
 
     public function dodajPracownika($data) {
+      /*
+       * Dodaje nowego pracownika do bazy danych.
+       * Nowy pracownik jest zawsze ustawiony jako aktywny.
+       * Jego hasło (ustawione w kontrolerze) jest zakodowanym loginem.
+       * Data zminy hasła ustawiana jest na datę dodania pracownika.
+       *
+       * Parametry: 
+       *  - data => tablica zawierająca dane nowego pracownika  
+       * Zwraca: 
+       *  - boolean 
+       */
 
       // wartości stałe
       $aktywny = 1; // nowozarejestrowany jest aktywny
@@ -107,6 +201,17 @@
     }
 
     public function edytujPracownika($data) {
+      /*
+       * Zmienia dane istniejącego pracownika.
+       * W danych wejściowych podane jest id pracownika do zmiany.
+       * W celu ułatwienia funkcja nie sprawdza które dane są faktycznie nowe
+       * ale wstawia wszystkie pochodzące z formularza.
+       *
+       * Parametry: 
+       *  - data => tablica zawierająca dane istniejącego pracownika  
+       * Zwraca: 
+       *  - boolean 
+       */
 
       $sql = "UPDATE pracownicy SET imie=:imie, nazwisko=:nazwisko, login=:login, poziom=:poziom WHERE id=:id";
       $this->db->query($sql);
@@ -124,6 +229,15 @@
     }
 
     public function zmienStatus($id, $status) {
+      /*
+       * Zmienia status pracownika o podanym id.
+       *
+       * Parametry: 
+       *  - id => id pracownika
+       *  - status => nowy status 
+       * Zwraca: 
+       *  - boolean 
+       */
 
       $sql = "UPDATE pracownicy SET aktywny=:status WHERE id=:id";
       $this->db->query($sql);
@@ -138,11 +252,23 @@
     }
 
     public function zmienHaslo($id, $haslo) {
+      /*
+       * Zmienia hasło pracownika o podanym id.
+       * W momencie zmiany hasła ustawiana jest data zmiany.
+       *
+       * Parametry: 
+       *  - id => id pracownika
+       *  - status => nowe hasło 
+       * Zwraca: 
+       *  - boolean 
+       */
+      $zmiana_hasla = Date("Y-m-d H:i:s");
 
-      $sql = "UPDATE pracownicy SET haslo=:haslo WHERE id=:id";
+      $sql = "UPDATE pracownicy SET haslo=:haslo, zmiana_hasla=:zmiana_hasla WHERE id=:id";
       $this->db->query($sql);
       $this->db->bind(':haslo', $haslo);
       $this->db->bind(':id', $id);
+      $this->db->bind(':zmiana_hasla', $zmiana_hasla);
 
       if ($this->db->execute()) {
         return true;
