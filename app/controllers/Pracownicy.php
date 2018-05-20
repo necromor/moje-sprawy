@@ -1,7 +1,17 @@
 <?php
+  /*
+   *  Kontroler Pracownicy odpowiedzialny jest za obsługę modelu Pracownik z widokami.
+   *  Nazwy metod jak w każdym kontrolerze odpowiadają częściom adresu url (co wynika
+   *  ze specifiki TraversyMVC)
+   *
+   */
 
   class Pracownicy extends Controller {
 
+    // zmienna określająca poziomy dostępu pracownika
+    // sekretariat - dostęp do wszystkich opcji za wyjątkiem tych zarezerwoanych dla admina
+    // księgowość - brak dostępu do rejestracji i edycji przychodzących
+    // zwykły - brak dostępu do rejestracji i edycji przychodzących oraz zestawienia faktur
     private $POZIOMY = [
       0 => 'sekretariat',
       1 => 'księgowość',
@@ -9,12 +19,20 @@
     ];
 
     public function __construct() {
+      /*
+       * Konstruktor klasy - tworzy połączenie z modelami 
+       */
 
       $this->pracownikModel = $this->model('Pracownik');
     }
 
 
     public function zestawienie() {
+      /*
+       * Tworzy zestaw obiektów Pracownik z podmianą aktywności oraz poziomu na wiadomość tekstową
+       *
+       * Obsługuje widok: pracownicy/zestawienie
+       */
 
       $pracownicy = $this->pracownikModel->pobierzWszystkichPracownikow();
 
@@ -37,6 +55,25 @@
     }
 
     public function dodaj() {
+      /* 
+       * Obsługuje proces dodawania nowego pracownika.
+       * Działa w dwóch trybach: wyświetlanie formularza, obsługa formularza.
+       * Tryb wybierany jest w zależności od metody dostępu do strony: POST czy GET.
+       * POST oznacza, że formularz został wysłany, każda inna forma dostępu powoduje
+       * wyświetlenie formularza.
+       *
+       * Tryb wyświetlania formularza może mieć dwa stany:
+       * czysty - gdy wyświetlany jest formularz po raz pierwszy
+       * brudny - gdy wyświetlany jest formularz z błędami
+       * Tryb czysty zawiera puste dane, tryb brudny przechowuje dane przesłane przez
+       * użytkownika i umieszcza je w stosownych polach formularza
+       *
+       * Tryb obsługi odpowiada za sprawdzenie wprowadzonych danych (szczegóły w
+       * indywidualnych funkcjach sprawdzających) i w zależności od tego czy są błędy
+       * wywołuje metodę modelu dodawania pracownika lub wyświetla brudny formularz.
+       *
+       * Obsługuje widok: pracownicy/dodaj
+       */
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -64,15 +101,19 @@
 
           $this->pracownikModel->dodajPracownika($data);
 
+          // twórz wiadomość do wyświetlenia po przekierowaniu
           $wiadomosc = "Pracownik <strong>" . $data['imie'] . " " . $data['nazwisko'] . " [" . $data['login'] . "]</strong> został dodany pomyślnie.";
           flash('pracownicy_wiadomosc', $wiadomosc);
           redirect('pracownicy/zestawienie'); 
 
         } else {
+          // brudny
+
           $this->view('pracownicy/dodaj', $data);
         }
 
       } else {
+        // czysty
 
         $data = [
           'title' => 'Dodaj pracownika',
@@ -87,11 +128,20 @@
         ];
 
         $this->view('pracownicy/dodaj', $data);
-
       }
     }
 
     public function edytuj($id) {
+      /* 
+       * Obsługuje proces edycji istniejącego pracownika.
+       * Sposób działania jest identyczy jak funkcji dodaj() z niewielką różnicą
+       * w trybie czystym - do pól formularza wprowadzane są dane edytowanego pracownika.
+       *
+       * Obsługuje widok: pracownicy/edytuj/id
+       *
+       * Parametry:
+       *  - id => id edytowanego pracownika
+       */
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -122,10 +172,13 @@
           redirect('pracownicy/zestawienie'); 
 
         } else {
+          // brudny
+
           $this->view('pracownicy/edytuj', $data);
         }
 
       } else {
+        // czysty
 
         $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
 
@@ -143,11 +196,22 @@
         ];
 
         $this->view('pracownicy/edytuj', $data);
-
       }
     }
 
     public function zmien_haslo($id) {
+      /* 
+       * Obsługuje proces zmiany hasła pracownika.
+       * Sposób działania jest identyczy jak funkcji dodaj().
+       *
+       * Proces zmiany hasła odbywa się w następujący sposób:
+       * 1) sprawdzenie czy hasło użytkownika jest zgodne z tym podanym
+       * 2) sprawdzenie czy podane nowe hasła są zgodne
+       * 3) zmiana hasła
+       * 4) przekierowanie na stronę główną
+       *
+       * Obsługuje widok: pracownicy/zmien_haslo
+       */
 
       ///////////////////////////////
       // TYLKO ZALOGOWANY MOŻE ZMIEŃIĆ SWOJE HASŁO
@@ -187,12 +251,13 @@
           redirect('pracownicy/zestawienie'); 
 
         } else {
+          // brudny
+
           $this->view('pracownicy/zmien_haslo', $data);
         }
 
       } else {
-
-        //$pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
+        // czysty
 
         $data = [
           'title' => 'Zmień hasło',
@@ -206,12 +271,22 @@
         ];
 
         $this->view('pracownicy/zmien_haslo', $data);
-
       }
     }
 
 
    public function aktywuj($id) {
+      /* 
+       * Obsługuje proces zmiany statusu pracownika.
+       * Po sprawdzeniu czy pracownik jest aktywny ustawiany jest przeciwny status
+       * i wywoływana metoda zmiany statusu.
+       *
+       * Funkcja nie obsługuje widoku.
+       * Funkcja dostępna jedynie dla admina.
+       *
+       * Parametry:
+       *  - id => id pracownika
+       */
 
      $status = 1;
      $tekst = "aktywny";
@@ -228,6 +303,18 @@
    }
 
    public function resetuj($id) {
+      /* 
+       * Obsługuje proces resetu hasła pracownika.
+       * Resetowanie hasła polega na ustawieniu hasła o wartości równej loginowi pracownika
+       * podobnie jak przy dodawaniu.
+       * Proces jest nieodwracalny i wymusza ustawienie nowego hasła przez pracownika.
+       *
+       * Funkcja nie obsługuje widoku.
+       * Funkcja dostępna jedynie dla admina.
+       *
+       * Parametry:
+       *  - id => id pracownika
+       */
 
      $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
      $haslo = password_hash($pracownik->login, PASSWORD_DEFAULT);
@@ -246,6 +333,17 @@
     */
 
    private function sprawdzImie($tekst) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego imienia do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - imię musi mieć przynajmniej 2 znaki
+      *
+      *  Parametry:
+      *   - tekst => wprowadzone imię
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      */
 
      $error = '';
 
@@ -259,6 +357,17 @@
    }
 
    private function sprawdzNazwisko($tekst) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego nazwiska do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - nazwisko musi mieć przynajmniej 2 znaki
+      *
+      *  Parametry:
+      *   - tekst => wprowadzone nazwisko
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      */
 
      $error = '';
 
@@ -272,6 +381,18 @@
    }
 
    private function sprawdzLogin($tekst, $id=0) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego loginu do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - login musi mieć przynajmniej 2 znaki
+      *  - login musi być unikatowy
+      *
+      *  Parametry:
+      *   - tekst => wprowadzony login
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      */
 
      $error = '';
 
@@ -288,6 +409,17 @@
 
 
    private function sprawdzStareHaslo($haslo, $id) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego hasła do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - hasło musi być zgodne z tym w bazie danych
+      *
+      *  Parametry:
+      *   - tekst => wprowadzone hasło
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      */
 
      $error = '';
 
@@ -301,6 +433,17 @@
    }
 
    private function sprawdzNoweHaslo($haslo) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego nowego hasła do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - hasło musi mieć przynajmniej 6 znaków
+      *
+      *  Parametry:
+      *   - tekst => wprowadzone hasło
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      */
 
      $error = '';
 
