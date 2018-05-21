@@ -141,17 +141,39 @@
     }
 
 
-   public function zestawienie() {
+    public function zestawienie() {
 
-     $podmioty = $this->podmiotModel->pobierzPodmioty();
+      $podmioty = $this->podmiotModel->pobierzPodmioty();
 
-     $data = [
-       'title' => 'Zestawienie podmiotów',
-       'podmioty' => $podmioty
-     ];
+      $data = [
+        'title' => 'Zestawienie podmiotów',
+        'podmioty' => $podmioty
+      ];
 
-     $this->view('podmioty/zestawienie', $data); 
-   }
+      $this->view('podmioty/zestawienie', $data); 
+    }
+
+    public function ajax_podmiot($id) {
+      /*
+       * Pobiera dane podmiotu i drukuje je w postaci json.
+       * Zastosowanie do zapytania ajax.
+       * Jeżeli podmiot nie istnieje w miejsu id wstawiona zostaje wartość -1
+       *
+       * Funkcja nie obsługuje widoku.
+       *
+       * Parametry: 
+       *  - id => id pobieranego podmiotu
+       * Zwraca:
+       *  - echo json postaci: { id:, nazwa:, adres_1:, adres_2: }
+       */
+
+       $podmiot = $this->podmiotModel->pobierzDanePodmiotu($id);
+       if ($podmiot) {
+         echo json_encode($podmiot);
+       } else {
+         echo '{"id":"-1"}'; 
+       }
+    }
 
 
   }
