@@ -1,14 +1,68 @@
 <?php
+  /*
+   *  Kontroler Podmioty odpowiedzialny jest za obsługę modelu Podmiot z widokami.
+   *  Nazwy metod jak w każdym kontrolerze odpowiadają częściom adresu url (co wynika
+   *  ze specifiki TraversyMVC)
+   *
+   */
 
   class Podmioty extends Controller {
 
     public function __construct() {
-
+      /*
+       * Konstruktor klasy - tworzy połączenie z modelami 
+       */
 
       $this->podmiotModel = $this->model('Podmiot');
     }
 
+    public function zestawienie() {
+      /*
+       * Tworzy zestaw obiektów Podmiot 
+       *
+       * Obsługuje widok: podmioty/zestawienie
+       */
+
+      $podmioty = $this->podmiotModel->pobierzPodmioty();
+
+      $data = [
+        'title' => 'Zestawienie podmiotów',
+        'podmioty' => $podmioty
+      ];
+
+      $this->view('podmioty/zestawienie', $data); 
+    }
+
     public function dodaj() {
+      /* 
+       * Obsługuje proces dodawania nowego podmiotu.
+       * Działa w dwóch trybach: wyświetlanie formularza, obsługa formularza.
+       * Tryb wybierany jest w zależności od metody dostępu do strony: 
+       * POST czy GET.
+       * POST oznacza, że formularz został wysłany, 
+       * każda inna forma dostępu powoduje wyświetlenie formularza.
+       *
+       * Tryb wyświetlania formularza może mieć dwa stany:
+       * czysty - gdy wyświetlany jest formularz po raz pierwszy
+       * brudny - gdy wyświetlany jest formularz z błędami
+       * Tryb czysty zawiera puste dane, tryb brudny przechowuje dane przesłane przez
+       * użytkownika i umieszcza je w stosownych polach formularza
+       *
+       * Tryb obsługi odpowiada za sprawdzenie wprowadzonych danych 
+       * i w zależności od tego czy są błędy wywołuje metodę modelu dodawania 
+       * podmiotu lub wyświetla brudny formularz.
+       * Sprawdzanie poprawności wprowadzonych danych polega jedynie
+       * na sprawdzeniu czy pola nie są puste.
+       * Teoretycznie należało by jeszcze sprawdzić długość wprowadzonych
+       * ciągów, ale z uwagi na fakt, że minimalna wartość była by niewielka
+       * 2 lub 3 znaki to różnicy nie ma dużej między 1 a 3.
+       * Podmioty zagraniczne mają inne kody pocztowe więc i tu zbyt
+       * restrykcyjne reguły mogłyby prowadzić do frustracji.
+       *
+       * Obsługuje widok: podmioty/dodaj
+       * Widok ten nie powinien być wykorzystywany w zwykłej pracy.
+       * Dodawanie odbywa się w momencie rejestracji korespondencji.
+       */
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -24,7 +78,7 @@
           'poczta_podmiotu_err' => ''
         ];
 
-        // tymczasowa walidacja
+        // sprawdzenie poprawności danych
         if (empty($data['nazwa_podmiotu'])) {
           $data['nazwa_podmiotu_err'] = 'Nazwa nie może pozostać pusta';
         }
@@ -37,7 +91,6 @@
           $data['poczta_podmiotu_err'] = 'Kod pocztwoy i poczta nie może pozostać puste';
         }
 
-
         // Dodaj do bazy danych tylko gdy nie ma błędów przypisanych do 
         // któregokolwiek pola
         if (empty($data['nazwa_podmiotu_err']) && empty($data['adres_podmiotu_err']) && empty($data['poczta_podmiotu_err'])) {
@@ -45,17 +98,16 @@
           // Pomyślna walidacja - dodaj do bazy danych
           $this->podmiotModel->dodajPodmiot($data);
 
-          // tymczasowo
           redirect('podmioty/zestawienie');
 
         } else {
-
-          // Wyświetl powtórnie formularz z podanymi danymi i błędami
+          // brudny
           $this->view('podmioty/dodaj', $data);
         }
 
 
       } else {
+        // czysty
 
         $data = [
           'title' => 'Dodaj podmiot',
@@ -73,6 +125,16 @@
     }
 
     public function edytuj($id) {
+      /* 
+       * Obsługuje proces edycji istniejącego podmiotu.
+       * Sposób działania jest identyczy jak funkcji dodaj() z niewielką różnicą
+       * w trybie czystym - do pól formularza wprowadzane są dane edytowanego podmiotu.
+       *
+       * Obsługuje widok: podmioty/edytuj/id
+       *
+       * Parametry:
+       *  - id => id edytowanego podmiotu
+       */
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -89,7 +151,7 @@
           'id' => $id
         ];
 
-        // tymczasowa walidacja
+        // sprawdzenie poprawności danych
         if (empty($data['nazwa_podmiotu'])) {
           $data['nazwa_podmiotu_err'] = 'Nazwa nie może pozostać pusta';
         }
@@ -110,17 +172,17 @@
           // Pomyślna walidacja - dodaj do bazy danych
           $this->podmiotModel->edytujPodmiot($data);
 
-          // tymczasowo
           redirect('podmioty/zestawienie');
 
         } else {
+          // brudny
 
-          // Wyświetl powtórnie formularz z podanymi danymi i błędami
           $this->view('podmioty/edytuj/'.$id, $data);
         }
 
 
       } else {
+        // czysty
 
         $podmiot = $this->podmiotModel->pobierzDanePodmiotu($id);
 
@@ -137,21 +199,9 @@
 
         $this->view('podmioty/edytuj', $data);
       }
-
     }
 
 
-    public function zestawienie() {
-
-      $podmioty = $this->podmiotModel->pobierzPodmioty();
-
-      $data = [
-        'title' => 'Zestawienie podmiotów',
-        'podmioty' => $podmioty
-      ];
-
-      $this->view('podmioty/zestawienie', $data); 
-    }
 
     public function ajax_podmiot($id) {
       /*
