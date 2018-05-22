@@ -1,10 +1,16 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
-<form action="<?php echo URLROOT; ?>/pracownicy/zmien_haslo/<?php echo $data['id']; ?>" method="post">
+<form action="<?php echo URLROOT; ?>/pracownicy/zmien_haslo" method="post">
   <div class="row mb-3">
     <div class="col-md-8 mx-auto py-3">
 
          <h1><?php echo $data['title'] ?></h1>
+
+          <div class="row">
+            <div class="col-md-8 mx-auto">
+            <?php echo flash('pracownicy_zmiana_hasla'); ?>
+            </div>
+          </div>
 
           <div class="form-group row">
             <label for="hasloS" class="col-sm-4 col-form-label">Stare hasło:</label>

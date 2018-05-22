@@ -95,7 +95,7 @@
         $data['login_err'] = $this->sprawdzLogin($data['login']);
 
         if (empty($data['imie_err']) && empty($data['nazwisko_err']) && empty($data['login_err'])) {
- 
+
           //dodaj podstawowe hasło pracownika jako zakodowany login
           $data['haslo'] = password_hash($data['login'], PASSWORD_DEFAULT);
 
@@ -199,8 +199,89 @@
       }
     }
 
-    public function zmien_haslo($id) {
-      /* 
+    public function zaloguj() {
+      /*
+       * Obsługuje proces logowania się pracownika.
+       * Sposób działania jest identyczy jak funkcji dodaj().
+       *
+       * Logowanie odbywa się w następujący sposób:
+       * 1) sprawdzenie czy w bazie istnieje podany login
+       * 2) sprawdzenie czy podane hasło jest zgodne z tym w bazie danych
+       *    dla danego loginu
+       * 3) przekierowanie na stronę główną
+       *
+       * Obsługuje widok: pracownicy/zaloguj
+       */
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data = [
+          'title' => 'Zaloguj się',
+          'login' => trim($_POST['login']),
+          'haslo' => trim($_POST['haslo']),
+          'imie_err' => '',
+          'login_err' => '',
+          'haslo_err' => ''
+        ];
+
+        $id = $this->pracownikModel->pobierzIdPracownikaPoLoginie($data['login']);
+        $data['login_err'] = $this->sprawdzLoginLogowanie($data['login'], $id);
+
+        if(empty($data['login_err'])) {
+          $data['haslo_err'] = $this->sprawdzHaslo($data['haslo'], $id);
+
+          if(empty($data['haslo_err'])) {
+            // zalogowano pomyślnie więc ustaw id
+            // konieczne bo zmiana hasła z niej korzysta
+            $_SESSION['user_id'] = $id;
+
+            if($this->czyWymaganaZmianaHasla($id)) {
+              $wiadomosc = 'Zalogowano pomyślnie, ale konieczna jest zmiana hasła.';
+              flash('pracownicy_zmiana_hasla', $wiadomosc);
+              redirect('pracownicy/zmien_haslo'); 
+            } else {
+              $this->zalogujPracownika($id);
+            }
+          }
+        }
+
+        // brudny
+        $this->view('pracownicy/zaloguj', $data);
+
+      } else {
+        // czysty
+
+        $data = [
+          'title' => 'Zaloguj się',
+          'login' => '',
+          'haslo' => '',
+          'login_err' => '',
+          'haslo_err' => ''
+        ];
+
+        $this->view('pracownicy/zaloguj', $data);
+      }
+    }
+
+    public function wyloguj() {
+      /*
+       * Obsługuje proces wylogowywania pracownika.
+       * Usuwa zmienne sesji i kończy sesję.
+       *
+       * Nie obsługuje widoku.
+       */
+
+      unset($_SESSION['user_id']);
+      unset($_SESSION['imie_nazwisko']);
+      session_destroy();
+
+      redirect('pracownicy/zaloguj');
+    }
+
+
+    public function zmien_haslo() {
+      /*
        * Obsługuje proces zmiany hasła pracownika.
        * Sposób działania jest identyczy jak funkcji dodaj().
        *
@@ -213,11 +294,7 @@
        * Obsługuje widok: pracownicy/zmien_haslo
        */
 
-      ///////////////////////////////
-      // TYLKO ZALOGOWANY MOŻE ZMIEŃIĆ SWOJE HASŁO
-      // USTAW SPRAWDZANIE PO STWORZENIU LOGOWANIA
-      // ID Z SESJI NIE Z ADRESU
-      //////////////////////////////
+      $id = $_SESSION['user_id'];
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -233,8 +310,8 @@
           'hasloN2_err' => '',
         ];
 
-        $data['hasloS_err'] = $this->sprawdzStareHaslo($data['hasloS'], $id);
-        $data['hasloN1_err'] = $this->sprawdzNoweHaslo($data['hasloN1']);
+        $data['hasloS_err'] = $this->sprawdzHaslo($data['hasloS'], $id);
+        $data['hasloN1_err'] = $this->sprawdzNoweHaslo($data['hasloN1'], $data['hasloS']);
         if ($data['hasloN2'] != $data['hasloN1']) {
           $data['hasloN2_err'] = 'Podane hasła się różnią';
         }
@@ -242,13 +319,9 @@
         if (empty($data['hasloS_err']) && empty($data['hasloN1_err']) && empty($data['hasloN2_err'])) {
 
           $haslo = password_hash($data['hasloN1'], PASSWORD_DEFAULT);
-          $this->pracownikModel->zmienHaslo($data['id'], $haslo);
+          $this->pracownikModel->zmienHaslo($id, $haslo);
 
-          // tymczasowo przekierowanie na zestawienie
-          // docelowo ma być strona główna użytkownika
-          $wiadomosc = "Hasło zmienione pomyślnie.";
-          flash('pracownicy_wiadomosc', $wiadomosc);
-          redirect('pracownicy/zestawienie'); 
+          $this->zalogujPracownika($id);
 
         } else {
           // brudny
@@ -325,12 +398,73 @@
      redirect('pracownicy/zestawienie'); 
    }
 
+   private function zalogujPracownika($id) {
+     /*
+      * Funkcja pomocnicza - ustawia dane sesji.
+      * $_SESSION['id'] jest ustawione wcześniej.
+      *
+      * Parametry:
+      *  - id => id pracownika do zalogowania
+      * Zwraca:
+      *  - brak
+      */
 
-
+      $_SESSION['imie_nazwisko'] = $this->pracownikModel->pobierzImieNazwisko($id);
+      redirect('pages'); 
+   }
 
    /*
     * FUNKCJE SPRAWDZAJĄCE
     */
+
+   private function czyWymaganaZmianaHasla($id) {
+     /*
+      * Funkcja pomocnicza - sprawdza czy wymagana jest zmiana hasła.
+      * Zmiana wymagana jest w dwóch przypadkach:
+      * 1) hasło jest domyślne czyli login
+      * 2) przekroczona została data zmiany hasła o sprecyzowaną liczbę dni
+      *
+      * Parametry:
+      *  - id => id pracownika
+      * Zwraca:
+      *  - boolean - true jeżeli wymagana jest zmiana
+      */
+
+     $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
+
+     if (password_verify($pracownik->login, $pracownik->haslo)){
+       return true;
+     }
+
+     return $this->czyUplynelaWaznoscHasla($pracownik->zmiana_hasla);
+   }
+
+   private function czyUplynelaWaznoscHasla($zmiana) {
+     /*
+      * Funkcja pomocnicza - sprawdza czy dla podanej dany upłynęło już X dni.
+      * Liczba dni ważności hasła pobierana jest z bazy danych.
+      *
+      * Parametry:
+      *  - zmiana => data ostatniej zmiany hasła
+      * Zwraca:
+      *  - boolean => true jeżeli liczba dni przekroczyła limit
+      */
+
+      // tymczasowo - docelowo z bazy danych
+      $limit = 60;
+      //$teraz = time();
+      //$oz = strtotime($zmiana);
+      //$roznica = $teraz - $oz;
+
+      //return (round($roznica / (60*60*24)) > $limit);
+      //
+      // php 5.3 +
+      $teraz = new DateTime();
+      $oz = new DateTime($zmiana);
+      $roznica = $oz->diff($teraz);
+
+      return ($roznica->d > $limit);
+   }
 
    private function sprawdzImie($tekst) {
      /*
@@ -407,8 +541,31 @@
      return $error;
    }
 
+   private function sprawdzLoginLogowanie($login, $id) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego loginu do formularza logowania.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - login musi istnieć w bazie danych
+      *
+      *  Parametry:
+      *   - login => wprowadzony login
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      */
 
-   private function sprawdzStareHaslo($haslo, $id) {
+     $error = '';
+
+     if ($login == '') {
+       $error = "Proszę podać login.";
+     } elseif ($id == -1) {
+       $error = "Podany login jest nieprawidłowy.";
+     }
+
+     return $error;
+   }
+
+   private function sprawdzHaslo($haslo, $id) {
      /*
       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego hasła do formularza.
       * Zasady:
@@ -424,7 +581,7 @@
      $error = '';
 
      if ($haslo == '') {
-       $error = "Musisz podać stare hasło.";
+       $error = "Musisz podać hasło.";
      } elseif (!$this->pracownikModel->sprawdzHaslo($haslo, $id)) {
        $error = "Podano nieporawne hasło.";
      }
@@ -432,12 +589,13 @@
      return $error;
    }
 
-   private function sprawdzNoweHaslo($haslo) {
+   private function sprawdzNoweHaslo($haslo, $stare) {
      /*
       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego nowego hasła do formularza.
       * Zasady:
       *  - pole nie może być puste
       *  - hasło musi mieć przynajmniej 6 znaków
+      *  - nowe hasło nie może być takie samo jak stare
       *
       *  Parametry:
       *   - tekst => wprowadzone hasło
@@ -451,6 +609,8 @@
        $error = "Musisz podać nowe hasło.";
      } elseif (strlen($haslo) < 6) {
        $error = "Hasło musi mieć przynajmniej 6 znaków.";
+     } elseif ($haslo == $stare) {
+       $error = "Nowe hasło nie może być inne niż obecne.";
      }
 
      return $error;

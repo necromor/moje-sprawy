@@ -46,6 +46,29 @@
       return $this->db->single();
     }
 
+    public function pobierzIdPracownikaPoLoginie($login) {
+      /*
+       * Pobiera id pracownika na podstawie podanego loginu.
+       * Zwraca -1 jeżeli podany login nie istnieje w bazie danych.
+       *
+       * Parametry: 
+       *  - login => login szukanego pracownika
+       * Zwraca: 
+       *  - int => id pracownika lub -1 gdy nie istnieje
+       */
+
+      $sql = "SELECT id FROM pracownicy WHERE login=:login";
+      $this->db->query($sql);
+      $this->db->bind(':login', $login);
+
+      $row = $this->db->single();
+      if ($this->db->rowCount() == 0) {
+        return -1;
+      } else {
+        return $row->id;
+      }
+    }
+
     public function pobierzImieNazwisko($id) {
       /*
        * Pobiera imię i nazwisko pracownika na podstawie podanego id.
