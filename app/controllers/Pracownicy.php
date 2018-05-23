@@ -35,6 +35,10 @@
        * Obsługuje widok: pracownicy/zestawienie
        */
 
+      // tylko admin
+      czyZalogowany();
+      czyZalogowanyAdmin();
+
       $pracownicy = $this->pracownikModel->pobierzWszystkichPracownikow();
 
       // podmiana poziomów i aktywności na tekst
@@ -75,6 +79,10 @@
        *
        * Obsługuje widok: pracownicy/dodaj
        */
+
+      // tylko admin
+      czyZalogowany();
+      czyZalogowanyAdmin();
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -143,6 +151,10 @@
        * Parametry:
        *  - id => id edytowanego pracownika
        */
+
+      // tylko admin
+      czyZalogowany();
+      czyZalogowanyAdmin();
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -298,6 +310,9 @@
        * Obsługuje widok: pracownicy/zmien_haslo
        */
 
+      // musi być zalogowany 
+      czyZalogowany();
+
       $id = $_SESSION['user_id'];
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -369,13 +384,17 @@
        *  - id => id pracownika
        */
 
+      // tylko admin
+      czyZalogowany();
+      czyZalogowanyAdmin();
+
      $status = 1;
      $tekst = "aktywny";
 
      if ($this->pracownikModel->czyAktywny($id)) {
        $status = 0;
        $tekst = "nieaktywny";
-     } 
+     }
 
      $this->pracownikModel->zmienStatus($id, $status);
      $wiadomosc = "Status pracownika został zmieniony pomyślnie na <strong>$tekst</strong>.";
@@ -396,6 +415,10 @@
        * Parametry:
        *  - id => id pracownika
        */
+
+      // tylko admin
+      czyZalogowany();
+      czyZalogowanyAdmin();
 
      $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
      $haslo = password_hash($pracownik->login, PASSWORD_DEFAULT);

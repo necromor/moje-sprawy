@@ -11,8 +11,11 @@
 
     public function zestawienie($rok) {
 
+      // tylko zalogowany pracownik każdego poziomu
+      czyZalogowany();
+
       // sprawdź czy nastąpiła zmiana roku
-      // jeżeli tak to przekieruj 
+      // jeżeli tak to przekieruj
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
         redirect('przychodzace/zestawienie/' . $_POST['rok']);
@@ -25,7 +28,7 @@
         if($pismo->id_pracownik != 0) {
           $pismo->id_pracownik = $this->pracownikModel->pobierzImieNazwisko($pismo->id_pracownik);
         }
-      } 
+      }
 
       $data = [
         'title' => 'Zestawienie korespondencji przychodzącej',
@@ -38,13 +41,17 @@
 
     public function faktury($rok, $id=0) {
 
+      // tylko zalogownay sekretariat lub księgowość
+      czyZalogowany();
+      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 1);
+
       // sprawdź czy nastąpiła zmiana roku
       // jeżeli tak to przekieruj 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
         // sprawdź czy przesłany został wykonawca
         if (isset($_POST['wystawca']) && trim($_POST['wystawca']) != '') {
-  
+
           $idp = pobierzIdNazwy($_POST['wystawca']);
           redirect('przychodzace/faktury/' . $_POST['rok'] . '/' . $idp);
         } else {
@@ -87,6 +94,10 @@
 
 
    public function dodaj() {
+
+      // tylko zalogowany sekretariat
+      czyZalogowany();
+      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
 
       $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
       $listaPracownikow = $this->pracownikModel->pobierzPracownikow();
@@ -216,6 +227,10 @@
 
    public function edytuj($id) {
 
+     // tylko zalogownay sekretariat
+     czyZalogowany();
+     czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
+
       $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
       $listaPracownikow = $this->pracownikModel->pobierzPracownikow();
 
@@ -233,7 +248,6 @@
           $adres = trim($_POST['adresPodmiotu']);
           $poczta = trim($_POST['pocztaPodmiotu']);
         }
-        
 
         $data = [
           'title' => 'Zmień dane korespondencji przychodzącej',
@@ -343,7 +357,7 @@
           'dekretacja_err' => '',
           'kwota_err' => ''
         ];
- 
+
         $this->view('przychodzace/edytuj', $data);
       }
    }
@@ -366,10 +380,8 @@
        // zwróć pusty obiekt
        $podmiot = (object) ['nazwa' => '', 'adres_1' => '', 'adres_2' => ''];
      }
-    
      return $podmiot;
    }
-   
 
    /*
     * FUNKCJE SPRAWDZAJĄCE

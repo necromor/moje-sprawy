@@ -88,6 +88,25 @@
       return $row->imie . ' ' . $row->nazwisko;
     }
 
+    public function pobierzPoziomDostepu($id) {
+      /*
+       * Pobiera poziom dostępu pracownika na podstawie podanego id.
+       *
+       * Parametry:
+       *  - id => id szukanego pracownika
+       * Zwraca:
+       *  - int => poziom dostępu pracownika
+       */
+
+      $sql = "SELECT poziom FROM pracownicy WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+
+      return $row->poziom;
+    }
+
     public function pobierzPracownikow() {
       /*
        * Pobiera listę danych aktywnych pracowników posortowaną rosnąco po nazwisku.

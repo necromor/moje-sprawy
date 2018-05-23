@@ -14,6 +14,7 @@
        */
 
       $this->podmiotModel = $this->model('Podmiot');
+      $this->pracownikModel = $this->model('Pracownik');
     }
 
     public function zestawienie() {
@@ -22,6 +23,10 @@
        *
        * Obsługuje widok: podmioty/zestawienie
        */
+
+      // tylko zalogowany sekretariat
+      czyZalogowany();
+      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
 
       $podmioty = $this->podmiotModel->pobierzPodmioty();
 
@@ -34,7 +39,7 @@
     }
 
     public function dodaj() {
-      /* 
+      /*
        * Obsługuje proces dodawania nowego podmiotu.
        * Działa w dwóch trybach: wyświetlanie formularza, obsługa formularza.
        * Tryb wybierany jest w zależności od metody dostępu do strony: 
@@ -63,6 +68,10 @@
        * Widok ten nie powinien być wykorzystywany w zwykłej pracy.
        * Dodawanie odbywa się w momencie rejestracji korespondencji.
        */
+
+      // tylko zalogowany sekretariat
+      czyZalogowany();
+      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -135,6 +144,10 @@
        * Parametry:
        *  - id => id edytowanego podmiotu
        */
+
+      // tylko zalogowany sekretariat
+      czyZalogowany();
+      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
