@@ -24,6 +24,7 @@
        */
 
       $this->pracownikModel = $this->model('Pracownik');
+      $this->adminModel = $this->model('Admin');
     }
 
 
@@ -220,10 +221,13 @@
           'title' => 'Zaloguj się',
           'login' => trim($_POST['login']),
           'haslo' => trim($_POST['haslo']),
-          'imie_err' => '',
           'login_err' => '',
           'haslo_err' => ''
         ];
+
+        if ($data['login'] == 'admin') {
+          $this->logowanieAdmina($data);
+        }
 
         $id = $this->pracownikModel->pobierzIdPracownikaPoLoginie($data['login']);
         $data['login_err'] = $this->sprawdzLoginLogowanie($data['login'], $id);
@@ -310,25 +314,29 @@
           'hasloN2_err' => '',
         ];
 
-        $data['hasloS_err'] = $this->sprawdzHaslo($data['hasloS'], $id);
-        $data['hasloN1_err'] = $this->sprawdzNoweHaslo($data['hasloN1'], $data['hasloS']);
-        if ($data['hasloN2'] != $data['hasloN1']) {
-          $data['hasloN2_err'] = 'Podane hasła się różnią';
-        }
-
-        if (empty($data['hasloS_err']) && empty($data['hasloN1_err']) && empty($data['hasloN2_err'])) {
-
-          $haslo = password_hash($data['hasloN1'], PASSWORD_DEFAULT);
-          $this->pracownikModel->zmienHaslo($id, $haslo);
-
-          $this->zalogujPracownika($id);
-
+        if ($id == '0') {
+          $this->zmienHasloAdmina($data);
         } else {
-          // brudny
 
-          $this->view('pracownicy/zmien_haslo', $data);
+          $data['hasloS_err'] = $this->sprawdzHaslo($data['hasloS'], $id);
+          $data['hasloN1_err'] = $this->sprawdzNoweHaslo($data['hasloN1'], $data['hasloS']);
+          if ($data['hasloN2'] != $data['hasloN1']) {
+            $data['hasloN2_err'] = 'Podane hasła się różnią';
+          }
+
+          if (empty($data['hasloS_err']) && empty($data['hasloN1_err']) && empty($data['hasloN2_err'])) {
+
+            $haslo = password_hash($data['hasloN1'], PASSWORD_DEFAULT);
+            $this->pracownikModel->zmienHaslo($id, $haslo);
+
+            $this->zalogujPracownika($id);
+
+          } else {
+            // brudny
+
+            $this->view('pracownicy/zmien_haslo', $data);
+          }
         }
-
       } else {
         // czysty
 
@@ -412,6 +420,154 @@
       $_SESSION['imie_nazwisko'] = $this->pracownikModel->pobierzImieNazwisko($id);
       redirect('pages'); 
    }
+
+
+
+   /*
+    * FUNKCJE DOTYCZĄCE ADMINA
+    */
+
+    public function dodaj_admin() {
+      /* 
+       * Obsługuje proces dodawania admina do systemu.
+       * Zasada działania jak w funkcji dodaj.
+       *
+       * Proces dodawania admina sprowadza się do podania hasła
+       * i jego powtórzenia.
+       * Login ustawiony jest automatycznie jako 'admin'.
+       * Admin posiada osobną tabelę w bazie danych i osobny model Admin.
+       *
+       * Obsługuje widok: pracownicy/dodaj_admin
+       */
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data = [
+          'title' => 'Utwórz konto admina',
+          'istnieje' => false,
+          'haslo1' => trim($_POST['haslo1']),
+          'haslo2' => $_POST['haslo2'],
+          'haslo1_err' => '',
+          'haslo2_err' => '',
+        ];
+
+        $data['haslo1_err'] = $this->sprawdzHasloAdmin($data['haslo1']);
+        if ($data['haslo1'] != $data['haslo2']) {
+          $data['haslo2_err'] = 'Podane hasła się różnią';
+        }
+
+        if (empty($data['haslo1_err']) && empty($data['haslo2_err'])) {
+
+          $data['haslo1'] = password_hash($data['haslo1'], PASSWORD_DEFAULT);
+
+          $this->adminModel->dodajAdmina($data);
+          $data['istnieje'] = true;
+
+          // twórz wiadomość do wyświetlenia po przekierowaniu
+          $wiadomosc = "Konto admina zostało utworzone";
+          flash('admin_wiadomosc', $wiadomosc);
+          redirect('pracownicy/dodaj_admin'); 
+
+        } else {
+          // brudny
+
+          $this->view('pracownicy/dodaj_admin', $data);
+        }
+
+      } else {
+        // czysty
+
+        $data = [
+          'title' => 'Utwórz konto admina',
+          'istnieje' => $this->adminModel->czyIstniejeAdmin(),
+          'haslo1' => '',
+          'haslo2' => '',
+          'haslo1_err' => '',
+          'haslo2_err' => '',
+        ];
+
+        $this->view('pracownicy/dodaj_admin', $data);
+      }
+    }
+
+    private function logowanieAdmina($data) {
+      /*
+       * Obsługuje logowanie admina.
+       * Polega na sprawdzeniu zgodności hasła -
+       * login jest znany - w systemie jest tylko jeden admin.
+       *
+       * Niewłaściwe hasło powoduje powrót do formularza z komunikatem 
+       * błędu. Pozytywne logowanie ustawia dane sesji i przekierowuje
+       * na stronę ustawień ogólnych.
+       *
+       * Parametry:
+       *  - data => dane z formularza logowania
+       * Zwraca: 
+       *  - brak
+       */
+
+       if ($this->adminModel->czyPoprawneHaslo($data['haslo'])) {
+         $this->zalogujAdmina();
+       } else {
+         // hasło błędne
+         $data['haslo_err'] = "Podano niepoprawne hasło";
+         $this->view('pracownicy/zaloguj', $data);
+       }
+    }
+
+    private function zmienHasloAdmina($data) {
+      /*
+       * Obsługuje zmianę hasła admina.
+       * Stare hasło musi być zgodne z tym w bazie.
+       * Nowe hasła muszą być takie same i różne od istniejącego.
+       *
+       * Błedy powodują powrót do formularza z komunikatem błędu. 
+       * Pozytywne logowanie ustawia dane sesji i przekierowuje
+       * na stronę ustawień ogólnych.
+       *
+       * Parametry:
+       *  - data => dane z formularza zmiany hasła
+       * Zwraca: 
+       *  - brak
+       */
+
+       if (!$this->adminModel->czyPoprawneHaslo($data['hasloS'])) {
+         $data['hasloS_err'] = "Podano niepoprawne hasło";
+       }
+        $data['hasloN1_err'] = $this->sprawdzNoweHaslo($data['hasloN1'], $data['hasloS'], 8);
+        if ($data['hasloN2'] != $data['hasloN1']) {
+          $data['hasloN2_err'] = 'Podane hasła się różnią';
+        }
+
+        if (empty($data['hasloS_err']) && empty($data['hasloN1_err']) && empty($data['hasloN2_err'])) {
+
+          $haslo = password_hash($data['hasloN1'], PASSWORD_DEFAULT);
+          $this->adminModel->zmienHaslo($haslo);
+
+          $this->zalogujAdmina();
+
+        } else {
+          $this->view('pracownicy/zmien_haslo', $data);
+        }
+    }
+
+    private function zalogujAdmina() {
+      /*
+       * Funkcja pomocnicza - ustawia dane sesji.
+       *
+       * Parametry:
+       *  - brak
+       * Zwraca:
+       *  - brak
+       */
+
+        // specjalna wastość dla admina
+        $_SESSION['user_id'] = 0;
+        $_SESSION['imie_nazwisko'] = 'admin';
+        // tymczasowo
+        redirect('pracownicy/zestawienie');
+    }
 
    /*
     * FUNKCJE SPRAWDZAJĄCE
@@ -575,7 +731,7 @@
       *  Parametry:
       *   - tekst => wprowadzone hasło
       *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
      $error = '';
@@ -589,32 +745,57 @@
      return $error;
    }
 
-   private function sprawdzNoweHaslo($haslo, $stare) {
+   private function sprawdzNoweHaslo($haslo, $stare, $dlugosc=6) {
      /*
       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego nowego hasła do formularza.
       * Zasady:
       *  - pole nie może być puste
-      *  - hasło musi mieć przynajmniej 6 znaków
+      *  - hasło musi mieć przynajmniej X znaków
       *  - nowe hasło nie może być takie samo jak stare
       *
       *  Parametry:
       *   - tekst => wprowadzone hasło
       *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
      $error = '';
 
      if ($haslo == '') {
        $error = "Musisz podać nowe hasło.";
-     } elseif (strlen($haslo) < 6) {
-       $error = "Hasło musi mieć przynajmniej 6 znaków.";
+     } elseif (strlen($haslo) < $dlugosc) {
+       $error = "Hasło musi mieć przynajmniej $dlugosc znaków.";
      } elseif ($haslo == $stare) {
-       $error = "Nowe hasło nie może być inne niż obecne.";
+       $error = "Nowe hasło musi być inne niż obecne.";
      }
 
      return $error;
    }
+
+   private function sprawdzHasloAdmin($haslo) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego hasła do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - hasło musi mieć przynajmniej 8 znaków
+      *
+      *  Parametry:
+      *   - tekst => wprowadzone hasło
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
+
+     $error = '';
+
+     if ($haslo == '') {
+       $error = "Musisz podać hasło admina.";
+     } elseif (strlen($haslo) < 8) {
+       $error = "Hasło admina musi mieć długość przynajmniej 8 znaków.";
+     }
+
+     return $error;
+   }
+
 
 
   }
