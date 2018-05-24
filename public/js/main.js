@@ -9,6 +9,9 @@ if ($('#radioPismo').is(':checked')) {
     $('#pismoRow2').hide();
 }
 
+// na dzień dobry ukryj pola grupy
+$('#jrwaGrupa').hide();
+
 // obsługa zmiany opcji pismo czy faktura
 $('input[name=czyFaktura]:radio').on('click', function(e) {
   if (e.target.id == 'radioFaktura') {
@@ -48,6 +51,22 @@ $('input[name=czyNowy]:radio').on('click', function(e) {
     $('#pocztaPodmiotu').val('');
 });
 
+// obsługa zmiany opcji pojedyczny numer / grupa numerów jrwa
+$('input[name=czyGrupa]:radio').on('click', function(e) {
+  if (e.target.id == 'radioGrupa') {
+    // ukryj pola dotyczące pojedynczego numeru
+    $('#jrwaPojedynczy1').hide();
+    $('#jrwaPojedynczy2').hide();
+    // pokaż pole dotyczące faktury
+    $('#jrwaGrupa').show();
+  } else {
+    // ukryj pola dotyczące pojedynczego numeru
+    $('#jrwaPojedynczy1').show();
+    $('#jrwaPojedynczy2').show();
+    // pokaż pole dotyczące faktury
+    $('#jrwaGrupa').hide();
+  }
+});
 
 // potwierdzenie kliknięcia w link resetu
 $('.reset').on('click', function() {
@@ -64,7 +83,7 @@ $('#nazwaPodmiotu').on('change', function() {
     let podzial = nazwa.split("#");
     // nie chcemy string w adresie
     let id = parseInt(podzial[0]);
-  
+
     // wyślij zapytanie ajax
     $.ajax({
       type: 'GET',

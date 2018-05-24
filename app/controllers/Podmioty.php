@@ -19,7 +19,7 @@
 
     public function zestawienie() {
       /*
-       * Tworzy zestaw obiektów Podmiot 
+       * Tworzy zestaw obiektów Podmiot
        *
        * Obsługuje widok: podmioty/zestawienie
        */

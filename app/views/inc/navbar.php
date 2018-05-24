@@ -9,10 +9,11 @@
         <ul class="navbar-nav mr-auto">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="dodaj" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dodaj</a>
-            <div class="dropdown-menu" aria-labelledby="zestawienia">
+            <div class="dropdown-menu" aria-labelledby="dodaj">
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/przychodzace/dodaj">Przychodzące</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/podmioty/dodaj">Podmiot</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/pracownicy/dodaj">Pracownika</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/jrwa/dodaj">JRWA</a>
             </div>
           </li>
           <li class="nav-item dropdown">
@@ -22,6 +23,7 @@
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/przychodzace/faktury/<?php echo date("Y"); ?>">Faktury</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/podmioty/zestawienie">Podmioty</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/pracownicy/zestawienie">Pracownicy</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/jrwa/zestawienie">JRWA</a>
             </div>
           </li>
           <li class="nav-item">

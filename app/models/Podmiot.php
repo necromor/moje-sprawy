@@ -27,10 +27,10 @@
       /*
        * Dodaje nowy podmiot do bazy danych.
        *
-       * Parametry: 
-       *  - data => tablica zawierająca dane nowego podmiotu  
-       * Zwraca: 
-       *  - boolean 
+       * Parametry:
+       *  - data => tablica zawierająca dane nowego podmiotu
+       * Zwraca:
+       *  - boolean
        */
 
       $sql = "INSERT INTO podmioty (nazwa, adres_1, adres_2) VALUES (:nazwa, :adres_1, :adres_2)";
@@ -53,10 +53,10 @@
        * W celu ułatwienia funkcja nie sprawdza które dane są faktycznie nowe
        * ale wstawia wszystkie pochodzące z formularza.
        *
-       * Parametry: 
-       *  - data => tablica zawierająca nowe dane istniejącego podmiotu  
-       * Zwraca: 
-       *  - boolean 
+       * Parametry:
+       *  - data => tablica zawierająca nowe dane istniejącego podmiotu
+       * Zwraca:
+       *  - boolean
        */
 
       $sql = "UPDATE podmioty SET nazwa=:nazwa, adres_1=:adres_1, adres_2=:adres_2 WHERE id=:id";

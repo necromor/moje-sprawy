@@ -111,26 +111,26 @@
       /*
        * Pobiera listę danych aktywnych pracowników posortowaną rosnąco po nazwisku.
        *
-       * Parametry: 
-       *  - brak 
-       * Zwraca: 
-       *  - set zawierający id, imię, nazwisko aktywnych pracowników 
+       * Parametry:
+       *  - brak
+       * Zwraca:
+       *  - set zawierający id, imię, nazwisko aktywnych pracowników
        */
 
      $sql = "SELECT id, imie, nazwisko FROM pracownicy WHERE aktywny=1 ORDER BY nazwisko ASC";
      $this->db->query($sql);
 
-     return $this->db->resultSet(); 
+     return $this->db->resultSet();
     }
-  
+
     public function pobierzWszystkichPracownikow() {
       /*
        * Pobiera listę wszystkich pracowników posortowaną rosnąco po id.
        *
-       * Parametry: 
-       *  - brak 
-       * Zwraca: 
-       *  - set zawierający wszystkie dane o pracowniku 
+       * Parametry:
+       *  - brak
+       * Zwraca:
+       *  - set zawierający wszystkie dane o pracowniku
        */
 
      $sql = "SELECT * FROM pracownicy ORDER BY id ASC";
