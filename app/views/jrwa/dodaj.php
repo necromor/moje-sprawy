@@ -34,7 +34,7 @@
 
         <div class="form-group row" id="jrwaGrupa">
           <label for="grupa" class="col-12 col-form-label">Grupa numerów:</label>
-          <textarea class="form-control col-12" id="grupa" name="grupa" rows="8" placeholder="Każda linia w postaci numer:opis"><?php echo $data['grupa']; ?></textarea>
+          <textarea class="form-control col-12" id="grupa" name="grupa" rows="8" placeholder="Każda linia w postaci @numer:opis"><?php echo $data['grupa']; ?></textarea>
           <span class="invalid-feedback offset-sm-4 d-block"><?php echo $data['grupa_err']; ?></span>
         </div>
 

@@ -110,11 +110,17 @@
           }
         } else {
           // grupa
+          $data['grupa_err'] = $this->przetworzGrupeJrwa($data['grupa']);
 
-
+          if (empty($data['grupa_err'])) {
+            $wiadomosc = "Numer jrwa zostały dodane poprawnie.";
+            flash('jrwa_wiadomosc', $wiadomosc);
+            redirect('jrwa/zestawienie');
+          } else {
+            // brudny
+            $this->view('jrwa/dodaj', $data);
+          }
         }
-
-
 
       } else {
 
@@ -123,6 +129,71 @@
       }
     }
 
+    private function przetworzGrupeJrwa($grupa) {
+      /*
+       * Przetwarza grupę numerów jrwa postaci @numer:opis
+       * Sprawdza warunki i jeżeli jakiś nie jest spełniany
+       * zwraca komunikat błędu.
+       *
+       * Jeżeli nie wystąpiły błedy to dodaje numery jrwa.
+       * Dodaje dopiero jeżeli wszystkie dane są poprawne.
+       *
+       * Parametry:
+       *  - grupa => dane z formularza - linie postaci @numer:opis
+       * Zwraca:
+       *  - string => komunikat błędu jeżeli taki wystąpił
+       */
+
+      $error = '';
+
+      if (empty($grupa)) {
+        return 'Nie podano danych.';
+      }
+
+      // podział na linie po @
+      $linie = explode('@', $grupa);
+      //odrzucamy element 0
+      array_shift($linie);
+
+      // czy jest choć jedna linia
+      if (count($linie) == 0) {
+        return 'Każda linia musi być w postaci @numer:opis.';
+      }
+
+      $jrwa = [];
+      $numery = []; // służy do sprawdzania czy na liście nie ma duplikatów numerów jrwa
+      foreach ($linie as $linia) {
+        $elementy = explode(":", $linia);
+        $elementy[0] = trim($elementy[0]);
+        $elementy[1] = trim($elementy[1]);
+        // czy linia jest postaci numer:opis
+        if (count($elementy) != 2) {
+          return 'W zbiorze danych wystąpił nieprawidłowy format linii.';
+        }
+
+        // sprawdzenie poszczególnych numerów i opisów
+        $err_numer = $this->sprawdzNumer($elementy[0]);
+        $err_opis = $this->sprawdzOpis($elementy[1]);
+        if (!empty($err_numer) || !empty($err_opis)) {
+          return "$err_numer <br> $err_opis";
+        }
+
+        // czy na liście są powtórzone numery
+        if (in_array($elementy[0], $numery, true)) {
+          return "W podanej liście występują duplikaty numerów jrwa. [$elementy[0]]";
+        }
+
+        // dla danej linii nie było błędów więc dodaj do tablic
+        array_push($numery, $elementy[0]);
+        array_push($jrwa, array("numer" => $elementy[0], "opis" => $elementy[1]));
+      }
+
+      // doszliśmy do tego miejsca i nie ma błędów czyli można dodawać
+      foreach ($jrwa as $j) {
+        $this->jrwaModel->dodajJrwa($j['numer'], $j['opis']);
+      }
+      return '';
+    }
 
 
    /*
@@ -134,9 +205,8 @@
       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego numeru jrwa do formularza.
       * Zasady:
       *  - pole nie może być puste
-      *  - numer musi mieć od 1 do 4 cyfr - pole formularza ma ustawione
-      *  takie filtrowanie więc tutaj niepotrzebne jest sprawdzanie tego warunku
-      *  - pole nie jest sprawdzanie jeżeli dodawana jest grupa numerów
+      *  - numer musi mieć od 1 do 4 cyfr
+      *  - numer nie może istnieć w bazie danych
       *
       *  Parametry:
       *   - tekst => wprowadzony numer
@@ -148,6 +218,10 @@
 
      if ($tekst == '') {
        $error = "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
+     } elseif (!preg_match('/^[0-9]{1,4}$/', $tekst)) {
+       $error = "Format numeru jrwa to od 1 do 4 cyfr.";
+     } elseif ($this->jrwaModel->czyIstniejeJrwa($tekst)) {
+       $error = "W bazie danych istnieje już JRWA o numerze $tekst.";
      }
 
      return $error;
@@ -158,7 +232,7 @@
       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego opisu numeru jrwa do formularza.
       * Zasady:
       *  - pole nie może być puste
-      *  - opis musi mieć przynajmniej 10 znaków
+      *  - opis musi mieć przynajmniej X znaków
       *
       *  Parametry:
       *   - tekst => wprowadzony opis
@@ -166,12 +240,13 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
+     $limit = 8; //minimalna liczba znaków opisu
      $error = '';
 
      if ($tekst == '') {
        $error = "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-     } elseif (strlen($tekst) < 10 ) {
-       $error = "Opis musi mieć przynajmniej 10 znaków.";
+     } elseif (strlen($tekst) < $limit ) {
+       $error = "Opis musi mieć przynajmniej $limit znaków. [$tekst]";
      }
 
      return $error;

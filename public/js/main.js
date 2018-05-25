@@ -10,7 +10,12 @@ if ($('#radioPismo').is(':checked')) {
 }
 
 // na dzień dobry ukryj pola grupy
-$('#jrwaGrupa').hide();
+if ($('#radioPojedynczy').is(':checked')) {
+    $('#jrwaGrupa').hide();
+} else {
+    $('#jrwaPojedynczy1').hide();
+    $('#jrwaPojedynczy2').hide();
+}
 
 // obsługa zmiany opcji pismo czy faktura
 $('input[name=czyFaktura]:radio').on('click', function(e) {

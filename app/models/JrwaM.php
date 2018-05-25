@@ -61,5 +61,27 @@
      return $this->db->resultSet();
     }
 
+    public function czyIstniejeJrwa($numer) {
+      /*
+       * Sprawdza czy w bazie danych istnieje podany numer jrwa.
+       *
+       * Parametry:
+       *  - numer => numer szukanego jrwa
+       * Zwraca:
+       *  - boolean => true jeżeli istnieje
+       */
+
+      $sql = "SELECT id FROM jrwa WHERE numer=:numer";
+      $this->db->query($sql);
+      $this->db->bind(':numer', $numer);
+
+      $row = $this->db->single();
+      if ($this->db->rowCount() == 0) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
 
   }

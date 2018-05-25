@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 16, 2018 at 10:34 AM
+-- Generation Time: May 25, 2018 at 12:27 PM
 -- Server version: 5.7.22-0ubuntu0.16.04.1
--- PHP Version: 7.0.28-0ubuntu0.16.04.1
+-- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,6 +19,32 @@ SET time_zone = "+00:00";
 --
 -- Database: `moje_sprawy`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `id` int(1) NOT NULL,
+  `login` varchar(10) NOT NULL,
+  `haslo` varchar(255) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jrwa`
+--
+
+CREATE TABLE `jrwa` (
+  `id` int(11) NOT NULL,
+  `numer` varchar(4) NOT NULL,
+  `opis` varchar(255) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -79,6 +105,20 @@ CREATE TABLE `przychodzace` (
 --
 
 --
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `login` (`login`);
+
+--
+-- Indexes for table `jrwa`
+--
+ALTER TABLE `jrwa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `numer` (`numer`);
+
+--
 -- Indexes for table `podmioty`
 --
 ALTER TABLE `podmioty`
@@ -101,6 +141,16 @@ ALTER TABLE `przychodzace`
 -- AUTO_INCREMENT for dumped tables
 --
 
+--
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `jrwa`
+--
+ALTER TABLE `jrwa`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
 --
 -- AUTO_INCREMENT for table `podmioty`
 --
