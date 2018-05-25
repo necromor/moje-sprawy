@@ -26,8 +26,7 @@
        */
 
       // tylko admin
-      czyZalogowany();
-      czyZalogowanyAdmin();
+      sprawdzCzyPosiadaDostep(-1,-1);
 
       $jrwa = $this->jrwaModel->pobierzJrwa();
 
@@ -68,8 +67,7 @@
        */
 
       // tylko admin
-      czyZalogowany();
-      czyZalogowanyAdmin();
+      sprawdzCzyPosiadaDostep(-1,-1);
 
       $data = [
         'title' => 'Dodaj numer JRWA',

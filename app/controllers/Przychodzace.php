@@ -11,8 +11,8 @@
 
     public function zestawienie($rok) {
 
-      // tylko zalogowany pracownik każdego poziomu
-      czyZalogowany();
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
 
       // sprawdź czy nastąpiła zmiana roku
       // jeżeli tak to przekieruj
@@ -42,8 +42,7 @@
     public function faktury($rok, $id=0) {
 
       // tylko zalogownay sekretariat lub księgowość
-      czyZalogowany();
-      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 1);
+      sprawdzCzyPosiadaDostep(1,0);
 
       // sprawdź czy nastąpiła zmiana roku
       // jeżeli tak to przekieruj 
@@ -96,8 +95,7 @@
    public function dodaj() {
 
       // tylko zalogowany sekretariat
-      czyZalogowany();
-      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
+      sprawdzCzyPosiadaDostep(0,0);
 
       $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
       $listaPracownikow = $this->pracownikModel->pobierzPracownikow();
@@ -227,9 +225,8 @@
 
    public function edytuj($id) {
 
-     // tylko zalogownay sekretariat
-     czyZalogowany();
-     czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
+      // tylko zalogownay sekretariat
+      sprawdzCzyPosiadaDostep(0,0);
 
       $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
       $listaPracownikow = $this->pracownikModel->pobierzPracownikow();

@@ -4,36 +4,60 @@
     /*
      * Sprawdza czy pracownik jest zalogowany
      *
-     * Jeżeli nie przekierowuje na stronę główną.
+     * Zwraca boolean - true jeżeli jest zalogowany
      */
 
-    if (!isset($_SESSION['user_id']) || !isset($_SESSION['imie_nazwisko'])) {
-      redirect('pages');
-    }
+    return (isset($_SESSION['user_id']) && isset($_SESSION['imie_nazwisko']));
   }
 
-  function czyZalogowanyAdmin() {
+  function sprawdzCzyZalogowany(){
     /*
-     * Sprawdza czy admin jest zalogowany.
-     * Wywoływana po czyZalogownay więc istnieje $_SESSION.
+     * Sprawdza czy pracownik jest zalogowany
      *
      * Jeżeli nie przekierowuje na stronę główną.
      */
 
-    if ($_SESSION['user_id'] != 0 || $_SESSION['imie_nazwisko'] != 'admin') {
+    if (!czyZalogowany()) {
       redirect('pages');
     }
   }
 
-  function czyPosiadaDostep($poziom_pracownika, $wymagany_poziom) {
+  function czyPosiadaDostep($min, $max) {
     /*
-     * Sprawdza czy posiadany przez pracownika poziom jest właściwy.
-     * Właściwy poziom to taki który jest <= od wymaganego.
+     * Sprawdza czy pracownik posiada dostęp, który zawiera się w granicach min max
+     * Z uwagi na fakt, że wyższe poziomy dostępu mają niższe numery
+     * min max są odwrócone.
      *
      * Jeżeli nie przekierowuje na stronę główną.
+     *
+     * Parametry:
+     *  - min => maksymalny poziom dostępu
+     *  - max => dolny limit - służy głównie przy oddzielaniu admina
      */
 
-    if ($poziom_pracownika > $wymagany_poziom) {
+    // $_SESSION istnieje tylko jak zalogowany
+    if (!czyZalogowany()){
+      return false;
+    }
+
+    $poziom = $_SESSION['poziom'];
+
+    return ($poziom <= $min) && ($poziom >= $max);
+    //return true;
+  }
+
+  function sprawdzCzyPosiadaDostep($min, $max) {
+    /*
+     * Sprawdza czy pracownik posiada dostęp.
+     *
+     * Jeżeli nie przekierowuje na stronę główną.
+     *
+     * Parametry:
+     *  - min => maksymalny poziom dostępu
+     *  - max => dolny limit - służy głównie przy oddzielaniu admina
+     */
+    if (!czyPosiadaDostep($min, $max)) {
       redirect('pages');
     }
   }
+

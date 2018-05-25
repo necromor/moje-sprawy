@@ -25,8 +25,7 @@
        */
 
       // tylko zalogowany sekretariat
-      czyZalogowany();
-      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
+      sprawdzCzyPosiadaDostep(0,0);
 
       $podmioty = $this->podmiotModel->pobierzPodmioty();
 
@@ -70,8 +69,7 @@
        */
 
       // tylko zalogowany sekretariat
-      czyZalogowany();
-      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
+      sprawdzCzyPosiadaDostep(0,0);
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -134,7 +132,7 @@
     }
 
     public function edytuj($id) {
-      /* 
+      /*
        * Obsługuje proces edycji istniejącego podmiotu.
        * Sposób działania jest identyczy jak funkcji dodaj() z niewielką różnicą
        * w trybie czystym - do pól formularza wprowadzane są dane edytowanego podmiotu.
@@ -146,8 +144,7 @@
        */
 
       // tylko zalogowany sekretariat
-      czyZalogowany();
-      czyPosiadaDostep($this->pracownikModel->pobierzPoziomDostepu($_SESSION['user_id']), 0);
+      sprawdzCzyPosiadaDostep(0,0);
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -229,6 +226,9 @@
        * Zwraca:
        *  - echo json postaci: { id:, nazwa:, adres_1:, adres_2: }
        */
+
+       // tylko zalogowany sekretariat
+       sprawdzCzyPosiadaDostep(0,0);
 
        $podmiot = $this->podmiotModel->pobierzDanePodmiotu($id);
        if ($podmiot) {

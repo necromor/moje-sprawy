@@ -36,8 +36,7 @@
        */
 
       // tylko admin
-      czyZalogowany();
-      czyZalogowanyAdmin();
+      sprawdzCzyPosiadaDostep(-1,-1);
 
       $pracownicy = $this->pracownikModel->pobierzWszystkichPracownikow();
 
@@ -60,7 +59,7 @@
     }
 
     public function dodaj() {
-      /* 
+      /*
        * Obsługuje proces dodawania nowego pracownika.
        * Działa w dwóch trybach: wyświetlanie formularza, obsługa formularza.
        * Tryb wybierany jest w zależności od metody dostępu do strony: POST czy GET.
@@ -81,8 +80,7 @@
        */
 
       // tylko admin
-      czyZalogowany();
-      czyZalogowanyAdmin();
+      sprawdzCzyPosiadaDostep(-1,-1);
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -141,7 +139,7 @@
     }
 
     public function edytuj($id) {
-      /* 
+      /*
        * Obsługuje proces edycji istniejącego pracownika.
        * Sposób działania jest identyczy jak funkcji dodaj() z niewielką różnicą
        * w trybie czystym - do pól formularza wprowadzane są dane edytowanego pracownika.
@@ -153,8 +151,7 @@
        */
 
       // tylko admin
-      czyZalogowany();
-      czyZalogowanyAdmin();
+      sprawdzCzyPosiadaDostep(-1,-1);
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -290,6 +287,7 @@
 
       unset($_SESSION['user_id']);
       unset($_SESSION['imie_nazwisko']);
+      unset($_SESSION['poziom']);
       session_destroy();
 
       redirect('pracownicy/zaloguj');
@@ -310,8 +308,8 @@
        * Obsługuje widok: pracownicy/zmien_haslo
        */
 
-      // musi być zalogowany 
-      czyZalogowany();
+      // musi być zalogowany
+      sprawdzCzyZalogowany();
 
       $id = $_SESSION['user_id'];
 
@@ -372,7 +370,7 @@
 
 
    public function aktywuj($id) {
-      /* 
+      /*
        * Obsługuje proces zmiany statusu pracownika.
        * Po sprawdzeniu czy pracownik jest aktywny ustawiany jest przeciwny status
        * i wywoływana metoda zmiany statusu.
@@ -384,9 +382,8 @@
        *  - id => id pracownika
        */
 
-      // tylko admin
-      czyZalogowany();
-      czyZalogowanyAdmin();
+     // tylko admin
+     sprawdzCztPosiadaDostep(-1,-1);
 
      $status = 1;
      $tekst = "aktywny";
@@ -403,7 +400,7 @@
    }
 
    public function resetuj($id) {
-      /* 
+      /*
        * Obsługuje proces resetu hasła pracownika.
        * Resetowanie hasła polega na ustawieniu hasła o wartości równej loginowi pracownika
        * podobnie jak przy dodawaniu.
@@ -416,9 +413,8 @@
        *  - id => id pracownika
        */
 
-      // tylko admin
-      czyZalogowany();
-      czyZalogowanyAdmin();
+     // tylko admin
+     sprawdzCztPosiadaDostep(-1,-1);
 
      $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
      $haslo = password_hash($pracownik->login, PASSWORD_DEFAULT);
@@ -441,6 +437,7 @@
       */
 
       $_SESSION['imie_nazwisko'] = $this->pracownikModel->pobierzImieNazwisko($id);
+      $_SESSION['poziom'] = $this->pracownikModel->pobierzPoziomDostepu($id);
       redirect('pages'); 
    }
 
@@ -451,7 +448,7 @@
     */
 
     public function dodaj_admin() {
-      /* 
+      /*
        * Obsługuje proces dodawania admina do systemu.
        * Zasada działania jak w funkcji dodaj.
        *
@@ -526,7 +523,7 @@
        *
        * Parametry:
        *  - data => dane z formularza logowania
-       * Zwraca: 
+       * Zwraca:
        *  - brak
        */
 
@@ -588,6 +585,7 @@
         // specjalna wastość dla admina
         $_SESSION['user_id'] = 0;
         $_SESSION['imie_nazwisko'] = 'admin';
+        $_SESSION['poziom'] = -1;
         // tymczasowo
         redirect('pracownicy/zestawienie');
     }
