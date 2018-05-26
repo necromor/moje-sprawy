@@ -309,7 +309,10 @@
        */
 
       // musi być zalogowany
-      sprawdzCzyZalogowany();
+      //sprawdzCzyZalogowany();
+      if(!isset($_SESSION['user_id'])){
+        redirect('pages');
+      }
 
       $id = $_SESSION['user_id'];
 
@@ -383,7 +386,7 @@
        */
 
      // tylko admin
-     sprawdzCztPosiadaDostep(-1,-1);
+     sprawdzCzyPosiadaDostep(-1,-1);
 
      $status = 1;
      $tekst = "aktywny";
@@ -414,7 +417,7 @@
        */
 
      // tylko admin
-     sprawdzCztPosiadaDostep(-1,-1);
+     sprawdzCzyPosiadaDostep(-1,-1);
 
      $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
      $haslo = password_hash($pracownik->login, PASSWORD_DEFAULT);
