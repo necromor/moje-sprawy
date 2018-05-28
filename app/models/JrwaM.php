@@ -45,6 +45,33 @@
       }
     }
 
+    public function edytujJrwa($numer, $opis, $id) {
+      /*
+       * Edytuje dane numeru jrwa.
+       * Dla uproszczenia procesu zmieniane są wszystkie dane
+       * bez sprawdzania, które faktycznie są inne.
+       *
+       * Parametry:
+       *  - numer => numer jrwa do dodania
+       *  - opis => opis numeru jrwa do dodania
+       *  - id => id zmienianego numeru
+       * Zwraca:
+       *  - boolean
+       */
+
+      $sql = "UPDATE jrwa SET numer=:numer, opis=:opis WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':numer', $numer);
+      $this->db->bind(':opis', $opis);
+      $this->db->bind(':id', $id);
+
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     public function pobierzJrwa() {
       /*
        * Pobiera listę numerów jrwa posortowanych rosnąco po numerze.
@@ -61,19 +88,40 @@
      return $this->db->resultSet();
     }
 
-    public function czyIstniejeJrwa($numer) {
+    public function pobierzJrwaPoId($id) {
       /*
-       * Sprawdza czy w bazie danych istnieje podany numer jrwa.
+       * Pobiera dane numeru jrwa po jego id.
+       *
+       * Parametry:
+       *  - id => id szukanego numeru
+       * Zwraca:
+       *  - wiersz z tabeli zawierające dane obiektu
+       */
+
+     $sql = "SELECT * FROM jrwa WHERE id=:id";
+     $this->db->query($sql);
+     $this->db->bind(':id', $id);
+
+
+     return $this->db->single();
+    }
+
+    public function czyIstniejeJrwa($numer, $id) {
+      /*
+       * Sprawdza czy w bazie danych istnieje podany numer jrwa, który
+       * ma id różne od podanego.
        *
        * Parametry:
        *  - numer => numer szukanego jrwa
+       *  - id => id numeru do wykluczenia z poszukiwań
        * Zwraca:
        *  - boolean => true jeżeli istnieje
        */
 
-      $sql = "SELECT id FROM jrwa WHERE numer=:numer";
+      $sql = "SELECT id FROM jrwa WHERE numer=:numer AND id!=:id";
       $this->db->query($sql);
       $this->db->bind(':numer', $numer);
+      $this->db->bind(':id', $id);
 
       $row = $this->db->single();
       if ($this->db->rowCount() == 0) {

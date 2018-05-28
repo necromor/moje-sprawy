@@ -129,6 +129,64 @@
       }
     }
 
+    public function edytuj($id) {
+      /*
+       * Obsługuje proces edycji istniejącego numery JRWA.
+       * Sposób działania jest identyczy jak funkcji dodaj() z niewielką różnicą
+       * w trybie czystym - do pól formularza wprowadzane są dane edytowanego numeru.
+       *
+       * Obsługuje widok: jrwa/edytuj/id
+       *
+       * Parametry:
+       *  - id => id edytowanego numeru jrwa
+       */
+
+      // tylko admin
+      sprawdzCzyPosiadaDostep(-1,-1);
+
+      $data = [
+        'title' => 'Zmień dane pozycji JRWA',
+        'id' => $id,
+        'numer' => '',
+        'opis' => '',
+        'numer_err' => '',
+        'opis_err' => '',
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data['numer'] = trim($_POST['numer']);
+        $data['opis'] = trim($_POST['opis']);
+
+        $data['numer_err'] = $this->sprawdzNumer($data['numer'], $id);
+        $data['opis_err'] = $this->sprawdzOpis($data['opis']);
+
+        if (empty($data['numer_err']) && empty($data['opis_err'])) {
+          $numer = $data['numer'];
+          $opis = $data['opis'];
+          $this->jrwaModel->edytujJrwa($numer, $opis, $id);
+
+          $wiadomosc = "Numer <strong>$numer</strong> [<em>$opis</em>] został zmieniony.";
+          flash('jrwa_wiadomosc', $wiadomosc);
+          redirect('jrwa/zestawienie');
+        } else {
+          // brudny
+          $this->view('jrwa/edytuj', $data);
+        }
+
+      } else {
+        // czysty
+
+        $jrwa = $this->jrwaModel->pobierzJrwaPoId($id);
+        $data['numer'] = $jrwa->numer;
+        $data['opis'] = $jrwa->opis;
+
+        $this->view('jrwa/edytuj', $data);
+      }
+    }
+
     private function przetworzGrupeJrwa($grupa) {
       /*
        * Przetwarza grupę numerów jrwa postaci @numer:opis
@@ -200,16 +258,19 @@
     * FUNKCJE SPRAWDZAJĄCE
     */
 
-   private function sprawdzNumer($tekst) {
+   private function sprawdzNumer($tekst, $id=0) {
      /*
       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego numeru jrwa do formularza.
       * Zasady:
       *  - pole nie może być puste
       *  - numer musi mieć od 1 do 4 cyfr
       *  - numer nie może istnieć w bazie danych
+      * Przy edycji numeru ostatni warunek musi uwzględniać fakt, że użytkownik może nie chcieć zmienić
+      * istniejącego numeru.
       *
       *  Parametry:
       *   - tekst => wprowadzony numer
+      *   - id => id edytowanego numeru
       *  Zwraca:
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
@@ -220,7 +281,7 @@
        $error = "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
      } elseif (!preg_match('/^[0-9]{1,4}$/', $tekst)) {
        $error = "Format numeru jrwa to od 1 do 4 cyfr.";
-     } elseif ($this->jrwaModel->czyIstniejeJrwa($tekst)) {
+     } elseif ($this->jrwaModel->czyIstniejeJrwa($tekst, $id)) {
        $error = "W bazie danych istnieje już JRWA o numerze $tekst.";
      }
 
