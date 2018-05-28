@@ -1,8 +1,17 @@
 <?php
+  /*
+   *  Kontroler Przychodzace odpowiedzialny jest za obsługę modelu Przychodzaca z widokami.
+   *  Nazwy metod jak w każdym kontrolerze odpowiadają częściom adresu url (co wynika
+   *  ze specifiki TraversyMVC)
+   *
+   */
 
   class Przychodzace extends Controller {
 
     public function __construct() {
+      /*
+       * Konstruktor klasy - tworzy połączenie z modelami
+       */
 
       $this->przychodzacaModel = $this->model('Przychodzaca');
       $this->podmiotModel = $this->model('Podmiot');
@@ -10,6 +19,11 @@
     }
 
     public function zestawienie($rok) {
+      /*
+       * Tworzy zestaw obiektów Przychodzące
+       *
+       * Obsługuje widok: przychodzace/zestawienie/rok
+       */
 
       // tylko zalogowany, ale nie admin
       sprawdzCzyPosiadaDostep(4,0);
@@ -40,6 +54,12 @@
     }
 
     public function faktury($rok, $id=0) {
+      /*
+       * Tworzy zestaw obiektów Faktury, który jest podzbiorem Przychodzącej
+       * Kwoty zamieniane są na format 000.000,00
+       *
+       * Obsługuje widok: przychodzace/faktury/rok
+       */
 
       // tylko zalogownay sekretariat lub księgowość
       sprawdzCzyPosiadaDostep(1,0);
@@ -93,6 +113,25 @@
 
 
    public function dodaj() {
+      /*
+       * Obsługuje proces dodawania nowej korespondencji przychodzącej.
+       * Działa w dwóch trybach: wyświetlanie formularza, obsługa formularza.
+       * Tryb wybierany jest w zależności od metody dostępu do strony: POST czy GET.
+       * POST oznacza, że formularz został wysłany, każda inna forma dostępu powoduje
+       * wyświetlenie formularza.
+       *
+       * Tryb wyświetlania formularza może mieć dwa stany:
+       * czysty - gdy wyświetlany jest formularz po raz pierwszy
+       * brudny - gdy wyświetlany jest formularz z błędami
+       * Tryb czysty zawiera puste dane, tryb brudny przechowuje dane przesłane przez
+       * użytkownika i umieszcza je w stosownych polach formularza
+       *
+       * Tryb obsługi odpowiada za sprawdzenie wprowadzonych danych (szczegóły w
+       * indywidualnych funkcjach sprawdzających) i w zależności od tego czy są błędy
+       * wywołuje metodę modelu dodawania pracownika lub wyświetla brudny formularz.
+       *
+       * Obsługuje widok: przychodzace/dodaj
+       */
 
       // tylko zalogowany sekretariat
       sprawdzCzyPosiadaDostep(0,0);
@@ -217,13 +256,23 @@
           'dekretacja_err' => '',
           'kwota_err' => ''
         ];
- 
+
         $this->view('przychodzace/dodaj', $data);
       }
    }
 
 
    public function edytuj($id) {
+      /*
+       * Obsługuje proces edycji istniejącej korespondencji przychodzącej.
+       * Sposób działania jest identyczy jak funkcji dodaj() z niewielką różnicą
+       * w trybie czystym - do pól formularza wprowadzane są dane edytowanej korespondencji.
+       *
+       * Obsługuje widok: przychodzace/edytuj/id
+       *
+       * Parametry:
+       *  - id => id edytowanej korespondencji
+       */
 
       // tylko zalogownay sekretariat
       sprawdzCzyPosiadaDostep(0,0);
@@ -364,6 +413,17 @@
     */
 
    private function pobierzPodmiot($nazwa) {
+     /*
+      * Funkcja, która pobiera dane podmiotu po podanej nazwie i podmienia
+      * nazwę na format id# nazwa, jaki jest wykorzystywany w formularzach dodawania/edycji.
+      * Nie jest to dokładnie taka funkcja jak w modelu,
+      * gdyż zabezpiecza ona wypadek, gdy podmiot nie istnieje.
+      *
+      * Parametry:
+      *  - nazwa => nazwa szukanego podmiotu
+      * Zwraca:
+      *  - obiekt podmiotu
+      */
 
      $idp = pobierzIdNazwy($nazwa);
 
@@ -385,57 +445,125 @@
     */
 
    private function sprawdzNazwePodmiotu($nazwa, $nowy) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej nazwy podmiotu do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - nazwa musi mieć przynajmniej 2 znaki
+      *
+      *  Parametry:
+      *   - tekst => wprowadzone imię
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
 
      if ($nazwa == '') {
        $error = "Nazwa nie może pozostać pusta.";
+     } elseif (strlen($nazwa) < 2) {
+       $error = "Nazwa musi mieć przynajmniej dwa znaki";
      }
 
      return $error;
    }
 
    private function sprawdzAdresPodmiotu($adres, $nowy) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego adresu podmiotu do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - adres musi mieć przynajmniej 6 znaków
+      *  - pomijana przy istniejącym podmiocie
+      *
+      *  Parametry:
+      *   - adres => wprowadzony adres
+      *   - nowy => parametr określający czy dodawany jest nowy podmiot: 0 oznacza, że nie
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
-     // istniejący podmiot - wartość pola nie ma znaczenia 
+     // istniejący podmiot - wartość pola nie ma znaczenia
      if ($nowy == '0') {
        return $error;
      }
 
      if ($adres == '') {
        $error = "Pole adresu nie może pozostać puste.";
+     } elseif (strlen($adres) < 6) {
+       $error = "Adres musi mieć przynajmniej 6 znaków";
      }
 
      return $error;
    }
 
    private function sprawdzPocztaPodmiotu($poczta, $nowy) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej poczty podmiotu do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - poczta musi mieć przynajmniej 6 znaków
+      *  - pomijana przy istniejącym podmiocie
+      *
+      *  Parametry:
+      *   - poczta => wprowadzona poczta
+      *   - nowy => parametr określający czy dodawany jest nowy podmiot: 0 oznacza, że nie
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
-     // istniejący podmiot - wartość pola nie ma znaczenia 
+     // istniejący podmiot - wartość pola nie ma znaczenia
      if ($nowy == '0') {
        return $error;
      }
 
      if ($poczta == '') {
        $error = "Pole poczty nie może pozostać puste.";
+     } elseif (strlen($poczta) < 6) {
+       $error = "Poczta musi mieć przynajmniej 6 znaków";
      }
 
      return $error;
    }
 
    private function sprawdzZnak($znak) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego znaku do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - nazwa musi mieć przynajmniej 2 znaki
+      *
+      *  Parametry:
+      *   - znak => wprowadzony znak
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
      if ($znak == '') {
        $error = "Oznaczenie pisma nie może pozostać puste.<br>Wpisz <em>brak</em> jeżeli pismo nie ma oznaczenia.";
+     } elseif (strlen($znak) < 2) {
+       $error = "Oznaczenie musi mieć przynajmniej 2 znaki";
      }
 
      return $error;
    }
 
    private function sprawdzDatePisma($data) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej daty pisma do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *
+      * Nie mamy wpływu na datę pisma więc brak dodatkowych warunków.
+      *
+      *  Parametry:
+      *   - data => wprowadzona data pisma
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
      if ($data == '') {
@@ -446,6 +574,20 @@
    }
 
    private function sprawdzDateWplywu($data) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej daty wpływu do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - data wpływu nie może być późniejsza niż dziś
+      *  - data wpływu nie może być wcześniejsza niż najnowasza zarejestrowana korepondencja
+      *
+      *  Parametry:
+      *   - data => wprowadzona data pisma
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
+
+     //DO ZAIMPLEMENTOWANIA
 
      $error = '';
      if ($data == '') {
@@ -456,16 +598,41 @@
    }
 
    private function sprawdzDotyczy($dotyczy) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego dotyczy do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - wartość musi mieć przynajmniej 10 znaków
+      *
+      *  Parametry:
+      *   - dotyczy => wprowadzone dotyczy
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
      if ($dotyczy == '') {
        $error = "Każde pismo czegoś dotyczy.";
+     } elseif (strlen($dotyczy) < 10) {
+       $error = "Treść dotyczy musi mieć przynajmniej 10 znaków.";
      }
 
      return $error;
    }
 
    private function sprawdzLiczbaZalacznikow($lzal, $czyFaktura) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej liczby załączników do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - pomijana przy dodawaniu faktury
+      *
+      *  Parametry:
+      *   - lzal => wprowadzona liczba załączników
+      *   - czyFaktura => parametr określający czy dodawana jest faktura - 1 oznacza fakturę
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
      // dodawana faktura - wartość pola nie ma znaczenia
@@ -481,6 +648,22 @@
    }
 
    private function sprawdzDekretacja($dekretacja, $czyFaktura) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej dekretacji do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - pracownik musi istnieć
+      *  - pracownik musi być aktywny
+      *  - pomijana przy dodawaniu faktury
+      *
+      *  Parametry:
+      *   - dekretacja => wprowadzona dekretacja
+      *   - czyFaktura => parametr określający czy dodawana jest faktura - 1 oznacza fakturę
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
+
+     // DO ZAIMPLEMENTOWANIA
 
      $error = '';
      // dodawana faktura - wartość pola nie ma znaczenia
@@ -496,11 +679,23 @@
    }
 
    private function sprawdzKwota($kwota, $czyFaktura) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej kwoty do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - pomijana przy dodawaniu pisma
+      *
+      *  Parametry:
+      *   - kwota => wprowadzona kwota
+      *   - czyFaktura => parametr określający czy dodawana jest faktura - 1 oznacza fakturę
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
 
      $error = '';
 
      // dodawane pismo - wartość pola nie ma znaczenia
-     if ($czyFaktura == '1') {
+     if ($czyFaktura != '1') {
        return $error;
      }
 

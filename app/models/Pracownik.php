@@ -1,6 +1,6 @@
 <?php
   /*
-   * Model Pracownik obsługuje wszystkie funkcje związane z pracownikami, 
+   * Model Pracownik obsługuje wszystkie funkcje związane z pracownikami,
    * zarówno od strony admina jak i samego pracownika.
    * Admin ma możliwość:
    * - dodania nowego pracownika
@@ -33,7 +33,7 @@
       /*
        * Pobiera wszystkie dane o pracowniku na podstawie podanego id.
        *
-       * Parametry: 
+       * Parametry:
        *  - id => id szukanego pracownika
        * Zwraca: 
        *  - wiersz z bazy zawierający wszystkie dane pracownika
@@ -146,11 +146,11 @@
        * jest login aktualnie edytowanego pracownika.
        * Przy dodawaniu nowego pracownika wartość ta ustawiona jest na 0.
        *
-       * Parametry: 
-       *  - login => login do sprawdzenia 
+       * Parametry:
+       *  - login => login do sprawdzenia
        *  - id => id sprawdzanego pracownika
-       * Zwraca: 
-       *  - boolean 
+       * Zwraca:
+       *  - boolean
        */
 
       $sql = "SELECT id FROM pracownicy WHERE login=:login AND id!=:id";
@@ -171,11 +171,11 @@
        * Sprawdza czy podane hasło jest zgodne z tym w bazie danych dla pracownika z id.
        * Hasła w bazie są kodowane więc użyta do porównania użyta jest funkcja password_verify()
        *
-       * Parametry: 
+       * Parametry:
        *  - hasło => hasło do sprawdzenia
-       *  - id => id pracownika dla którego sprawdzamy hasło  
-       * Zwraca: 
-       *  - boolean 
+       *  - id => id pracownika dla którego sprawdzamy hasło
+       * Zwraca:
+       *  - boolean
        */
 
       $sql = "SELECT haslo FROM pracownicy WHERE id=:id";
@@ -190,10 +190,10 @@
       /*
        * Sprawdza czy pracownik z danym id ma status aktywny.
        *
-       * Parametry: 
-       *  - id => id pracownika dla którego sprawdzamy status  
-       * Zwraca: 
-       *  - boolean 
+       * Parametry:
+       *  - id => id pracownika dla którego sprawdzamy status
+       * Zwraca:
+       *  - boolean
        */
 
       $sql = "SELECT aktywny FROM pracownicy WHERE id=:id";
@@ -215,10 +215,10 @@
        * Jego hasło (ustawione w kontrolerze) jest zakodowanym loginem.
        * Data zminy hasła ustawiana jest na datę dodania pracownika.
        *
-       * Parametry: 
-       *  - data => tablica zawierająca dane nowego pracownika  
-       * Zwraca: 
-       *  - boolean 
+       * Parametry:
+       *  - data => tablica zawierająca dane nowego pracownik
+       * Zwraca:
+       *  - boolean
        */
 
       // wartości stałe
@@ -249,10 +249,10 @@
        * W celu ułatwienia funkcja nie sprawdza które dane są faktycznie nowe
        * ale wstawia wszystkie pochodzące z formularza.
        *
-       * Parametry: 
-       *  - data => tablica zawierająca dane istniejącego pracownika  
-       * Zwraca: 
-       *  - boolean 
+       * Parametry:
+       *  - data => tablica zawierająca dane istniejącego pracownika
+       * Zwraca:
+       *  - boolean
        */
 
       $sql = "UPDATE pracownicy SET imie=:imie, nazwisko=:nazwisko, login=:login, poziom=:poziom WHERE id=:id";
@@ -262,7 +262,7 @@
       $this->db->bind(':login', $data['login']);
       $this->db->bind(':poziom', $data['poziom']);
       $this->db->bind(':id', $data['id']);
-   
+
       if ($this->db->execute()) {
         return true;
       } else {
@@ -274,11 +274,11 @@
       /*
        * Zmienia status pracownika o podanym id.
        *
-       * Parametry: 
+       * Parametry:
        *  - id => id pracownika
-       *  - status => nowy status 
-       * Zwraca: 
-       *  - boolean 
+       *  - status => nowy status
+       * Zwraca:
+       *  - boolean
        */
 
       $sql = "UPDATE pracownicy SET aktywny=:status WHERE id=:id";
@@ -298,11 +298,11 @@
        * Zmienia hasło pracownika o podanym id.
        * W momencie zmiany hasła ustawiana jest data zmiany.
        *
-       * Parametry: 
+       * Parametry:
        *  - id => id pracownika
-       *  - status => nowe hasło 
-       * Zwraca: 
-       *  - boolean 
+       *  - status => nowe hasło
+       * Zwraca:
+       *  - boolean
        */
       $zmiana_hasla = Date("Y-m-d H:i:s");
 

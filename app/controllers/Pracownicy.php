@@ -20,7 +20,7 @@
 
     public function __construct() {
       /*
-       * Konstruktor klasy - tworzy połączenie z modelami 
+       * Konstruktor klasy - tworzy połączenie z modelami
        */
 
       $this->pracownikModel = $this->model('Pracownik');
@@ -656,7 +656,7 @@
       *  Parametry:
       *   - tekst => wprowadzone imię
       *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
      $error = '';
