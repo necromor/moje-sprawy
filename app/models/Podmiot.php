@@ -93,16 +93,16 @@
       /*
        * Pobiera wszystkie dane o wybranym podmiocie na podstawie jego id.
        *
-       * Parametry: 
-       *  - id => id szukanego podmiotu 
-       * Zwraca: 
-       *  - wiersz z bazy zawierający wszystkie dane o podmiocie 
+       * Parametry:
+       *  - id => id szukanego podmiotu
+       * Zwraca:
+       *  - wiersz z bazy zawierający wszystkie dane o podmiocie
        */
 
      $sql = "SELECT * FROM podmioty WHERE id=:id";
      $this->db->query($sql);
      $this->db->bind(':id', $id);
-     
+
      return $this->db->single();
    }
 
@@ -114,16 +114,16 @@
        * Funkcja ma głównie zastosowanie jeżeli dodany został nowy podmiot.
        * W każdym innym przypadku pewniejsza jest pobierzDanePodmiotu.
        *
-       * Parametry: 
-       *  - nazwa => id szukanego podmiotu 
-       * Zwraca: 
-       *  - wiersz z bazy zawierający wszystkie dane o podmiocie 
+       * Parametry:
+       *  - nazwa => id szukanego podmiotu
+       * Zwraca:
+       *  - wiersz z bazy zawierający wszystkie dane o podmiocie
        */
 
      $sql = "SELECT * FROM podmioty WHERE nazwa=:nazwa ORDER BY id DESC LIMIT 1";
      $this->db->query($sql);
      $this->db->bind(':nazwa', $nazwa);
-     
+
      return $this->db->single();
    }
 
@@ -131,16 +131,16 @@
       /*
        * Sprawdza czy podmiot z podanym id istnieje w bazie danych.
        *
-       * Parametry: 
-       *  - id => id szukanego podmiotu 
-       * Zwraca: 
+       * Parametry:
+       *  - id => id szukanego podmiotu
+       * Zwraca:
        *  - boolean
        */
 
      $sql = "SELECT * FROM podmioty WHERE id=:id";
      $this->db->query($sql);
      $this->db->bind(':id', $id);
-     
+
      if ($this->db->single()) {
        return true;
      } else {
