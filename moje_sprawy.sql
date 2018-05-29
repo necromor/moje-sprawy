@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 25, 2018 at 12:27 PM
+-- Generation Time: May 29, 2018 at 11:30 AM
 -- Server version: 5.7.22-0ubuntu0.16.04.1
 -- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admin` (
-  `id` int(1) NOT NULL,
+  `id` int(11) NOT NULL,
   `login` varchar(10) NOT NULL,
   `haslo` varchar(255) NOT NULL,
   `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -43,6 +43,22 @@ CREATE TABLE `jrwa` (
   `id` int(11) NOT NULL,
   `numer` varchar(4) NOT NULL,
   `opis` varchar(255) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `metryka`
+--
+
+CREATE TABLE `metryka` (
+  `id` int(11) NOT NULL,
+  `id_sprawa` int(11) NOT NULL,
+  `id_pracownik` int(11) NOT NULL,
+  `czynnosc` varchar(255) NOT NULL,
+  `rodzaj_dokumentu` int(1) NOT NULL,
+  `id_dokument` int(11) NOT NULL,
   `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -100,6 +116,20 @@ CREATE TABLE `przychodzace` (
   `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sprawy`
+--
+
+CREATE TABLE `sprawy` (
+  `id` int(11) NOT NULL,
+  `znak` varchar(20) NOT NULL,
+  `temat` text NOT NULL,
+  `id_jrwa` int(11) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -117,6 +147,12 @@ ALTER TABLE `admin`
 ALTER TABLE `jrwa`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `numer` (`numer`);
+
+--
+-- Indexes for table `metryka`
+--
+ALTER TABLE `metryka`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `podmioty`
@@ -138,6 +174,13 @@ ALTER TABLE `przychodzace`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `sprawy`
+--
+ALTER TABLE `sprawy`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `znak` (`znak`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -145,27 +188,37 @@ ALTER TABLE `przychodzace`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jrwa`
 --
 ALTER TABLE `jrwa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `metryka`
+--
+ALTER TABLE `metryka`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `podmioty`
 --
 ALTER TABLE `podmioty`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `pracownicy`
 --
 ALTER TABLE `pracownicy`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `przychodzace`
 --
 ALTER TABLE `przychodzace`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `sprawy`
+--
+ALTER TABLE `sprawy`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
