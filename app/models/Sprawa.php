@@ -23,7 +23,6 @@
       $this->db = new Database;
     }
 
-
    public function pobierzSprawePoId($id) {
       /*
        * Pobiera wszystkie dane o wybranej sprawie na podstawie jej id.

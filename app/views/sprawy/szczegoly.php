@@ -29,15 +29,29 @@
         <th class="align-middle">Data czynności</th>
         <th class="align-middle">Wykonawca czynności</th>
         <th class="align-middle">Wykonana czynność</th>
-        <th class="align-middle">Identyfikator dokumentu</th>
+        <th class="align-middle">Identyfikator <br>dokumentu</th>
       </tr>
       </thead>
       <tbody>
+      <?php foreach($data['metryka'] as $m) : ?>
+      <tr>
+        <td><?php echo $m->id; ?></td>
+        <td><?php echo $m->utworzone; ?></td>
+        <td><?php echo $m->id_pracownik; ?></td>
+        <td><?php echo $m->czynnosc; ?></td>
+        <td><?php echo $m->dokument; ?></td>
+      </tr>
+      <?php endforeach; ?>
       </tbody>
     </table>
   </div><!-- /metryka -->
 
   <div class="col-md-3 col-12">
+    <details>
+      <summary>Szczegóły wybranego dokumentu</summary>
+      <p class="alert alert-info">Nie wybrano dokumentu!</p>
+      <p>Kliknij na identyfikator dokumentu aby zobaczyć jego szczegóły.</p>
+    </details>
     <h2>Operacje</h2>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_przychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Przypisz przychodzące</a>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_wychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Dodaj wychodzące</a>
