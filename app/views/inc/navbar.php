@@ -14,6 +14,7 @@
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/podmioty/dodaj">Podmiot</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/pracownicy/dodaj">Pracownika</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/jrwa/dodaj">JRWA</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/sprawy/dodaj">Sprawę</a>
             </div>
           </li>
           <li class="nav-item dropdown">

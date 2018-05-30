@@ -106,6 +106,24 @@
      return $this->db->single();
     }
 
+    public function pobierzJrwaPoNumerze($numer) {
+      /*
+       * Pobiera dane numeru jrwa po jego numerze.
+       *
+       * Parametry:
+       *  - numer => numer szukanego jrwa
+       * Zwraca:
+       *  - wiersz z tabeli zawierające dane obiektu
+       */
+
+     $sql = "SELECT * FROM jrwa WHERE numer=:numer";
+     $this->db->query($sql);
+     $this->db->bind(':numer', $numer);
+
+
+     return $this->db->single();
+    }
+
     public function czyIstniejeJrwa($numer, $id) {
       /*
        * Sprawdza czy w bazie danych istnieje podany numer jrwa, który
