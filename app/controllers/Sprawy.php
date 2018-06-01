@@ -160,6 +160,59 @@
       }
     }
 
+    public function edytuj($id) {
+      /*
+       * Obsługuje proces edycji tematu sprawy.
+       * Sposób działania jest identyczy jak funkcji dodaj() z niewielką różnicą
+       * w trybie czystym - do pól formularza wprowadzane są dane edytowanej sprawy.
+       *
+       * Obsługuje widok: sprawy/edytuj/id
+       *
+       * Parametry:
+       *  - id => id edytowanej sprawy
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
+
+      $data = [
+        'title' => 'Zmień temat sprawy '. $sprawa->znak,
+        'id' => $id,
+        'temat' => $sprawa->temat,
+        'temat_err' => '',
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $data['temat'] = trim($_POST['temat']);
+
+        $data['temat_err'] = $this->sprawdzTemat($data['temat']);
+
+        if (empty($data['temat_err'])) {
+
+          $this->sprawaModel->zmienTemat($id, $data['temat']);
+          
+          // dodaj wpis do metryki
+          $this->metrykaModel->dodajMetryke($id, 9, $_SESSION['user_id']);
+
+          $wiadomosc = "Temat sprawy został zmieniony pomyślnie.";
+          flash('sprawy_szczegoly', $wiadomosc);
+          redirect('sprawy/szczegoly/'.$id);
+        } else {
+          // brudny
+          $this->view('sprawy/edytuj', $data);
+        }
+
+      } else {
+
+        // czysty
+        $this->view('sprawy/edytuj', $data);
+      }
+    }
+
     private function utworzZnakSprawy($jrwa) {
       /*
        * Funkcja, która tworzy znak sprawy na podstawie podanego numeru jrwa.

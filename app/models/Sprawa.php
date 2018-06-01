@@ -82,6 +82,29 @@
       }
    }
 
+   public function zmienTemat($id, $temat) {
+      /*
+       * Zmienia temat istniejącej sprawy.
+       *
+       * Parametry:
+       *  - id => id sprawy do zmiany
+       *  - temat => nowy temat sprawy
+       * Zwraca:
+       *  - boolean
+       */
+
+      $sql = "UPDATE sprawy SET temat=:temat WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+      $this->db->bind(':temat', $temat);
+
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+   }
+
    public function pobierzLiczbeSpraw($jrwa, $rok) {
      /*
       * Pobiera liczbę spraw w ramach podanego jrwa i w danym roku.
