@@ -42,6 +42,7 @@
 
       $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
       $metryka = $this->metrykaModel->pobierzMetrykeSprawy($id);
+      $zakonczona = $this->sprawaModel->czyZakonczona($id);
 
       // podmiana danych w metryce na bardziej czytelne
       $lp = 1;
@@ -72,6 +73,7 @@
       $data = [
         'title' => 'Szczegóły sprawy ' . $sprawa->znak,
         'id' => $id,
+        'zakonczona' => $zakonczona,
         'sprawa' => $sprawa,
         'metryka' => $metryka
       ];
@@ -194,7 +196,7 @@
         if (empty($data['temat_err'])) {
 
           $this->sprawaModel->zmienTemat($id, $data['temat']);
-          
+
           // dodaj wpis do metryki
           $this->metrykaModel->dodajMetryke($id, 9, $_SESSION['user_id']);
 
@@ -212,6 +214,68 @@
         $this->view('sprawy/edytuj', $data);
       }
     }
+
+    public function zakoncz($id) {
+      /*
+       * Obsługuje proces zakończenia sprawy.
+       *
+       * Nie obsługuje żadnego widoku.
+       * Adres wywołania sprawy/zakoncz/id
+       *
+       * Parametry:
+       *  - id => id sprawy do zakończenia
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      // nie kończ zakończonej sprawy
+      if ($this->sprawaModel->czyZakonczona($id)) {
+        $wiadomosc = "Sprawa została zakończona wcześniej!";
+        flash('sprawy_szczegoly', $wiadomosc);
+        redirect('sprawy/szczegoly/'.$id);
+      } else {
+        $this->sprawaModel->zakonczSprawe($id);
+        $this->metrykaModel->dodajMetryke($id, 99, $_SESSION['user_id']);
+
+        $wiadomosc = "Sprawa została zakończona pomyślnie.";
+        flash('sprawy_szczegoly', $wiadomosc);
+        redirect('sprawy/szczegoly/'.$id);
+      }
+
+    }
+
+    public function wznow($id) {
+      /*
+       * Obsługuje proces wznowienia sprawy.
+       *
+       * Nie obsługuje żadnego widoku.
+       * Adres wywołania sprawy/wznow/id
+       *
+       * Parametry:
+       *  - id => id sprawy do wznowienia
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      // nie wznawiaj sprawy nie zakończonej sprawy
+      if (!$this->sprawaModel->czyZakonczona($id)) {
+        $wiadomosc = "Sprawa nie jest zakończona!";
+        flash('sprawy_szczegoly', $wiadomosc);
+        redirect('sprawy/szczegoly/'.$id);
+      } else {
+        $this->sprawaModel->wznowSprawe($id);
+        $this->metrykaModel->dodajMetryke($id, 98, $_SESSION['user_id']);
+
+        $wiadomosc = "Sprawa została wznowiona pomyślnie.";
+        flash('sprawy_szczegoly', $wiadomosc);
+        redirect('sprawy/szczegoly/'.$id);
+      }
+
+    }
+
+
 
     private function utworzZnakSprawy($jrwa) {
       /*

@@ -57,6 +57,11 @@
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_wychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Dodaj wychodzące</a>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_inny/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Dodaj inny dokument</a>
     <a href="<?php echo URLROOT; ?>/sprawy/edytuj/<?php echo $data['id']; ?>" class="btn btn-block btn-dark">Edytuj temat sprawy</a>
+    <?php if ($data['zakonczona']) : ?>
+    <a href="<?php echo URLROOT; ?>/sprawy/wznow/<?php echo $data['id']; ?>" class="btn btn-block btn-success">Wznów sprawę</a>
+    <?php else : ?>
+    <a href="<?php echo URLROOT; ?>/sprawy/zakoncz/<?php echo $data['id']; ?>" class="btn btn-block btn-danger">Zakończ sprawę</a>
+    <?php endif; ?>
   </div>
 
 </div><!-- /row metryka + guziki -->

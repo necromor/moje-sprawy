@@ -125,6 +125,75 @@
       return intval($row->total);
    }
 
+   public function czyZakonczona($id) {
+      /*
+       * Sprawdza czy sprawa jest zakończona.
+       * Sprawa jest zakończona jeżeli istnieje data w bazie danych.
+       *
+       * Parametry:
+       *  - id => id szukanej sprawy
+       * Zwraca:
+       *  - boolean => true jeżeli zakończona
+       */
+
+     $sql = "SELECT zakonczona FROM sprawy WHERE id=:id";
+     $this->db->query($sql);
+     $this->db->bind(':id', $id);
+
+     $row = $this->db->single();
+
+     return $row->zakonczona != NULL;
+   }
+
+   public function zakonczSprawe($id) {
+      /*
+       * Ustawia sprawę jako zakończoną.
+       *
+       * Parametry:
+       *  - id => id sprawy do zakończenia
+       * Zwraca:
+       *  - boolean
+       */
+
+      $data = Date("Y-m-d H:i:s");
+
+      $sql = "UPDATE sprawy SET zakonczona=:data WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+      $this->db->bind(':data', $data);
+
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+   }
+
+   public function wznowSprawe($id) {
+      /*
+       * Wznawia zakończoną sprawę.
+       *
+       * Parametry:
+       *  - id => id sprawy do wznowienia
+       * Zwraca:
+       *  - boolean
+       */
+
+      $data = NULL;
+
+      $sql = "UPDATE sprawy SET zakonczona=:data WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+      $this->db->bind(':data', $data);
+
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+   }
+
+
 
 
   }
