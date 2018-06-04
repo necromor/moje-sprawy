@@ -221,7 +221,7 @@
        *
        * Funkcja nie obsługuje widoku.
        *
-       * Parametry: 
+       * Parametry:
        *  - id => id pobieranego podmiotu
        * Zwraca:
        *  - echo json postaci: { id:, nazwa:, adres_1:, adres_2: }
@@ -234,7 +234,7 @@
        if ($podmiot) {
          echo json_encode($podmiot);
        } else {
-         echo '{"id":"-1"}'; 
+         echo '{"id":"-1"}';
        }
     }
 

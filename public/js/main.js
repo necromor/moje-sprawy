@@ -113,3 +113,29 @@ $('#nazwaPodmiotu').on('change', function() {
     $('#pocztaPodmiotu').val('');
   }
 });
+
+// obsługa wyboru numeru jrwa z listy
+// wyślij zapytanie ajax i wstaw otrzymany opis do paragrafu opisJrwa
+$('#jrwa').on('change', function() {
+
+  $('#opisJrwa').text('Pobieram opis wybranego numeru...');
+  let numer = $('#jrwa').val();
+
+  // wyślij zapytanie ajax
+  $.ajax({
+    type: 'GET',
+    url: URLROOT + 'jrwa/ajax_jrwa/' + numer
+  })
+    .done(function(data) {
+      const jrwa = JSON.parse(data);
+      // jeżeli id = -1 to znaczy, że numer jrwa nie istnieje
+      if (jrwa.id != '-1') {
+        // wstaw dane adresowe do pól
+        $('#opisJrwa').text(jrwa.opis);
+      } else {
+        // wyczyść pola - na wszelki wypadek
+        $('#opisJrwa').text('Podany numer nie istnieje.');
+      }
+  });
+});
+

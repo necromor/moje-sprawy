@@ -253,6 +253,32 @@
       return '';
     }
 
+    public function ajax_jrwa($numer) {
+      /*
+       * Pobiera dane numeru jrwa i drukuje je w postaci json.
+       * Zastosowanie do zapytania ajax.
+       * Jeżeli numer nie istnieje w miejsu id wstawiona zostaje wartość -1
+       *
+       * Funkcja nie obsługuje widoku.
+       *
+       * Parametry:
+       *  - numer => numer pobieranego numeru jrwa
+       * Zwraca:
+       *  - echo json postaci: { id:, numer:, opis:, utworzone: }
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+       $jrwa = $this->jrwaModel->pobierzJrwaPoNumerze($numer);
+       if ($jrwa) {
+         echo json_encode($jrwa);
+       } else {
+         echo '{"id":"-1"}'; 
+       }
+    }
+
+
 
    /*
     * FUNKCJE SPRAWDZAJĄCE
