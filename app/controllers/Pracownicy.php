@@ -659,15 +659,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      if ($tekst == '') {
-       $error = "Pracownik musi mieć imię.";
-     } elseif (strlen($tekst) < 2) {
-       $error = "Imię musi mieć przynajmniej 2 znaki.";
+       return "Pracownik musi mieć imię.";
      }
 
-     return $error;
+     if (strlen($tekst) < 2) {
+       return "Imię musi mieć przynajmniej 2 znaki.";
+     }
+
    }
 
    private function sprawdzNazwisko($tekst) {
@@ -683,15 +682,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
       */
 
-     $error = '';
-
      if ($tekst == '') {
-       $error = "Pracownik musi mieć nazwisko.";
-     } elseif (strlen($tekst) < 2) {
-       $error = "Nazwisko musi mieć przynajmniej 2 znaki.";
+       return "Pracownik musi mieć nazwisko.";
      }
 
-     return $error;
+     if (strlen($tekst) < 2) {
+       return "Nazwisko musi mieć przynajmniej 2 znaki.";
+     }
+
    }
 
    private function sprawdzLogin($tekst, $id=0) {
@@ -708,17 +706,18 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
       */
 
-     $error = '';
-
      if ($tekst == '') {
-       $error = "Pracownik musi mieć login.";
-     } elseif (strlen($tekst) < 2) {
-       $error = "Login musi mieć przynajmniej 2 znaki.";
-     } elseif ($this->pracownikModel->czyIstniejeLogin($tekst, $id)) {
-       $error = "Podany login jest już zajęty.";
+       return "Pracownik musi mieć login.";
      }
 
-     return $error;
+     if (strlen($tekst) < 2) {
+       return "Login musi mieć przynajmniej 2 znaki.";
+     }
+
+     if ($this->pracownikModel->czyIstniejeLogin($tekst, $id)) {
+       return "Podany login jest już zajęty.";
+     }
+
    }
 
    private function sprawdzLoginLogowanie($login, $id) {
@@ -734,15 +733,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł 
       */
 
-     $error = '';
-
      if ($login == '') {
-       $error = "Proszę podać login.";
-     } elseif ($id == -1) {
-       $error = "Podany login jest nieprawidłowy.";
+       return "Proszę podać login.";
      }
 
-     return $error;
+     if ($id == -1) {
+       return "Podany login jest nieprawidłowy.";
+     }
+
    }
 
    private function sprawdzHaslo($haslo, $id) {
@@ -758,15 +756,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      if ($haslo == '') {
-       $error = "Musisz podać hasło.";
-     } elseif (!$this->pracownikModel->sprawdzHaslo($haslo, $id)) {
-       $error = "Podano nieporawne hasło.";
+       return "Musisz podać hasło.";
      }
 
-     return $error;
+     if (!$this->pracownikModel->sprawdzHaslo($haslo, $id)) {
+       return "Podano nieporawne hasło.";
+     }
+
    }
 
    private function sprawdzNoweHaslo($haslo, $stare, $dlugosc=6) {
@@ -783,17 +780,18 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      if ($haslo == '') {
-       $error = "Musisz podać nowe hasło.";
-     } elseif (strlen($haslo) < $dlugosc) {
-       $error = "Hasło musi mieć przynajmniej $dlugosc znaków.";
-     } elseif ($haslo == $stare) {
-       $error = "Nowe hasło musi być inne niż obecne.";
+       return "Musisz podać nowe hasło.";
      }
 
-     return $error;
+     if (strlen($haslo) < $dlugosc) {
+       return "Hasło musi mieć przynajmniej $dlugosc znaków.";
+     }
+
+     if ($haslo == $stare) {
+       return "Nowe hasło musi być inne niż obecne.";
+     }
+
    }
 
    private function sprawdzHasloAdmin($haslo) {
@@ -809,15 +807,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      if ($haslo == '') {
-       $error = "Musisz podać hasło admina.";
-     } elseif (strlen($haslo) < 8) {
-       $error = "Hasło admina musi mieć długość przynajmniej 8 znaków.";
+       return "Musisz podać hasło admina.";
      }
 
-     return $error;
+     if (strlen($haslo) < 8) {
+       return "Hasło admina musi mieć długość przynajmniej 8 znaków.";
+     }
+
    }
 
 

@@ -329,15 +329,14 @@
        *   - sting zawierający komunikat błędu jeżeli taki wystąpł
        */
 
-      $error = '';
-
       if ($tekst == '') {
-        $error = "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-      } elseif (!$this->jrwaModel->czyIstniejeJrwa($tekst, 0)) {
-        $error = "Podany numer JRWA nie istnieje.";
+        return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
       }
 
-      return $error;
+      if (!$this->jrwaModel->czyIstniejeJrwa($tekst, 0)) {
+        return "Podany numer JRWA nie istnieje.";
+      }
+
     }
 
     private function sprawdzTemat($tekst) {
@@ -353,15 +352,16 @@
        *   - sting zawierający komunikat błędu jeżeli taki wystąpł
        */
 
-      $error = '';
-
       if ($tekst == '') {
-        $error = "Musisz podać temat sprawy.";
-      } elseif (strlen($tekst) < 10 ) {
-        $error = "Temat sprawy nie może mieć mniej niż 10 znaków.";
+        return "Musisz podać temat sprawy.";
       }
 
-      return $error;
+      if (strlen($tekst) < 10 ) {
+        return "Temat sprawy nie może mieć mniej niż 10 znaków.";
+      }
+
     }
+
+
 
   }

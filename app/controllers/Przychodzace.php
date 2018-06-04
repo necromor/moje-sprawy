@@ -457,15 +457,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      if ($nazwa == '') {
-       $error = "Nazwa nie może pozostać pusta.";
-     } elseif (strlen($nazwa) < 2) {
-       $error = "Nazwa musi mieć przynajmniej dwa znaki";
+       return "Nazwa nie może pozostać pusta.";
      }
 
-     return $error;
+     if (strlen($nazwa) < 2) {
+       return "Nazwa musi mieć przynajmniej dwa znaki";
+     }
+
    }
 
    private function sprawdzAdresPodmiotu($adres, $nowy) {
@@ -483,19 +482,19 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
      // istniejący podmiot - wartość pola nie ma znaczenia
      if ($nowy == '0') {
-       return $error;
+       return '';
      }
 
      if ($adres == '') {
-       $error = "Pole adresu nie może pozostać puste.";
-     } elseif (strlen($adres) < 6) {
-       $error = "Adres musi mieć przynajmniej 6 znaków";
+       return "Pole adresu nie może pozostać puste.";
      }
 
-     return $error;
+     if (strlen($adres) < 6) {
+       return "Adres musi mieć przynajmniej 6 znaków";
+     }
+
    }
 
    private function sprawdzPocztaPodmiotu($poczta, $nowy) {
@@ -513,19 +512,19 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
      // istniejący podmiot - wartość pola nie ma znaczenia
      if ($nowy == '0') {
-       return $error;
+       return '';
      }
 
      if ($poczta == '') {
-       $error = "Pole poczty nie może pozostać puste.";
-     } elseif (strlen($poczta) < 6) {
-       $error = "Poczta musi mieć przynajmniej 6 znaków";
+       return "Pole poczty nie może pozostać puste.";
      }
 
-     return $error;
+     if (strlen($poczta) < 6) {
+       return "Poczta musi mieć przynajmniej 6 znaków";
+     }
+
    }
 
    private function sprawdzZnak($znak) {
@@ -541,14 +540,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
      if ($znak == '') {
-       $error = "Oznaczenie pisma nie może pozostać puste.<br>Wpisz <em>brak</em> jeżeli pismo nie ma oznaczenia.";
-     } elseif (strlen($znak) < 2) {
-       $error = "Oznaczenie musi mieć przynajmniej 2 znaki";
+       return "Oznaczenie pisma nie może pozostać puste.<br>Wpisz <em>brak</em> jeżeli pismo nie ma oznaczenia.";
      }
 
-     return $error;
+     if (strlen($znak) < 2) {
+       return "Oznaczenie musi mieć przynajmniej 2 znaki";
+     }
+
    }
 
    private function sprawdzDatePisma($data) {
@@ -565,12 +564,10 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
      if ($data == '') {
-       $error = "Data pisma nie może pozostać pusta.<br>Wpisz <em>datę wpływu</em> jeżeli pismo nie ma daty.";
+       return "Data pisma nie może pozostać pusta.<br>Wpisz <em>datę wpływu</em> jeżeli pismo nie ma daty.";
      }
 
-     return $error;
    }
 
    private function sprawdzDateWplywu($data) {
@@ -589,12 +586,10 @@
 
      //DO ZAIMPLEMENTOWANIA
 
-     $error = '';
      if ($data == '') {
-       $error = "Data wpływu nie może pozostać pusta.";
+       return "Data wpływu nie może pozostać pusta.";
      }
 
-     return $error;
    }
 
    private function sprawdzDotyczy($dotyczy) {
@@ -610,14 +605,14 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
      if ($dotyczy == '') {
-       $error = "Każde pismo czegoś dotyczy.";
-     } elseif (strlen($dotyczy) < 10) {
-       $error = "Treść dotyczy musi mieć przynajmniej 10 znaków.";
+       return "Każde pismo czegoś dotyczy.";
      }
 
-     return $error;
+     if (strlen($dotyczy) < 10) {
+       return "Treść dotyczy musi mieć przynajmniej 10 znaków.";
+     }
+
    }
 
    private function sprawdzLiczbaZalacznikow($lzal, $czyFaktura) {
@@ -634,17 +629,15 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
      // dodawana faktura - wartość pola nie ma znaczenia
      if ($czyFaktura == '1') {
-       return $error;
+       return '';
      }
 
      if ($lzal == '') {
-       $error = "Wpisz 0 jeżeli pismo nie ma załączników.";
+       return "Wpisz 0 jeżeli pismo nie ma załączników.";
      }
 
-     return $error;
    }
 
    private function sprawdzDekretacja($dekretacja, $czyFaktura) {
@@ -665,17 +658,15 @@
 
      // DO ZAIMPLEMENTOWANIA
 
-     $error = '';
      // dodawana faktura - wartość pola nie ma znaczenia
      if ($czyFaktura == '1') {
-       return $error;
+       return '';
      }
 
      if ($dekretacja == '') {
-       $error = "Każde pismo posiada dekretację.";
+       return "Każde pismo posiada dekretację.";
      }
 
-     return $error;
    }
 
    private function sprawdzKwota($kwota, $czyFaktura) {
@@ -692,18 +683,15 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      // dodawane pismo - wartość pola nie ma znaczenia
      if ($czyFaktura != '1') {
-       return $error;
+       return '';
      }
 
      if ($kwota == '') {
-       $error = "Każda faktura posiada kwotę.";
+       return "Każda faktura posiada kwotę.";
      }
 
-     return $error;
    }
 
 

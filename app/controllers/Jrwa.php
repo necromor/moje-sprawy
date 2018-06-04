@@ -202,8 +202,6 @@
        *  - string => komunikat błędu jeżeli taki wystąpił
        */
 
-      $error = '';
-
       if (empty($grupa)) {
         return 'Nie podano danych.';
       }
@@ -222,12 +220,13 @@
       $numery = []; // służy do sprawdzania czy na liście nie ma duplikatów numerów jrwa
       foreach ($linie as $linia) {
         $elementy = explode(":", $linia);
-        $elementy[0] = trim($elementy[0]);
-        $elementy[1] = trim($elementy[1]);
         // czy linia jest postaci numer:opis
         if (count($elementy) != 2) {
           return 'W zbiorze danych wystąpił nieprawidłowy format linii.';
         }
+
+        $elementy[0] = trim($elementy[0]);
+        $elementy[1] = trim($elementy[1]);
 
         // sprawdzenie poszczególnych numerów i opisów
         $err_numer = $this->sprawdzNumer($elementy[0]);
@@ -274,7 +273,7 @@
        if ($jrwa) {
          echo json_encode($jrwa);
        } else {
-         echo '{"id":"-1"}'; 
+         echo '{"id":"-1"}';
        }
     }
 
@@ -301,17 +300,18 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      if ($tekst == '') {
-       $error = "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-     } elseif (!preg_match('/^[0-9]{1,4}$/', $tekst)) {
-       $error = "Format numeru jrwa to od 1 do 4 cyfr.";
-     } elseif ($this->jrwaModel->czyIstniejeJrwa($tekst, $id)) {
-       $error = "W bazie danych istnieje już JRWA o numerze $tekst.";
+       return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
      }
 
-     return $error;
+     if (!preg_match('/^[0-9]{1,4}$/', $tekst)) {
+       return "Format numeru jrwa to od 1 do 4 cyfr.";
+     }
+
+     if ($this->jrwaModel->czyIstniejeJrwa($tekst, $id)) {
+       return "W bazie danych istnieje już JRWA o numerze $tekst.";
+     }
+
    }
 
    private function sprawdzOpis($tekst) {
@@ -328,15 +328,15 @@
       */
 
      $limit = 8; //minimalna liczba znaków opisu
-     $error = '';
 
      if ($tekst == '') {
-       $error = "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-     } elseif (strlen($tekst) < $limit ) {
-       $error = "Opis musi mieć przynajmniej $limit znaków. [$tekst]";
+       return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
      }
 
-     return $error;
+     if (strlen($tekst) < $limit ) {
+       return "Opis musi mieć przynajmniej $limit znaków. [$tekst]";
+     }
+
    }
 
    private function sprawdzGrupe($grupa) {
@@ -351,10 +351,9 @@
       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
       */
 
-     $error = '';
-
      //tymczasowo
-     return $error;
+     return '';
+
    }
 
 
