@@ -62,7 +62,7 @@
         switch ($m->rodzaj_dokumentu) {
           case 1:
             $przych = $this->przychodzacaModel->pobierzPrzychodzacaPoId($m->id_dokument);
-            $m->dokument = 'p' . time($przych->utworzone);
+            $m->dokument = 'p' . strtotime($przych->utworzone);
             break;
           default:
             $m->dokument = '=====';
@@ -275,6 +275,51 @@
 
     }
 
+    public function dodaj_przychodzace($id, $pismo=0) {
+      /*
+       * Widok, który umożliwia przypisanie pisma przychodzącego do sprawy.
+       * Do sprawy można tylko przypisać pismo przychodzące, które:
+       *  a) nie jest przypisane do żadnej sprawy
+       *  b) nie jest oznaczone jako ad acta
+       *  c) jest zadekretowane na zalogowanego pracownika
+       *
+       * Parametry:
+       *  - id => id sprawy
+       *
+       * Obsługuje widok: sprawy/dodaj_przychodzace/id
+       *
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      // jeżeli link ma tylko jeden parametr to wyświetl zestawienie
+      if ($pismo == 0) {
+
+        $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
+        $pisma = $this->przychodzacaModel->pobierzPismaDoZrobienia($_SESSION['user_id']);
+
+        $data = [
+          'title' => 'Przypisz pismo przychodzące do sprawy ' . $sprawa->znak,
+          'id' => $id,
+          'sprawa' => $sprawa,
+          'pisma' => $pisma
+        ];
+
+        $this->view('sprawy/dodaj_przychodzace', $data);
+      } else {
+        // nie chcemy dodawać do metryki pisma którego nie możemy
+        if ($this->przychodzacaModel->czyMoznaDodacPismoDoSprawy($pismo)) {
+          $this->metrykaModel->dodajMetryke($id, 1, $_SESSION['user_id'], 1, $pismo);
+          $wiadomosc = "Pismo zostało pomyślnie przypisane do sprawy.";
+          flash('sprawy_szczegoly', $wiadomosc);
+        } else {
+          $wiadomosc = "Pismo nie może zostać przypisane do sprawy.";
+          flash('sprawy_szczegoly', $wiadomosc, 'alert alert-danger');
+        }
+        redirect('sprawy/szczegoly/'.$id);
+      }
+    }
 
 
     private function utworzZnakSprawy($jrwa) {

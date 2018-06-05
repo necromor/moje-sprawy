@@ -131,11 +131,44 @@
        *  - wiersz z bazy zawierający wszystkie dane korespondencji
        */
 
-      $sql = "SELECT * FROM przychodzace, podmioty WHERE przychodzace.id=:id AND przychodzace.id_podmiot=podmioty.id";
+      $sql = "SELECT przychodzace.*, podmioty.nazwa, podmioty.adres_1, podmioty.adres_2 
+                     FROM przychodzace, podmioty
+                     WHERE przychodzace.id=:id
+                       AND przychodzace.id_podmiot=podmioty.id";
       $this->db->query($sql);
       $this->db->bind(':id', $id);
 
       return $this->db->single();
+    }
+
+    public function pobierzPismaDoZrobienia($pracownik) {
+      /*
+       * Pobiera wszystkie pisma przychodzące zadekretowane do danego pracownika,
+       * które nie są przypisane do żadnej sprawy lub oznaczone jako ad acta.
+       * Pisma są posortowane od tego, które wpłynęło najwcześniej.
+       *
+       * Parametry:
+       *  - pracownik => id pracownika, którego pism szukamy
+       * Zwraca:
+       *  - set zawierający dane korespondencji
+       */
+
+      // ZAIMPLEMENTOWAĆ WYKLUCZENIE AD ACTA
+
+      $sql = "SELECT
+              przychodzace.*,
+              podmioty.nazwa,
+              podmioty.adres_1,
+              podmioty.adres_2
+              FROM przychodzace, podmioty
+              WHERE id_pracownik=:pracownik
+                AND przychodzace.id_podmiot=podmioty.id
+                AND przychodzace.id NOT IN (SELECT id_dokument FROM metryka WHERE rodzaj_dokumentu='1')
+              ORDER BY data_wplywu ASC";
+      $this->db->query($sql);
+      $this->db->bind(':pracownik', $pracownik);
+
+      return $this->db->resultSet();
     }
 
     public function dodajPrzychodzaca($data) {
@@ -247,6 +280,26 @@
       }
     }
 
+    public function czyMoznaDodacPismoDoSprawy($id) {
+      /*
+       * Sprawdza czy podane pismo przypisane już jest do sprawy lub oznaczone jako ad acta.
+       *
+       * Parametry:
+       *  - id => id szukanego pisma
+       * Zwraca:
+       *  - boolean => true jeżeli pismo bez sprawy i nie ad acta
+       */
+
+      // ZAIMPLEMENTOWAĆ SPRAWDZANIE W AD ACTA
+
+      $sql = "SELECT * FROM metryka WHERE rodzaj_dokumentu='1' AND id_dokument=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+      return $this->db->rowCount() == 0;
+
+    }
 
     private function tworzNrRejestru($data) {
       /*
