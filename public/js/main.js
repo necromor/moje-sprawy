@@ -139,3 +139,67 @@ $('#jrwa').on('change', function() {
   });
 });
 
+
+// obsługa guzików do wyświetlenia szczegółów korespondencji
+$('.pokazSzczegoly').click(function () {
+  let idGuzika = this.id;
+  let podzial = idGuzika.split("-");
+  $('#szczegolyKorespondencji').html('<p>Pobieram szczegóły pisma...</p>');
+  switch (podzial[0]) {
+    case '1':
+      szczegolyPrzychodzace(podzial[1]);
+      break;
+    case '2':
+      szczegolyWychodzace(podzial[1]);
+      break;
+    case '3':
+      szczegolyInne(podzial[1]);
+      break;
+  }
+
+  // otwórz details operacji
+  $('#detPisma').prop('open', true);
+});
+
+function szczegolyPrzychodzace(id) {
+  // wysyła zapytanie ajax
+  // wstawia otrzymane dane do div szczegolyKorespondencji
+
+  // wyślij zapytanie ajax
+  $.ajax({
+    type: 'GET',
+    url: URLROOT + 'przychodzace/ajax_przychodzace/' + id
+  })
+    .done(function(data) {
+      const pismo = JSON.parse(data);
+      // jeżeli id = -1 to znaczy, że pismo nie istnieje
+      if (pismo.id != '-1') {
+        // wstaw informacje do diva
+        $('#szczegolyKorespondencji').html(tworzHtmlPrzychodzace(pismo));
+      }
+  });
+}
+
+function szczegolyWychodzace(id) {
+  console.log(id);
+}
+
+function szczegolyInne(id) {
+  console.log(id);
+}
+
+function tworzHtmlPrzychodzace(pismo) {
+  // tworzy html na podstawie danych pisma przychodzącego
+  let html = '<ul class="list-group list-group-flush">';
+  html+= `<li class="list-group-item"><u>nr rej.</u>: ${pismo['nr_rejestru']}</li>`;
+  html+= `<li class="list-group-item"><u>znak</u>: ${pismo['znak']}</li>`;
+  html+= `<li class="list-group-item"><u>data pisma</u>: ${pismo['data_pisma']}</li>`;
+  html+= `<li class="list-group-item"><u>data wpływu</u>: ${pismo['data_wplywu']}</li>`;
+  html+= `<li class="list-group-item"><u>nadawca</u>: ${pismo['nazwa']}</li>`;
+  html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['dotyczy']}</li>`;
+  html+= `<li class="list-group-item"><u>liczba zał.</u>: ${pismo['liczba_zalacznikow']}</li>`;
+  html+= '</dl>';
+  return html;
+}
+
+

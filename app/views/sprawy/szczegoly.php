@@ -39,7 +39,15 @@
         <td><?php echo $m->utworzone; ?></td>
         <td><?php echo $m->id_pracownik; ?></td>
         <td><?php echo $m->czynnosc; ?></td>
-        <td><?php echo $m->dokument; ?></td>
+        <td>
+          <?php if ($m->rodzaj_dokumentu != 0 ) : ?>
+          <button class="btn btn-block btn-info pokazSzczegoly" id="<?php echo $m->rodzaj_dokumentu . '-' . $m->id_dokument; ?>" title="Wyświetl szczegóły pisma">
+          <?php echo $m->dokument; ?>
+          </button>
+          <?php else : ?>
+          <?php echo $m->dokument; ?>
+          <?php endif; ?>
+        </td>
       </tr>
       <?php endforeach; ?>
       </tbody>
@@ -47,10 +55,14 @@
   </div><!-- /metryka -->
 
   <div class="col-md-3 col-12">
-    <details>
+    <details id="detPisma">
       <summary>Szczegóły wybranego dokumentu</summary>
-      <p class="alert alert-info">Nie wybrano dokumentu!</p>
-      <p>Kliknij na identyfikator dokumentu aby zobaczyć jego szczegóły.</p>
+      <div id="szczegolyKorespondencji">
+      <ul class="list-group list-group-flush">
+      <li class="list-group-item list-group-item-warning">Nie wybrano dokumentu!</li>
+      <li class="list-group-item list-group-item-info">Kliknij na identyfikator dokumentu aby zobaczyć jego szczegóły.</li>
+      </ul>
+      </div>
     </details>
     <h2>Operacje</h2>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_przychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Przypisz przychodzące</a>

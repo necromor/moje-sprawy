@@ -408,6 +408,31 @@
       }
    }
 
+   public function ajax_przychodzace($id) {
+      /*
+       * Pobiera dane korespondencji przychodzącej i drukuje je w postaci json.
+       * Zastosowanie do zapytania ajax.
+       * Jeżeli korespondencja nie istnieje w miejsu id wstawiona zostaje wartość -1
+       *
+       * Funkcja nie obsługuje widoku.
+       *
+       * Parametry:
+       *  - id => id pobieranej korepondencji
+       * Zwraca:
+       *  - echo json postaci: { id:, nr_rejrestru:, znak:, itd... }
+       */
+
+       // tylko zalogowany
+       sprawdzCzyPosiadaDostep(4,0);
+
+       $pismo = $this->przychodzacaModel->pobierzPrzychodzacaPoId($id);
+       if ($pismo) {
+         echo json_encode($pismo);
+       } else {
+         echo '{"id":"-1"}';
+       }
+   }
+
    /*
     * FUNKCJE POMOCNICE
     */

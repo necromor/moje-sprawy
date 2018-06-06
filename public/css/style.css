@@ -1,0 +1,15 @@
+details {
+  border: 2px solid black;
+  border-radius: 10px;
+  margin-bottom: 1em;
+}
+
+details summary {
+  background-color:#343a40;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 8px;
+  font-weight:bold;
+  font-size: 120%;
+  padding: 0.2em;
+}
