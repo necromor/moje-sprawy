@@ -118,7 +118,8 @@ $('#nazwaPodmiotu').on('change', function() {
 // wyślij zapytanie ajax i wstaw otrzymany opis do paragrafu opisJrwa
 $('#jrwa').on('change', function() {
 
-  $('#opisJrwa').text('Pobieram opis wybranego numeru...');
+  //$('#opisJrwa').text('Pobieram opis wybranego numeru...');
+  $('#opisJrwa').html(showLoader());
   let numer = $('#jrwa').val();
 
   // wyślij zapytanie ajax
@@ -144,7 +145,7 @@ $('#jrwa').on('change', function() {
 $('.pokazSzczegoly').click(function () {
   let idGuzika = this.id;
   let podzial = idGuzika.split("-");
-  $('#szczegolyKorespondencji').html('<p>Pobieram szczegóły pisma...</p>');
+  $('#szczegolyKorespondencji').html(showLoader());
   switch (podzial[0]) {
     case '1':
       szczegolyPrzychodzace(podzial[1]);
@@ -202,4 +203,7 @@ function tworzHtmlPrzychodzace(pismo) {
   return html;
 }
 
+function showLoader() {
+  return `<img src="${URLROOT}img/loader.gif" alt="Pobieram dane..." style="display:block; margin: 0.5em auto">`;
+}
 
