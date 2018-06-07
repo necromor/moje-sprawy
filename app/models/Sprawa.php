@@ -82,6 +82,33 @@
       }
    }
 
+   public function pobierzNumerySpraw($rok=-1, $jrwa=-1) {
+      /*
+       * Pobiera numery spraw na podstawie podanego roku i/ewentualnie numeru jrwa.
+       *
+       * Parametry:
+       *  - rok => rok założenia spraw
+       *  - jrwa => id numeru jrwa spraw do wyświetlenia
+       * Zwraca:
+       *  - set numerów spraw
+       */
+
+     if($rok == -1) {$rok = Date("Y");}
+
+     if ($jrwa == -1) {
+       $sql = "SELECT znak FROM sprawy WHERE utworzone LIKE :rok";
+       $this->db->query($sql);
+       $this->db->bind(':rok', $rok . "%");
+     } else {
+       $sql = "SELECT znak FROM sprawy WHERE utworzone LIKE :rok AND jrwa=:jrwa";
+       $this->db->query($sql);
+       $this->db->bind(':rok', $rok . "%");
+       $this->db->bind(':jrwa', $jrwa);
+     }
+
+     return $this->db->resultSet();
+   }
+
    public function zmienTemat($id, $temat) {
       /*
        * Zmienia temat istniejącej sprawy.

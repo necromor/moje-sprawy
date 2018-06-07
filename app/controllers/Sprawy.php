@@ -275,6 +275,52 @@
 
     }
 
+    public function wybierz() {
+      /*
+       * Obsługuje proces wyboru sprawy do wyświetlenia szczegółów.
+       * W trybie domyślnym lista spraw zawiera sprawy z roku bieżącego ze wszystkich jrwa.
+       * Użytkownik ma możliwość zmiany roku i/lub numerów jrwa, które zmienią listę spraw do wyboru z listy.
+       *
+       * Obsługuje widok sprawy/wybierz
+       *
+       * Parametry:
+       *  - brak
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $sprawy = $this->sprawaModel->pobierzNumerySpraw();
+      $jrwaLista = $this->jrwaModel->pobierzJrwa();
+
+      $data = [
+        'title' => 'Wybierz sprawę do wyświetlenia',
+        'sprawy' => $sprawy,
+        'jrwa' => $jrwaLista,
+        'znak' => '',
+        'znak_err' => ''
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data['znak'] = $_POST['znak'];
+        $sprawa = $this->sprawaModel->pobierzSprawePoZnaku($data['znak']);
+
+        if ($sprawa) {
+          redirect('sprawy/szczegoly/' .$sprawa->id);
+        } else {
+          $data['znak_err'] = "Podana sprawa nie istnieje!";
+          $this->view('sprawy/wybierz', $data);
+        }
+
+      } else {
+
+        $this->view('sprawy/wybierz', $data);
+      }
+    }
+
     public function dodaj_przychodzace($id, $pismo=0) {
       /*
        * Widok, który umożliwia przypisanie pisma przychodzącego do sprawy.
