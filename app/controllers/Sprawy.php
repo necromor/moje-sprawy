@@ -367,6 +367,52 @@
       }
     }
 
+    public function ajax_lista($rok, $numer=-1) {
+      /*
+       * Pobiera listę numerów spraw w podanym roku i/lub numerze jrwa drukuje je w postaci json.
+       * Zastosowanie do zapytania ajax.
+       * Jeżeli numery nie istnieją lub wystąpił błąd znak ma wartość -1
+       * Wartość numeru -1 oznacza, że nie wybrano jrwa.
+       *
+       * Funkcja nie obsługuje widoku.
+       *
+       * Parametry:
+       *  - rok => rok, w którym sprawa została założona
+       *  - numer => numer (nie id) jrwa, którego sprawa dotyczy
+       * Zwraca:
+       *  - echo json postaci: [{znak: }]
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      if ($numer != -1) {
+        $jrwa = $this->jrwaModel->pobierzJrwaPoNumerze($numer);
+        if ($jrwa) {
+          $this->pokazListeNumerowSpraw($rok, $jrwa->id);
+        } else {
+          echo '[{"znak":"-1"}]';
+        }
+      } else {
+        $this->pokazListeNumerowSpraw($rok, -1);
+      }
+    }
+
+    private function pokazListeNumerowSpraw($rok, $jrwa) {
+      /*
+       * Pomocnicza funkcja, która na podstawie roku i id jrwa wyświetla dane w postaci json.
+       *
+       * Parametry:
+       *  - rok => rok założenia sprawy
+       *  - jrwa => id numeru jrwa
+       * Zwraca:
+       *  - echo json postaci: [{znak: }]
+       */
+
+      $numery = $this->sprawaModel->pobierzNumerySpraw($rok, $jrwa);
+      echo json_encode($numery);
+    }
+
 
     private function utworzZnakSprawy($jrwa) {
       /*

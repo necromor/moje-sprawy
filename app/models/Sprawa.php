@@ -100,7 +100,7 @@
        $this->db->query($sql);
        $this->db->bind(':rok', $rok . "%");
      } else {
-       $sql = "SELECT znak FROM sprawy WHERE utworzone LIKE :rok AND jrwa=:jrwa";
+       $sql = "SELECT znak FROM sprawy WHERE utworzone LIKE :rok AND id_jrwa=:jrwa";
        $this->db->query($sql);
        $this->db->bind(':rok', $rok . "%");
        $this->db->bind(':jrwa', $jrwa);

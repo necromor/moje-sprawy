@@ -207,3 +207,68 @@ function showLoader() {
   return `<img src="${URLROOT}img/loader.gif" alt="Pobieram dane..." style="display:block; margin: 0.5em auto">`;
 }
 
+// obsługa filtrowania listy przy wyborze sprawy
+$('#filtrujListe').click(function() {
+  usunKlasyFiltrujListe();
+  const info = $('#filtrujInfo');
+  info.addClass('alert-info');
+  info.text('Trwa pobieranie danych...');
+
+  let jrwa = '';
+  const rok = $('#filtrujRok').val();
+  let numer = $('#filtrujJrwa').val();
+  if (numer) {
+    jrwa = '/' + numer
+  }
+
+  // wyślij zapytanie ajax
+  $.ajax({
+    type: 'GET',
+    url: URLROOT + 'sprawy/ajax_lista/' + rok + jrwa
+  })
+    .done(function(data) {
+      usunKlasyFiltrujListe();
+      const lista = JSON.parse(data);
+
+      // jeżeli lista pusta wyświetl informację
+      if (lista.length == 0) {
+        info.addClass('alert-warning');
+        info.text('Zapytanie zakończone powodzeniem, ale w wybranym zakresie nie ma spraw.');
+        ustawListeNumerowSpraw(lista);
+        return;
+      }
+
+      // jeżeli był błąd jrwa
+      if (lista[0]['znak'] == "-1") {
+        info.addClass('alert-danger');
+        info.text('Podany numer jrwa jest błędny!');
+        return;
+      }
+
+      // zapytanie ma dane więc podmień listę
+      info.addClass('alert-success');
+      info.text('Lista została zaktualizowana.');
+      ustawListeNumerowSpraw(lista);
+  });
+});
+
+// usuń wszystkie klasy typu alert-... ze znacznika o id filtrujListe
+function usunKlasyFiltrujListe() {
+  const info = $('#filtrujInfo');
+  info.removeClass('alert-info');
+  info.removeClass('alert-success');
+  info.removeClass('alert-warning');
+  info.removeClass('alert-danger');
+}
+
+// ustawia numery spraw w liście na podstawie otrzymanego json
+function ustawListeNumerowSpraw(numery) {
+  let html = '';
+  if (numery.length != 0) {
+    numery.forEach(function(el) {
+      html+= '<option value="' + el['znak']  + '">';
+    });
+  }
+  $('#listaSpraw').html(html);
+}
+
