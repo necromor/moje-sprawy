@@ -8,15 +8,17 @@
   <div class="row">
 
   <form class="form-inline mx-auto my-3"  action="<?php URLROOT; ?>/sprawy/wybierz" method="post">
-
     <label for="znak" class="sr-only">Znak sprawy:</label>
     <input type="text" class="form-control form-control-lg mr-sm-2 mb-2 w-50" id="znak" name="znak" list="listaSpraw" value="<?php echo $data['znak']; ?>" placeholder="Wpisz znak sprawy">
     <button type="submit" class="btn btn-primary btn-lg mb-2">Zobacz szczegóły</button>
-    <p class="invalid-feedback d-block"><?php echo $data['znak_err']; ?></p>
-
-
   </form>
   </div>
+
+  <?php if ($data['znak_err'] != '') : ?>
+  <div class="row">
+    <p class="alert alert-danger mx-auto"><?php echo $data['znak_err']; ?></p>
+  </div>
+  <?php endif; ?>
 
   <hr>
   <div class="row">
@@ -31,19 +33,19 @@
   </div>
 
   <div class="row">
-   <p class="alert mx-auto" id="filtrujInfo"></p>
+    <p class="alert mx-auto" id="filtrujInfo"></p>
   </div>
 
   <hr>
   <div class="row">
-   <div class="col-md-8 col-12 mx-auto">
-     <h2>Informacje podręczne:</h2>
-     <ol>
-       <li>Domyślnie na liście znajdują się sprawy z bieżącego roku i wszyskich numerów jrwa.</li>
-       <li>Możesz zmienić dane na liście poprzez wybór roku i/lub numeru jrwa.</li>
-       <li>Możesz również bezpośrednio wpisać w polu <strong>pełny</strong> numer dowolnej sprawy (nawet takiej, której nie ma na liście) i wcisnąć przycisk <em>Zobacz szczegóły</em>.</li>
-     </ol>
-   </div>
+    <div class="col-md-8 col-12 mx-auto">
+      <h2>Informacje podręczne:</h2>
+      <ol>
+        <li>Domyślnie na liście znajdują się sprawy z bieżącego roku i wszyskich numerów jrwa.</li>
+        <li>Możesz zmienić dane na liście poprzez wybór roku i/lub numeru jrwa.</li>
+        <li>Możesz również bezpośrednio wpisać w polu <strong>pełny</strong> numer dowolnej sprawy (nawet takiej, której nie ma na liście) i wcisnąć przycisk <em>Zobacz szczegóły</em>.</li>
+      </ol>
+    </div>
   </div>
 
   <!-- listy -->
