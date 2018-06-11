@@ -31,6 +31,9 @@
             <a class="nav-link" href="<?php echo URLROOT; ?>/sprawy/wybierz">Szczegóły sprawy</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="<?php echo URLROOT; ?>/przychodzace/moje">Moje pisma</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="<?php echo URLROOT; ?>/pages/about">About</a>
           </li>
         </ul>

@@ -220,6 +220,29 @@
       }
    }
 
+   public function ostatniaAktywnosc($pracownik, $limit=10) {
+      /*
+       * Pobiera sprawy, w których pracownik dokonywał wpisów w metryce.
+       * Lista zawiera tylko unikalne sprawy, uszeregowane od najnowszej zmiany.
+       *
+       * Parametry:
+       *  - pracownik => id pracownika
+       *  - limit => liczba spraw, która ma być pobrana
+       * Zwraca:
+       *  - set unikalnych spraw posortowanych od najnowszej zmiany
+       */
+
+       $sql = "SELECT sprawy.* FROM sprawy, metryka
+               WHERE sprawy.id=metryka.id_sprawa
+               AND metryka.id_pracownik=:pracownik
+               GROUP BY sprawy.znak
+               LIMIT :limit";
+       $this->db->query($sql);
+       $this->db->bind(':pracownik', $pracownik);
+       $this->db->bind(':limit', $limit);
+
+       return $this->db->resultSet();
+   }
 
 
 

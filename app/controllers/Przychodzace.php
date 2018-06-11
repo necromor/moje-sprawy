@@ -16,6 +16,7 @@
       $this->przychodzacaModel = $this->model('Przychodzaca');
       $this->podmiotModel = $this->model('Podmiot');
       $this->pracownikModel = $this->model('Pracownik');
+      $this->sprawaModel = $this->model('Sprawa');
     }
 
     public function zestawienie($rok) {
@@ -111,6 +112,33 @@
       $this->view('przychodzace/faktury', $data);
     }
 
+    public function moje() {
+      /*
+       * Podstawowa strona powitalna dla każdego pracownika.
+       * Zawiera zestawienie zadekretowanych do niego/niej pism przychodzących,
+       * które nie przypisane są jeszcze do żadnej sprawy lub oznaczona jako ad/acta.
+       *
+       * Umożliwia oznaczenie pisma (pism?) jako ad/acta.
+       *
+       * DO ROZPATRZENIA: możliwość przypisania do sprawy
+       *
+       * Obsługuje widok: przychodzace/moje
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $pisma = $this->przychodzacaModel->pobierzPismaDoZrobienia($_SESSION['user_id']);
+      $sprawy = $this->sprawaModel->ostatniaAktywnosc($_SESSION['user_id'], 20);
+
+      $data = [
+        'title' => 'Moje pisma',
+        'pisma' => $pisma,
+        'sprawy' => $sprawy
+      ];
+
+      $this->view('przychodzace/moje', $data);
+    }
 
    public function dodaj() {
       /*
