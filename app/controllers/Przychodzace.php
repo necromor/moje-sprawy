@@ -17,6 +17,7 @@
       $this->podmiotModel = $this->model('Podmiot');
       $this->pracownikModel = $this->model('Pracownik');
       $this->sprawaModel = $this->model('Sprawa');
+      $this->jrwaModel = $this->model('JrwaM');
     }
 
     public function zestawienie($rok) {
@@ -139,6 +140,63 @@
 
       $this->view('przychodzace/moje', $data);
     }
+
+   public function adacta($id) {
+     /*
+      * Obsługuje proces oznaczenia pisma jako ad acta.
+      * Pismo oznaczone ad acta przypisywane jest tylko do kategorii JRWA.
+      * Nie interesuje nas data, ani sprawa.
+      *
+      * Obsługuje widok: przychodzace/adacta/id
+      *
+      * Parametry:
+      *  - id => id pisma przeznaczonego do oznaczenia jako ad acta
+      */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $pismo = $this->przychodzacaModel->pobierzPrzychodzacaPoId($id);
+      $jrwaLista = $this->jrwaModel->pobierzJrwa();
+
+      $data = [
+        'title' => 'Oznacz pismo jako ad acta',
+        'id' => $id,
+        'pismo' => $pismo,
+        'jrwaLista' => $jrwaLista,
+        'jrwa' => '',
+        'jrwa_err' => ''
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data['jrwa'] = $_POST['jrwa'];
+        $data['jrwa_err'] = $this->sprawdzJrwa($data['jrwa']);
+
+        if (empty($data['jrwa_err'])) {
+          // zamień numer jrwa na jego id
+          $nr_jrwa = $this->jrwaModel->pobierzJrwaPoNumerze($data['jrwa']);
+          $jrwa = $nr_jrwa->id;
+
+          //ZAIMPLEMENTOWAĆ SPRAWDZENIE CZY PISMO MOŻNA OZNACZYĆ AD ACTA
+
+          $this->przychodzacaModel->oznaczAA($id, $jrwa);
+
+          $wiadomosc = "Pismo o numerze rejestru <strong>$pismo->nr_rejestru</strong> zostało przypisane do numeru jrwa <strong>$nr_jrwa->numer</strong> jako ad acta.";
+          flash('moje_info', $wiadomosc);
+          redirect('przychodzace/moje');
+
+        } else {
+          //brudny
+          $this->view('przychodzace/adacta', $data);
+        }
+
+      } else {
+        $this->view('przychodzace/adacta', $data);
+      }
+
+   }
 
    public function dodaj() {
       /*
@@ -743,6 +801,29 @@
 
      if ($kwota == '') {
        return "Każda faktura posiada kwotę.";
+     }
+
+   }
+
+   private function sprawdzJrwa($tekst) {
+     /*
+      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego numeru jrwa do formularza.
+      * Zasady:
+      *  - pole nie może być puste
+      *  - numer musi istnieć w bazie danych
+      *
+      *  Parametry:
+      *   - tekst => wprowadzony numer
+      *  Zwraca:
+      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
+      */
+
+     if ($tekst == '') {
+       return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
+     }
+
+     if (!$this->jrwaModel->czyIstniejeJrwa($tekst, 0)) {
+       return "Podany numer JRWA nie istnieje.";
      }
 
    }

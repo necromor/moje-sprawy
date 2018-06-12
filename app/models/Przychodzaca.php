@@ -153,8 +153,6 @@
        *  - set zawierający dane korespondencji
        */
 
-      // ZAIMPLEMENTOWAĆ WYKLUCZENIE AD ACTA
-
       $sql = "SELECT
               przychodzace.*,
               podmioty.nazwa,
@@ -164,6 +162,7 @@
               WHERE id_pracownik=:pracownik
                 AND przychodzace.id_podmiot=podmioty.id
                 AND przychodzace.id NOT IN (SELECT id_dokument FROM metryka WHERE rodzaj_dokumentu='1')
+                AND przychodzace.id NOT IN (SELECT id_przychodzace FROM przychodzace_adacta)
               ORDER BY data_wplywu ASC";
       $this->db->query($sql);
       $this->db->bind(':pracownik', $pracownik);
@@ -273,6 +272,29 @@
       $this->db->bind(':kwota', $kwota);
 
       // zmień dane w bazie
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function oznaczAA($pismo, $jrwa) {
+      /*
+       * Oznacza istniejącą korepondencję jako ad acta.
+       *
+       * Parametry:
+       *  - pismo => id pisma do oznaczenia ad acta
+       *  - jrwa => id numeru jrwa
+       * Zwraca:
+       *  - boolean
+       */
+
+      $sql = "INSERT INTO przychodzace_adacta (id_przychodzace, id_jrwa) VALUES (:pismo, :jrwa)";
+      $this->db->query($sql);
+      $this->db->bind(':pismo', $pismo);
+      $this->db->bind(':jrwa', $jrwa);
+
       if ($this->db->execute()) {
         return true;
       } else {

@@ -26,7 +26,7 @@
     <div class="form-inline mx-auto">
       <label for="filtrujRok" class="sr-only">Rok</label>
       <input type="number" name="filtrujRok" id="filtrujRok" class="form-control mr-sm-2 mb-2" value="<?php echo Date('Y'); ?>" min="2016" max="2100" step="1">
-      <label for="rok" class="sr-only">Numer jrwa</label>
+      <label for="filtrujJrwa" class="sr-only">Numer jrwa</label>
       <input type="text" name="filtrujJrwa" id="filtrujJrwa" class="form-control mr-sm-2 mb-2" list="listaJrwa" placeholder="numer JRWA">
       <button type="button" class="btn btn-info mb-2" id="filtrujListe">Filtruj listę</button>
     </div>
