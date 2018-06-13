@@ -18,6 +18,7 @@
       $this->pracownikModel = $this->model('Pracownik');
       $this->przychodzacaModel = $this->model('Przychodzaca');
       $this->jrwaModel = $this->model('JrwaM');
+      $this->podmiotModel = $this->model('Podmiot');
     }
 
     public function szczegoly($id) {
@@ -366,6 +367,90 @@
         redirect('sprawy/szczegoly/'.$id);
       }
     }
+
+    public function dodaj_wychodzace($id) {
+      /*
+       * Obsługuje proces dodawania pisma wychodzącego w ramach sprawy.
+       *
+       * Proces dodawania pisma wychodzącego jest zbliżony do dodawania korespondencji przychodzącej.
+       * Różnicę stanowią daty pisma i wpływu (w tym przypadku wysłania/odbioru).
+       * Pismo wychodzące ma zawsze datę pisma równą dacie dodania do bazy danych.
+       *
+       * Data wysłania dodawana jest później w momencie wysyłki lub odbioru osobistego.
+       *
+       * Pismo wychodzące może być zwykłym pismem, decyzją lub postanowieniem.
+       * Jeżeli pismo jest decyzja lub postanowieniem to należy ustalić kolejny numer decyzji lub postanowienie
+       * w ramach danego jrwa i wstawić go do pola oznaczenie (osobna metoda ajax przy zmianie guzika radio).
+       * Dana ta jest tylko pomocnicza, gdyż pełny numer ma format rozbudowany i system nie jest w stanie
+       * sprawdzić czy oznaczenie decyzji/postanowienia jest poprawne.
+       * Nie ma sensu również wprowadzać jakichś wzorców jak w ramach każdego jrwa numery decyzji mają różne formaty.
+       *
+       * Obsługuje widok: sprawy/dodaj_wychodzace
+       *
+       * Parametry:
+       *  - id => id sprawy, w ramach której rejestrowane jest pismo wychodzące
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
+      $podmioty = $this->podmiotModel->pobierzPodmioty();
+
+      $data = [
+        'title' => 'Dodaj pismo wychodzące w ramach sprawy ' . $sprawa->znak,
+        'id' => $id,
+        'czy_nowy' => 0,
+        'podmiot_nazwa' => '',
+        'podmiot_adres' => '',
+        'podmiot_poczta' => '',
+        'dotyczy' => '',
+        'czy_dp' => 0,
+        'oznaczenie_dp' => '',
+        'dotyczy_dp' => '',
+        'podmioty' => $podmioty,
+        'podmiot_nazwa_err' => '',
+        'podmiot_adres_err' => '',
+        'podmiot_poczta_err' => '',
+        'dotyczy_err' => '',
+        'oznaczenie_dp_err' => '',
+        'dotyczy_dp_err' => ''
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        //$data['jrwa'] = trim($_POST['jrwa']);
+        //$data['temat'] = trim($_POST['temat']);
+
+        //$data['jrwa_err'] = $this->sprawdzJrwa($data['jrwa']);
+        //$data['temat_err'] = $this->sprawdzTemat($data['temat']);
+
+        if (empty($data['podmiot_nazwa_err']) &&
+            empty($data['podmiot_adres_err']) &&
+            empty($data['podmiot_poczta_err']) &&
+            empty($data['dotyczy_err']) &&
+            empty($data['oznaczenie_dp_err']) &&
+            empty($data['dotyczy_dp_err'])) {
+
+          $wiadomosc = "Pismo wychodzące zostało dodane pomyślnie.";
+          flash('sprawy_szczegoly', $wiadomosc);
+          redirect('sprawy/szczegoly/'.$sprawa->id);
+
+        } else {
+          // brudny
+          $this->view('sprawy/dodaj_wychodzace', $data);
+        }
+
+      } else {
+
+        // czysty
+        $this->view('sprawy/dodaj_wychodzace', $data);
+      }
+    }
+
+
+
 
     public function ajax_lista($rok, $numer=-1) {
       /*

@@ -227,8 +227,8 @@
        *  - echo json postaci: { id:, nazwa:, adres_1:, adres_2: }
        */
 
-       // tylko zalogowany sekretariat
-       sprawdzCzyPosiadaDostep(0,0);
+       // tylko zalogowany
+       sprawdzCzyPosiadaDostep(4,0);
 
        $podmiot = $this->podmiotModel->pobierzDanePodmiotu($id);
        if ($podmiot) {

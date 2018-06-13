@@ -17,6 +17,14 @@ if ($('#radioPojedynczy').is(':checked')) {
     $('#jrwaPojedynczy2').hide();
 }
 
+// na dzień dobry ukryj pola decyzji/postanowienia
+if ($('#radioDP0').is(':checked')) {
+    $('.wychodzace-dp').hide();
+} else {
+    $('.wychodzace-dp').show();
+}
+
+
 // obsługa zmiany opcji pismo czy faktura
 $('input[name=czyFaktura]:radio').on('click', function(e) {
   if (e.target.id == 'radioFaktura') {
@@ -70,6 +78,24 @@ $('input[name=czyGrupa]:radio').on('click', function(e) {
     $('#jrwaPojedynczy2').show();
     // pokaż pole dotyczące faktury
     $('#jrwaGrupa').hide();
+  }
+});
+
+// obsługa zmiany opcji zwykłe pismo / decyzja / postanowienie
+$('input[name=radioDP]:radio').on('click', function(e) {
+  if (e.target.id == 'radioDP0') {
+    // ukryj dodatkowe pola
+    $('.wychodzace-dp').hide();
+  } else {
+    // pokaż dodatkowe pola
+    $('.wychodzace-dp').show();
+
+    // wyczyść pola
+    $('#oznaczenieDP').val('Pobieram kolejny numer...');
+    $('#dotyczyDP').val('');
+
+    // pobierz kolejny numer decyzji / postanowienia
+    // DO ZAIMPLEMENTOWANIA AJAX
   }
 });
 
