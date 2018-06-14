@@ -10,7 +10,7 @@
 
     public function __construct() {
       /*
-       * Konstruktor klasy - tworzy połączenie z modelami 
+       * Konstruktor klasy - tworzy połączenie z modelami
        */
 
       $this->podmiotModel = $this->model('Podmiot');

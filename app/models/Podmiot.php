@@ -148,5 +148,32 @@
      }
    }
 
+   public function pobierzPodmiot($nazwa) {
+     /*
+      * Funkcja, która pobiera dane podmiotu po podanej nazwie i podmienia
+      * nazwę na format id# nazwa, jaki jest wykorzystywany w formularzach dodawania/edycji.
+      * Nie jest to dokładnie taka funkcja jak pobierzDanePodmiotuPoNazwie,
+      * gdyż zabezpiecza ona wypadek, gdy podmiot nie istnieje.
+      *
+      * Parametry:
+      *  - nazwa => nazwa szukanego podmiotu w formacie id#nazwa
+      * Zwraca:
+      *  - obiekt podmiotu z nazwą w formacie id#nazwa
+      */
+
+     $idp = pobierzIdNazwy($nazwa);
+
+     // sprawdź czy istnieje taki podmiot
+     if ($this->czyIstniejePodmiot($idp)) {
+       $podmiot = $this->pobierzDanePodmiotu($idp);
+       // na wypadek gdyby id było ok a nazwa zmieniona
+       // przywróc tą z bazy danych
+       $podmiot->nazwa = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+     } else {
+       // zwróć pusty obiekt
+       $podmiot = (object) ['nazwa' => '', 'adres_1' => '', 'adres_2' => ''];
+     }
+     return $podmiot;
+   }
 
   }

@@ -19,6 +19,8 @@
       $this->przychodzacaModel = $this->model('Przychodzaca');
       $this->jrwaModel = $this->model('JrwaM');
       $this->podmiotModel = $this->model('Podmiot');
+
+      $this->validator = new Validator();
     }
 
     public function szczegoly($id) {
@@ -420,11 +422,29 @@
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        //$data['jrwa'] = trim($_POST['jrwa']);
-        //$data['temat'] = trim($_POST['temat']);
 
-        //$data['jrwa_err'] = $this->sprawdzJrwa($data['jrwa']);
-        //$data['temat_err'] = $this->sprawdzTemat($data['temat']);
+        // pola disabled nie wysyłają danych więc trzeba pobrać dane podmiotu
+        if ($_POST['czyNowy'] == '0') {
+          $podmiot = $this->podmiotModel->pobierzPodmiot($_POST['nazwaPodmiotu']);
+          $nazwa = $podmiot->nazwa;
+          $adres = $podmiot->adres_1;
+          $poczta = $podmiot->adres_2;
+        } else {
+          $nazwa = trim($_POST['nazwaPodmiotu']);
+          $adres = trim($_POST['adresPodmiotu']);
+          $poczta = trim($_POST['pocztaPodmiotu']);
+        }
+
+        $data['czy_nowy'] = $_POST['czyNowy'];
+        $data['podmiot_nazwa'] = $nazwa;
+        $data['podmiot_adres'] = $adres;
+        $data['podmiot_poczta'] = $poczta;
+        $data['dotyczy'] = trim($_POST['dotyczy']);
+
+        $data['podmiot_nazwa_err'] = $this->validator->sprawdzDlugosc($data['podmiot_nazwa'], 4);
+        $data['podmiot_adres_err'] = $this->validator->sprawdzDlugosc($data['podmiot_adres'], 6, $data['czy_nowy']);
+        $data['podmiot_poczta_err'] = $this->validator->sprawdzDlugosc($data['podmiot_poczta'], 6, $data['czy_nowy']);
+        $data['dotyczy_err'] = $this->validator->sprawdzDlugosc($data['dotyczy'], 10);
 
         if (empty($data['podmiot_nazwa_err']) &&
             empty($data['podmiot_adres_err']) &&
