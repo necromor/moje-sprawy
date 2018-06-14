@@ -129,8 +129,8 @@
         $data['jrwa'] = trim($_POST['jrwa']);
         $data['temat'] = trim($_POST['temat']);
 
-        $data['jrwa_err'] = $this->sprawdzJrwa($data['jrwa']);
-        $data['temat_err'] = $this->sprawdzTemat($data['temat']);
+        $data['jrwa_err'] = $this->validator->sprawdzJrwa($data['jrwa']);
+        $data['temat_err'] = $this->validator->sprawdzDlugosc($data['temat'], 10);
 
         if (empty($data['jrwa_err']) && empty($data['temat_err'])) {
 
@@ -194,7 +194,7 @@
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
         $data['temat'] = trim($_POST['temat']);
 
-        $data['temat_err'] = $this->sprawdzTemat($data['temat']);
+        $data['temat_err'] = $this->validator->sprawdzDlugosc($data['temat'], 10);
 
         if (empty($data['temat_err'])) {
 
@@ -552,58 +552,6 @@
 
       return $znak;
     }
-
-
-    /*
-     * FUNKCJE SPRAWDZAJĄCE
-     */
-
-    private function sprawdzJrwa($tekst) {
-      /*
-       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego numeru jrwa do formularza.
-       * Zasady:
-       *  - pole nie może być puste
-       *  - numer musi istnieć w bazie danych
-       *
-       *  Parametry:
-       *   - tekst => wprowadzony numer
-       *  Zwraca:
-       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-       */
-
-      if ($tekst == '') {
-        return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-      }
-
-      if (!$this->jrwaModel->czyIstniejeJrwa($tekst, 0)) {
-        return "Podany numer JRWA nie istnieje.";
-      }
-
-    }
-
-    private function sprawdzTemat($tekst) {
-      /*
-       * Funkcja pomocnicza - sprawdza poprawność wprowadzonego tematu sprawy do formularza.
-       * Zasady:
-       *  - pole nie może być puste
-       *  - temat musi mieć przynajmniej 10 znaków
-       *
-       *  Parametry:
-       *   - tekst => wprowadzony temat
-       *  Zwraca:
-       *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-       */
-
-      if ($tekst == '') {
-        return "Musisz podać temat sprawy.";
-      }
-
-      if (strlen($tekst) < 10 ) {
-        return "Temat sprawy nie może mieć mniej niż 10 znaków.";
-      }
-
-    }
-
 
 
   }

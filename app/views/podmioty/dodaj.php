@@ -7,8 +7,8 @@
          <h1><?php echo $data['title'] ?></h1>
 
           <div class="form-group row">
-            <label for="nazwaPodmiotu" class="col-sm-4 col-form-label">Nazwa:</label>
-            <input type="text" class="form-control col-sm-8 <?php echo (!empty($data['nazwa_podmiotu_err'])) ? 'is-invalid' : ''; ?>" id="nazwaPodmiotu" name="nazwaPodmiotu" value="<?php echo $data['nazwa_podmiotu']; ?>">
+            <label for="nazwa" class="col-sm-4 col-form-label">Nazwa:</label>
+            <input type="text" class="form-control col-sm-8 <?php echo (!empty($data['nazwa_podmiotu_err'])) ? 'is-invalid' : ''; ?>" id="nazwa" name="nazwaPodmiotu" value="<?php echo $data['nazwa_podmiotu']; ?>">
             <span class="invalid-feedback offset-sm-4"><?php echo $data['nazwa_podmiotu_err']; ?></span>
           </div>
 

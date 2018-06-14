@@ -1,4 +1,5 @@
 <?php
+
   /*
    *  Kontroler Jrwa odpowiedzialny jest za obsługę modelu Jrwa z widokami.
    *  Nazwy metod jak w każdym kontrolerze odpowiadają częściom adresu url (co wynika
@@ -10,12 +11,12 @@
 
     public function __construct() {
       /*
-       * Konstruktor klasy - tworzy połączenie z modelami 
+       * Konstruktor klasy - tworzy połączenie z modelami
        */
 
-      //$this->podmiotModel = $this->model('Podmiot');
-      //$this->pracownikModel = $this->model('Pracownik');
       $this->jrwaModel = $this->model('JrwaM');
+
+      $this->validator = new Validator();
     }
 
     public function zestawienie() {
@@ -42,9 +43,9 @@
       /*
        * Obsługuje proces dodawania nowego numeru jrwa.
        * Działa w dwóch trybach: wyświetlanie formularza, obsługa formularza.
-       * Tryb wybierany jest w zależności od metody dostępu do strony: 
+       * Tryb wybierany jest w zależności od metody dostępu do strony:
        * POST czy GET.
-       * POST oznacza, że formularz został wysłany, 
+       * POST oznacza, że formularz został wysłany,
        * każda inna forma dostępu powoduje wyświetlenie formularza.
        *
        * Tryb wyświetlania formularza może mieć dwa stany:
@@ -53,13 +54,11 @@
        * Tryb czysty zawiera puste dane, tryb brudny przechowuje dane przesłane przez
        * użytkownika i umieszcza je w stosownych polach formularza
        *
-       * Tryb obsługi odpowiada za sprawdzenie wprowadzonych danych 
-       * i w zależności od tego czy są błędy wywołuje metodę modelu dodawania 
+       * Tryb obsługi odpowiada za sprawdzenie wprowadzonych danych
+       * i w zależności od tego czy są błędy wywołuje metodę modelu dodawania
        * numeru jrwa lub wyświetla brudny formularz.
-       * Sprawdzanie poprawności wprowadzonych danych polega jedynie
-       * na sprawdzeniu czy pola nie są puste.
        *
-       * Oprócz standardowego dodawanie jednego numeru jrwa widok
+       * Oprócz standardowego dodawania jednego numeru jrwa widok
        * ten obsługuje również zbiorcze dodawanie numerów, co jest przydatne
        * przy początkowej konfiguracji.
        *
@@ -93,10 +92,12 @@
         // ścieżka dodawania inna dla grupy inna dla numeru
         if ($data['czy_grupa'] == '0') {
           // pojedynczy numer
-          $data['numer_err'] = $this->sprawdzNumer($data['numer']);
-          $data['opis_err'] = $this->sprawdzOpis($data['opis']);
+          $data['numer_err'] = $this->validator->sprawdzNumerJrwa($data['numer']);
+          $data['opis_err'] = $this->validator->sprawdzDlugosc($data['opis'], 8);
 
-          if (empty($data['numer_err']) && empty($data['opis_err'])) {
+          if (empty($data['numer_err']) &&
+              empty($data['opis_err'])) {
+
             $numer = $data['numer'];
             $opis = $data['opis'];
             $this->jrwaModel->dodajJrwa($numer, $opis);
@@ -104,9 +105,6 @@
             $wiadomosc = "Numer <strong>$numer</strong> [<em>$opis</em>] został dodany poprawnie.";
             flash('jrwa_wiadomosc', $wiadomosc);
             redirect('jrwa/zestawienie');
-          } else {
-            // brudny
-            $this->view('jrwa/dodaj', $data);
           }
         } else {
           // grupa
@@ -116,17 +114,11 @@
             $wiadomosc = "Numer jrwa zostały dodane poprawnie.";
             flash('jrwa_wiadomosc', $wiadomosc);
             redirect('jrwa/zestawienie');
-          } else {
-            // brudny
-            $this->view('jrwa/dodaj', $data);
           }
         }
-
-      } else {
-
-        // czysty
-        $this->view('jrwa/dodaj', $data);
       }
+
+      $this->view('jrwa/dodaj', $data);
     }
 
     public function edytuj($id) {
@@ -144,11 +136,13 @@
       // tylko admin
       sprawdzCzyPosiadaDostep(-1,-1);
 
+      $jrwa = $this->jrwaModel->pobierzJrwaPoId($id);
+
       $data = [
         'title' => 'Zmień dane pozycji JRWA',
         'id' => $id,
-        'numer' => '',
-        'opis' => '',
+        'numer' => $jrwa->numer,
+        'opis' => $jrwa->opis,
         'numer_err' => '',
         'opis_err' => '',
       ];
@@ -160,10 +154,12 @@
         $data['numer'] = trim($_POST['numer']);
         $data['opis'] = trim($_POST['opis']);
 
-        $data['numer_err'] = $this->sprawdzNumer($data['numer'], $id);
-        $data['opis_err'] = $this->sprawdzOpis($data['opis']);
+        $data['numer_err'] = $this->validator->sprawdzNumerJrwa($data['numer'], $id);
+        $data['opis_err'] = $this->validator->sprawdzDlugosc($data['opis'], 8);
 
-        if (empty($data['numer_err']) && empty($data['opis_err'])) {
+        if (empty($data['numer_err']) &&
+            empty($data['opis_err'])) {
+
           $numer = $data['numer'];
           $opis = $data['opis'];
           $this->jrwaModel->edytujJrwa($numer, $opis, $id);
@@ -171,20 +167,10 @@
           $wiadomosc = "Numer <strong>$numer</strong> [<em>$opis</em>] został zmieniony.";
           flash('jrwa_wiadomosc', $wiadomosc);
           redirect('jrwa/zestawienie');
-        } else {
-          // brudny
-          $this->view('jrwa/edytuj', $data);
         }
-
-      } else {
-        // czysty
-
-        $jrwa = $this->jrwaModel->pobierzJrwaPoId($id);
-        $data['numer'] = $jrwa->numer;
-        $data['opis'] = $jrwa->opis;
-
-        $this->view('jrwa/edytuj', $data);
       }
+
+      $this->view('jrwa/edytuj', $data);
     }
 
     private function przetworzGrupeJrwa($grupa) {
@@ -277,82 +263,6 @@
        }
     }
 
-   /*
-    * FUNKCJE SPRAWDZAJĄCE
-    */
-
-   private function sprawdzNumer($tekst, $id=0) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego numeru jrwa do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - numer musi mieć od 1 do 4 cyfr
-      *  - numer nie może istnieć w bazie danych
-      * Przy edycji numeru ostatni warunek musi uwzględniać fakt, że użytkownik może nie chcieć zmienić
-      * istniejącego numeru.
-      *
-      *  Parametry:
-      *   - tekst => wprowadzony numer
-      *   - id => id edytowanego numeru
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     if ($tekst == '') {
-       return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-     }
-
-     if (!preg_match('/^[0-9]{1,4}$/', $tekst)) {
-       return "Format numeru jrwa to od 1 do 4 cyfr.";
-     }
-
-     if ($this->jrwaModel->czyIstniejeJrwa($tekst, $id)) {
-       return "W bazie danych istnieje już JRWA o numerze $tekst.";
-     }
-
-   }
-
-   private function sprawdzOpis($tekst) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego opisu numeru jrwa do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - opis musi mieć przynajmniej X znaków
-      *
-      *  Parametry:
-      *   - tekst => wprowadzony opis
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     $limit = 8; //minimalna liczba znaków opisu
-
-     if ($tekst == '') {
-       return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-     }
-
-     if (strlen($tekst) < $limit ) {
-       return "Opis musi mieć przynajmniej $limit znaków. [$tekst]";
-     }
-
-   }
-
-   private function sprawdzGrupe($grupa) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej grup numerów i opisów jrwa.
-      * Zasady:
-      *  - numer i opis muszą spełniać warunki z funkcji powyżej
-      *
-      *  Parametry:
-      *   - grupa => dane opisów numerów i grupy w formie tablicy
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     //tymczasowo
-     return '';
-
-   }
 
 
   }
