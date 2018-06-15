@@ -1,7 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <form action="<?php echo URLROOT; ?>/pracownicy/edytuj/<?php echo $data['id']; ?>" method="post">
-  <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
   <div class="row mb-3">
     <div class="col-md-8 mx-auto py-3">
 
