@@ -326,11 +326,13 @@
           }
           flash('korespondencja_dodaj', $wiadomosc);
           redirect('przychodzace/dodaj');
+        } else {
+          $this->view('przychodzace/dodaj', $data);
         }
       } else {
-      // musi być else gdyż inaczej nie działa wiadomość flash
+        // musi być else gdyż inaczej nie działa wiadomość flash
 
-      $this->view('przychodzace/dodaj', $data);
+        $this->view('przychodzace/dodaj', $data);
       }
    }
 

@@ -21,7 +21,7 @@
   <div class="form-group row">
     <div class="col-sm-8 offset-sm-4">
       <button type="submit" class="btn btn-primary">Zatwierdź zmianę tematu</button>
-      <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['id']; ?>" class="btn btn-info">Wróć do szczegółów sprawy</a>
+      <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['id']; ?>" class="btn btn-info"><i class="fa fa-angle-double-left"></i> Wróć do szczegółów sprawy</a>
     </div>
   </div>
 
