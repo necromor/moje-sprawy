@@ -1,5 +1,5 @@
 <?php
-  
+
   function pobierzIdNazwy($nazwa) {
     /*
      * funkcja która pobiera numer (id) z podanego ciągu w formacie:

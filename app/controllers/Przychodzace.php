@@ -18,6 +18,8 @@
       $this->pracownikModel = $this->model('Pracownik');
       $this->sprawaModel = $this->model('Sprawa');
       $this->jrwaModel = $this->model('JrwaM');
+
+      $this->validator = new Validator();
     }
 
     public function zestawienie($rok) {
@@ -172,7 +174,7 @@
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
         $data['jrwa'] = $_POST['jrwa'];
-        $data['jrwa_err'] = $this->sprawdzJrwa($data['jrwa']);
+        $data['jrwa_err'] = $this->validator->sprawdzJrwa($data['jrwa']);
 
         if (empty($data['jrwa_err'])) {
           // zamień numer jrwa na jego id
@@ -186,16 +188,10 @@
           $wiadomosc = "Pismo o numerze rejestru <strong>$pismo->nr_rejestru</strong> zostało przypisane do numeru jrwa <strong>$nr_jrwa->numer</strong> jako ad acta.";
           flash('moje_info', $wiadomosc);
           redirect('przychodzace/moje');
-
-        } else {
-          //brudny
-          $this->view('przychodzace/adacta', $data);
         }
 
-      } else {
-        $this->view('przychodzace/adacta', $data);
       }
-
+      $this->view('przychodzace/adacta', $data);
    }
 
    public function dodaj() {
@@ -225,6 +221,34 @@
       $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
       $listaPracownikow = $this->pracownikModel->pobierzPracownikow();
 
+      $data = [
+        'title' => 'Dodaj korespondencję przychodzącą',
+        'podmioty' => $listaPodmiotow,
+        'pracownicy' => $listaPracownikow,
+        'czy_nowy' => '0',
+        'czy_faktura' => '0',
+        'podmiot_nazwa' => '',
+        'podmiot_adres' => '',
+        'podmiot_poczta' => '',
+        'znak' => '',
+        'data_pisma' => '',
+        'data_wplywu' => '',
+        'dotyczy' => '',
+        'liczba_zalacznikow' => '0',
+        'dekretacja' => '',
+        'kwota' => '0.00',
+        'podmiot_nazwa_err' => '',
+        'podmiot_adres_err' => '',
+        'podmiot_poczta_err' => '',
+        'znak_err' => '',
+        'data_pisma_err' => '',
+        'data_wplywu_err' => '',
+        'dotyczy_err' => '',
+        'liczba_zalacznikow_err' => '',
+        'dekretacja_err' => '',
+        'kwota_err' => ''
+      ];
+
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
@@ -240,51 +264,46 @@
           $poczta = trim($_POST['pocztaPodmiotu']);
         }
 
-        $data = [
-          'title' => 'Dodaj korespondencję przychodzącą',
-          'podmioty' => $listaPodmiotow,
-          'pracownicy' => $listaPracownikow,
-          'czy_nowy' => $_POST['czyNowy'],
-          'podmiot_nazwa' => $nazwa,
-          'podmiot_adres' => $adres,
-          'podmiot_poczta' => $poczta,
-          'znak' => trim($_POST['znak']),
-          'data_pisma' => trim($_POST['dataPisma']),
-          'data_wplywu' => trim($_POST['dataWplywu']),
-          'dotyczy' => trim($_POST['dotyczy']),
-          'czy_faktura' => $_POST['czyFaktura'],
-          'liczba_zalacznikow' => trim($_POST['liczbaZalacznikow']),
-          'dekretacja' => trim($_POST['dekretacja']),
-          'kwota' => trim($_POST['kwota']),
-          'podmiot_nazwa_err' => '',
-          'podmiot_adres_err' => '',
-          'podmiot_poczta_err' => '',
-          'znak_err' => '',
-          'data_pisma_err' => '',
-          'data_wplywu_err' => '',
-          'dotyczy_err' => '',
-          'liczba_zalacznikow_err' => '',
-          'dekretacja_err' => '',
-          'kwota_err' => ''
-        ];
+        $data['podmiot_nazwa'] = $nazwa;
+        $data['podmiot_adres'] = $adres;
+        $data['podmiot_poczta'] = $poczta;
 
-        $data['podmiot_nazwa_err'] = $this->sprawdzNazwePodmiotu($data['podmiot_nazwa'], $data['czy_nowy']);
-        $data['podmiot_adres_err'] = $this->sprawdzAdresPodmiotu($data['podmiot_adres'], $data['czy_nowy']);
-        $data['podmiot_poczta_err'] = $this->sprawdzPocztaPodmiotu($data['podmiot_poczta'], $data['czy_nowy']);
-        $data['znak_err'] = $this->sprawdzZnak($data['znak']);
-        $data['data_pisma_err'] = $this->sprawdzDatePisma($data['data_pisma']);
-        $data['data_wplywu_err'] = $this->sprawdzDateWplywu($data['data_wplywu']);
-        $data['dotyczy_err'] = $this->sprawdzDotyczy($data['dotyczy']);
-        $data['liczba_zalacznikow_err'] = $this->sprawdzLiczbaZalacznikow($data['liczba_zalacznikow'], $data['czy_faktura']);
-        $data['dekretacja_err'] = $this->sprawdzDekretacja($data['dekretacja'], $data['czy_faktura']);
-        $data['kwota_err'] = $this->sprawdzKwota($data['kwota'], $data['czy_faktura']);
+        $data['czy_nowy'] = $_POST['czyNowy'];
+        $data['znak'] = trim($_POST['znak']);
+        $data['data_pisma'] = trim($_POST['dataPisma']);
+        $data['data_wplywu'] = trim($_POST['dataWplywu']);
+        $data['dotyczy'] = trim($_POST['dotyczy']);
+        $data['czy_faktura'] = $_POST['czyFaktura'];
+        $data['liczba_zalacznikow'] = trim($_POST['liczbaZalacznikow']);
+        $data['dekretacja'] = trim($_POST['dekretacja']);
+        $data['kwota'] = trim($_POST['kwota']);
+
+        $data['podmiot_nazwa_err'] = $this->validator->sprawdzPodmiot($data['podmiot_nazwa'], $data['czy_nowy']);
+        $data['podmiot_adres_err'] = $this->validator->sprawdzDlugosc($data['podmiot_adres'], 4, $data['czy_nowy']);
+        $data['podmiot_poczta_err'] = $this->validator->sprawdzDlugosc($data['podmiot_poczta'], 8, $data['czy_nowy']);
+        $data['znak_err'] = $this->validator->sprawdzDlugosc($data['znak'], 2);
+        $data['data_pisma_err'] = $this->validator->sprawdzDatePisma($data['data_pisma']);
+        $data['data_wplywu_err'] = $this->validator->sprawdzDateWplywu($data['data_wplywu']);
+        $data['dotyczy_err'] = $this->validator->sprawdzDlugosc($data['dotyczy'], 10);
+        $data['liczba_zalacznikow_err'] = $this->validator->sprawdzDlugosc($data['liczba_zalacznikow'], 1);
+        $data['dekretacja_err'] = $this->validator->sprawdzDekretacja($data['dekretacja'], $data['czy_faktura']);
+        $data['kwota_err'] = $this->validator->sprawdzDlugosc($data['kwota'], 1, $data['czy_faktura']);
 
         // Dodaj do bazy danych gdy nie ma błędów
-        if (empty($data['podmiot_nazwa_err']) && empty($data['podmiot_adres_err']) && empty($data['podmiot_poczta_err']) && empty($data['znak_err']) && empty($data['data_pisma_err']) && empty($data['data_wplywu_err']) && empty($data['dotyczy_err']) && empty($data['liczba_zalacznikow_err']) && empty($data['dekretacja_err']) && empty($data['kwota_err'])) {
+        if (empty($data['podmiot_nazwa_err']) &&
+            empty($data['podmiot_adres_err']) &&
+            empty($data['podmiot_poczta_err']) &&
+            empty($data['znak_err']) &&
+            empty($data['data_pisma_err']) &&
+            empty($data['data_wplywu_err']) &&
+            empty($data['dotyczy_err']) &&
+            empty($data['liczba_zalacznikow_err']) &&
+            empty($data['dekretacja_err']) &&
+            empty($data['kwota_err'])) {
 
           // sprawdz czy nowy podmiot
           if ($data['czy_nowy'] == '1') {
-            // przekszałć dane na format podmiotu
+            // przekształć dane na format podmiotu
             $podm = [
               'nazwa_podmiotu' => $data['podmiot_nazwa'],
               'adres_podmiotu' => $data['podmiot_adres'],
@@ -307,43 +326,11 @@
           }
           flash('korespondencja_dodaj', $wiadomosc);
           redirect('przychodzace/dodaj');
-
-        } else {
-          // wyświetl formularz z błędami
-          $this->view('przychodzace/dodaj', $data);
         }
-
       } else {
+      // musi być else gdyż inaczej nie działa wiadomość flash
 
-        $data = [
-          'title' => 'Dodaj korespondencję przychodzącą',
-          'podmioty' => $listaPodmiotow,
-          'pracownicy' => $listaPracownikow,
-          'czy_nowy' => '0',
-          'czy_faktura' => '0',
-          'podmiot_nazwa' => '',
-          'podmiot_adres' => '',
-          'podmiot_poczta' => '',
-          'znak' => '',
-          'data_pisma' => '',
-          'data_wplywu' => '',
-          'dotyczy' => '',
-          'liczba_zalacznikow' => '0',
-          'dekretacja' => '',
-          'kwota' => '0.00',
-          'podmiot_nazwa_err' => '',
-          'podmiot_adres_err' => '',
-          'podmiot_poczta_err' => '',
-          'znak_err' => '',
-          'data_pisma_err' => '',
-          'data_wplywu_err' => '',
-          'dotyczy_err' => '',
-          'liczba_zalacznikow_err' => '',
-          'dekretacja_err' => '',
-          'kwota_err' => ''
-        ];
-
-        $this->view('przychodzace/dodaj', $data);
+      $this->view('przychodzace/dodaj', $data);
       }
    }
 
@@ -363,8 +350,46 @@
       // tylko zalogownay sekretariat
       sprawdzCzyPosiadaDostep(0,0);
 
+      $pismo = $this->przychodzacaModel->pobierzPrzychodzacaPoId($id);
+
+      // zamień dane pracownika jeżeli to pismo nie faktura
+      if($pismo->id_pracownik != 0) {
+        $imie_nazwisko = $this->pracownikModel->pobierzImieNazwisko($pismo->id_pracownik);
+        $pismo->id_pracownik = utworzIdNazwa($pismo->id_pracownik, $imie_nazwisko);
+      }
+
       $listaPodmiotow = $this->podmiotModel->pobierzPodmioty();
       $listaPracownikow = $this->pracownikModel->pobierzPracownikow();
+
+      $data = [
+        'title' => 'Zmień dane korespondencji przychodzącej',
+        'podmioty' => $listaPodmiotow,
+        'pracownicy' => $listaPracownikow,
+        'id' => $id,
+        'czy_nowy' => '0',
+        'czy_faktura' => $pismo->czy_faktura,
+        'podmiot_nazwa' => utworzIdNazwa($pismo->id_podmiot, $pismo->nazwa),
+        'podmiot_adres' => $pismo->adres_1,
+        'podmiot_poczta' => $pismo->adres_2,
+        'znak' => $pismo->znak,
+        'data_pisma' => $pismo->data_pisma,
+        'data_wplywu' => $pismo->data_wplywu,
+        'dotyczy' => $pismo->dotyczy,
+        'liczba_zalacznikow' => $pismo->liczba_zalacznikow,
+        'dekretacja' => $pismo->id_pracownik,
+        'kwota' => $pismo->kwota,
+        'podmiot_nazwa_err' => '',
+        'podmiot_adres_err' => '',
+        'podmiot_poczta_err' => '',
+        'znak_err' => '',
+        'data_pisma_err' => '',
+        'data_wplywu_err' => '',
+        'dotyczy_err' => '',
+        'liczba_zalacznikow_err' => '',
+        'dekretacja_err' => '',
+        'kwota_err' => ''
+      ];
+
 
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -381,48 +406,42 @@
           $poczta = trim($_POST['pocztaPodmiotu']);
         }
 
-        $data = [
-          'title' => 'Zmień dane korespondencji przychodzącej',
-          'podmioty' => $listaPodmiotow,
-          'pracownicy' => $listaPracownikow,
-          'id' => $id,
-          'czy_nowy' => $_POST['czyNowy'],
-          'podmiot_nazwa' => $nazwa,
-          'podmiot_adres' => $adres,
-          'podmiot_poczta' => $poczta,
-          'znak' => trim($_POST['znak']),
-          'data_pisma' => trim($_POST['dataPisma']),
-          'data_wplywu' => trim($_POST['dataWplywu']),
-          'dotyczy' => trim($_POST['dotyczy']),
-          'czy_faktura' => $_POST['czyFaktura'],
-          'liczba_zalacznikow' => trim($_POST['liczbaZalacznikow']),
-          'dekretacja' => trim($_POST['dekretacja']),
-          'kwota' => trim($_POST['kwota']),
-          'podmiot_nazwa_err' => '',
-          'podmiot_adres_err' => '',
-          'podmiot_poczta_err' => '',
-          'znak_err' => '',
-          'data_pisma_err' => '',
-          'data_wplywu_err' => '',
-          'dotyczy_err' => '',
-          'liczba_zalacznikow_err' => '',
-          'dekretacja_err' => '',
-          'kwota_err' => ''
-        ];
+        $data['podmiot_nazwa'] = $nazwa;
+        $data['podmiot_adres'] = $adres;
+        $data['podmiot_poczta'] = $poczta;
 
-        $data['podmiot_nazwa_err'] = $this->sprawdzNazwePodmiotu($data['podmiot_nazwa'], $data['czy_nowy']);
-        $data['podmiot_adres_err'] = $this->sprawdzAdresPodmiotu($data['podmiot_adres'], $data['czy_nowy']);
-        $data['podmiot_poczta_err'] = $this->sprawdzPocztaPodmiotu($data['podmiot_poczta'], $data['czy_nowy']);
-        $data['znak_err'] = $this->sprawdzZnak($data['znak']);
-        $data['data_pisma_err'] = $this->sprawdzDatePisma($data['data_pisma']);
-        $data['data_wplywu_err'] = $this->sprawdzDateWplywu($data['data_wplywu']);
-        $data['dotyczy_err'] = $this->sprawdzDotyczy($data['dotyczy']);
-        $data['liczba_zalacznikow_err'] = $this->sprawdzLiczbaZalacznikow($data['liczba_zalacznikow'], $data['czy_faktura']);
-        $data['dekretacja_err'] = $this->sprawdzDekretacja($data['dekretacja'], $data['czy_faktura']);
-        $data['kwota_err'] = $this->sprawdzKwota($data['kwota'], $data['czy_faktura']);
+        $data['czy_nowy'] = $_POST['czyNowy'];
+        $data['znak'] = trim($_POST['znak']);
+        $data['data_pisma'] = trim($_POST['dataPisma']);
+        $data['data_wplywu'] = trim($_POST['dataWplywu']);
+        $data['dotyczy'] = trim($_POST['dotyczy']);
+        $data['czy_faktura'] = $_POST['czyFaktura'];
+        $data['liczba_zalacznikow'] = trim($_POST['liczbaZalacznikow']);
+        $data['dekretacja'] = trim($_POST['dekretacja']);
+        $data['kwota'] = trim($_POST['kwota']);
+
+        $data['podmiot_nazwa_err'] = $this->validator->sprawdzPodmiot($data['podmiot_nazwa'], $data['czy_nowy']);
+        $data['podmiot_adres_err'] = $this->validator->sprawdzDlugosc($data['podmiot_adres'], 4, $data['czy_nowy']);
+        $data['podmiot_poczta_err'] = $this->validator->sprawdzDlugosc($data['podmiot_poczta'], 8, $data['czy_nowy']);
+        $data['znak_err'] = $this->validator->sprawdzDlugosc($data['znak'], 2);
+        $data['data_pisma_err'] = $this->validator->sprawdzDatePisma($data['data_pisma']);
+        $data['data_wplywu_err'] = $this->validator->sprawdzDateWplywu($data['data_wplywu']);
+        $data['dotyczy_err'] = $this->validator->sprawdzDlugosc($data['dotyczy'], 10);
+        $data['liczba_zalacznikow_err'] = $this->validator->sprawdzDlugosc($data['liczba_zalacznikow'], 1);
+        $data['dekretacja_err'] = $this->validator->sprawdzDekretacja($data['dekretacja'], $data['czy_faktura']);
+        $data['kwota_err'] = $this->validator->sprawdzDlugosc($data['kwota'], 1, $data['czy_faktura']);
 
         // Dodaj do bazy danych gdy nie ma błędów
-        if (empty($data['podmiot_nazwa_err']) && empty($data['podmiot_adres_err']) && empty($data['podmiot_poczta_err']) && empty($data['znak_err']) && empty($data['data_pisma_err']) && empty($data['data_wplywu_err']) && empty($data['dotyczy_err']) && empty($data['liczba_zalacznikow_err']) && empty($data['dekretacja_err']) && empty($data['kwota_err'])) {
+        if (empty($data['podmiot_nazwa_err']) &&
+            empty($data['podmiot_adres_err']) &&
+            empty($data['podmiot_poczta_err']) &&
+            empty($data['znak_err']) &&
+            empty($data['data_pisma_err']) &&
+            empty($data['data_wplywu_err']) &&
+            empty($data['dotyczy_err']) &&
+            empty($data['liczba_zalacznikow_err']) &&
+            empty($data['dekretacja_err']) &&
+            empty($data['kwota_err'])) {
 
           // sprawdz czy nowy podmiot
           if ($data['czy_nowy'] == '1') {
@@ -439,59 +458,15 @@
               $data['podmiot_nazwa'] = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
             }
           }
-
           $this->przychodzacaModel->edytujPrzychodzaca($data);
 
           $wiadomosc = "Dane korespondencji zostały zmienione pomyślnie.";
           flash('korespondencja_edytuj', $wiadomosc);
           redirect('przychodzace/zestawienie/'. date("Y"));
-
-        } else {
-          // wyświetl formularz z błędami
-          $this->view('przychodzace/edytuj', $data);
         }
-
-      } else {
-
-        $pismo = $this->przychodzacaModel->pobierzPrzychodzacaPoId($id);
-
-        // zamień dane pracownika jeżeli to pismo nie faktura
-        if($pismo->id_pracownik != 0) {
-          $imie_nazwisko = $this->pracownikModel->pobierzImieNazwisko($pismo->id_pracownik);
-          $pismo->id_pracownik = utworzIdNazwa($pismo->id_pracownik, $imie_nazwisko);
-        }
-
-        $data = [
-          'title' => 'Zmień dane korespondencji przychodzącej',
-          'podmioty' => $listaPodmiotow,
-          'pracownicy' => $listaPracownikow,
-          'id' => $id,
-          'czy_nowy' => '0',
-          'czy_faktura' => $pismo->czy_faktura,
-          'podmiot_nazwa' => utworzIdNazwa($pismo->id_podmiot, $pismo->nazwa),
-          'podmiot_adres' => $pismo->adres_1,
-          'podmiot_poczta' => $pismo->adres_2,
-          'znak' => $pismo->znak,
-          'data_pisma' => $pismo->data_pisma,
-          'data_wplywu' => $pismo->data_wplywu,
-          'dotyczy' => $pismo->dotyczy,
-          'liczba_zalacznikow' => $pismo->liczba_zalacznikow,
-          'dekretacja' => $pismo->id_pracownik,
-          'kwota' => $pismo->kwota,
-          'podmiot_nazwa_err' => '',
-          'podmiot_adres_err' => '',
-          'podmiot_poczta_err' => '',
-          'znak_err' => '',
-          'data_pisma_err' => '',
-          'data_wplywu_err' => '',
-          'dotyczy_err' => '',
-          'liczba_zalacznikow_err' => '',
-          'dekretacja_err' => '',
-          'kwota_err' => ''
-        ];
-
-        $this->view('przychodzace/edytuj', $data);
       }
+
+      $this->view('przychodzace/edytuj', $data);
    }
 
    public function ajax_przychodzace($id) {
@@ -549,283 +524,6 @@
        $podmiot = (object) ['nazwa' => '', 'adres_1' => '', 'adres_2' => ''];
      }
      return $podmiot;
-   }
-
-   /*
-    * FUNKCJE SPRAWDZAJĄCE
-    */
-
-   private function sprawdzNazwePodmiotu($nazwa, $nowy) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej nazwy podmiotu do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - nazwa musi mieć przynajmniej 2 znaki
-      *
-      *  Parametry:
-      *   - tekst => wprowadzone imię
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     if ($nazwa == '') {
-       return "Nazwa nie może pozostać pusta.";
-     }
-
-     if (strlen($nazwa) < 2) {
-       return "Nazwa musi mieć przynajmniej dwa znaki";
-     }
-
-   }
-
-   private function sprawdzAdresPodmiotu($adres, $nowy) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego adresu podmiotu do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - adres musi mieć przynajmniej 6 znaków
-      *  - pomijana przy istniejącym podmiocie
-      *
-      *  Parametry:
-      *   - adres => wprowadzony adres
-      *   - nowy => parametr określający czy dodawany jest nowy podmiot: 0 oznacza, że nie
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     // istniejący podmiot - wartość pola nie ma znaczenia
-     if ($nowy == '0') {
-       return '';
-     }
-
-     if ($adres == '') {
-       return "Pole adresu nie może pozostać puste.";
-     }
-
-     if (strlen($adres) < 6) {
-       return "Adres musi mieć przynajmniej 6 znaków";
-     }
-
-   }
-
-   private function sprawdzPocztaPodmiotu($poczta, $nowy) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej poczty podmiotu do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - poczta musi mieć przynajmniej 6 znaków
-      *  - pomijana przy istniejącym podmiocie
-      *
-      *  Parametry:
-      *   - poczta => wprowadzona poczta
-      *   - nowy => parametr określający czy dodawany jest nowy podmiot: 0 oznacza, że nie
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     // istniejący podmiot - wartość pola nie ma znaczenia
-     if ($nowy == '0') {
-       return '';
-     }
-
-     if ($poczta == '') {
-       return "Pole poczty nie może pozostać puste.";
-     }
-
-     if (strlen($poczta) < 6) {
-       return "Poczta musi mieć przynajmniej 6 znaków";
-     }
-
-   }
-
-   private function sprawdzZnak($znak) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego znaku do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - nazwa musi mieć przynajmniej 2 znaki
-      *
-      *  Parametry:
-      *   - znak => wprowadzony znak
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     if ($znak == '') {
-       return "Oznaczenie pisma nie może pozostać puste.<br>Wpisz <em>brak</em> jeżeli pismo nie ma oznaczenia.";
-     }
-
-     if (strlen($znak) < 2) {
-       return "Oznaczenie musi mieć przynajmniej 2 znaki";
-     }
-
-   }
-
-   private function sprawdzDatePisma($data) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej daty pisma do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *
-      * Nie mamy wpływu na datę pisma więc brak dodatkowych warunków.
-      *
-      *  Parametry:
-      *   - data => wprowadzona data pisma
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     if ($data == '') {
-       return "Data pisma nie może pozostać pusta.<br>Wpisz <em>datę wpływu</em> jeżeli pismo nie ma daty.";
-     }
-
-   }
-
-   private function sprawdzDateWplywu($data) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej daty wpływu do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - data wpływu nie może być późniejsza niż dziś
-      *  - data wpływu nie może być wcześniejsza niż najnowasza zarejestrowana korepondencja
-      *
-      *  Parametry:
-      *   - data => wprowadzona data pisma
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     //DO ZAIMPLEMENTOWANIA
-
-     if ($data == '') {
-       return "Data wpływu nie może pozostać pusta.";
-     }
-
-   }
-
-   private function sprawdzDotyczy($dotyczy) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego dotyczy do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - wartość musi mieć przynajmniej 10 znaków
-      *
-      *  Parametry:
-      *   - dotyczy => wprowadzone dotyczy
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     if ($dotyczy == '') {
-       return "Każde pismo czegoś dotyczy.";
-     }
-
-     if (strlen($dotyczy) < 10) {
-       return "Treść dotyczy musi mieć przynajmniej 10 znaków.";
-     }
-
-   }
-
-   private function sprawdzLiczbaZalacznikow($lzal, $czyFaktura) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej liczby załączników do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - pomijana przy dodawaniu faktury
-      *
-      *  Parametry:
-      *   - lzal => wprowadzona liczba załączników
-      *   - czyFaktura => parametr określający czy dodawana jest faktura - 1 oznacza fakturę
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     // dodawana faktura - wartość pola nie ma znaczenia
-     if ($czyFaktura == '1') {
-       return '';
-     }
-
-     if ($lzal == '') {
-       return "Wpisz 0 jeżeli pismo nie ma załączników.";
-     }
-
-   }
-
-   private function sprawdzDekretacja($dekretacja, $czyFaktura) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej dekretacji do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - pracownik musi istnieć
-      *  - pracownik musi być aktywny
-      *  - pomijana przy dodawaniu faktury
-      *
-      *  Parametry:
-      *   - dekretacja => wprowadzona dekretacja
-      *   - czyFaktura => parametr określający czy dodawana jest faktura - 1 oznacza fakturę
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     // DO ZAIMPLEMENTOWANIA
-
-     // dodawana faktura - wartość pola nie ma znaczenia
-     if ($czyFaktura == '1') {
-       return '';
-     }
-
-     if ($dekretacja == '') {
-       return "Każde pismo posiada dekretację.";
-     }
-
-   }
-
-   private function sprawdzKwota($kwota, $czyFaktura) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonej kwoty do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - pomijana przy dodawaniu pisma
-      *
-      *  Parametry:
-      *   - kwota => wprowadzona kwota
-      *   - czyFaktura => parametr określający czy dodawana jest faktura - 1 oznacza fakturę
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     // dodawane pismo - wartość pola nie ma znaczenia
-     if ($czyFaktura != '1') {
-       return '';
-     }
-
-     if ($kwota == '') {
-       return "Każda faktura posiada kwotę.";
-     }
-
-   }
-
-   private function sprawdzJrwa($tekst) {
-     /*
-      * Funkcja pomocnicza - sprawdza poprawność wprowadzonego numeru jrwa do formularza.
-      * Zasady:
-      *  - pole nie może być puste
-      *  - numer musi istnieć w bazie danych
-      *
-      *  Parametry:
-      *   - tekst => wprowadzony numer
-      *  Zwraca:
-      *   - sting zawierający komunikat błędu jeżeli taki wystąpł
-      */
-
-     if ($tekst == '') {
-       return "Musisz podać numer Jednolitego Rzeczowego Wykazu Akt.";
-     }
-
-     if (!$this->jrwaModel->czyIstniejeJrwa($tekst, 0)) {
-       return "Podany numer JRWA nie istnieje.";
-     }
-
    }
 
 

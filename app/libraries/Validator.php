@@ -13,7 +13,7 @@
        * Konstruktor klasy - tworzy połączenie z modelami
        */
 
-      //$this->podmiotModel = $this->model('Podmiot');
+      $this->podmiotModel = $this->model('Podmiot');
       //$this->przychodzacaModel = $this->model('Przychodzaca');
       $this->pracownikModel = $this->model('Pracownik');
       $this->jrwaModel = $this->model('JrwaM');
@@ -45,6 +45,107 @@
         return "Minimalna wymagana liczba znaków w polu to: $dlugosc.";
       }
 
+    }
+
+    public function sprawdzPodmiot($tekst, $czyNowy) {
+      /*
+       * Sprawdza nazwę podmiotu w zależności czy istniejący czy nowy:
+       *  a) jak istniejący to podmiot musi istnieć
+       *  b) jak nowy to musi być przynajmniej długa na 4 znaki
+       *
+       * Parametry:
+       *  - tekst => wartość pola
+       *  - czyNowy => parametr określający czy dotyczy istniejącego (0) czy nowego (1) podmiotu
+       * Zwraca:
+       *  - string zawierający komunikat błędu jeżeli taki wystąpił
+       */
+
+      if ($czyNowy == '0') {
+        $id = pobierzIdNazwy($tekst);
+        if (!$this->podmiotModel->czyIstniejePodmiot($id)) {
+          return 'Wybrany podmiot nie znajduje się w bazie danych';
+        }
+      } else {
+        return $this->sprawdzDlugosc($tekst, 4, 1);
+      }
+    }
+
+    public function sprawdzDatePisma($data) {
+      /*
+       * Sprawdza poprawność wprowadzonej daty pisma do formularza.
+       * Zasady:
+       *  - pole nie może być puste
+       *
+       * Nie mamy wpływu na datę pisma więc brak dodatkowych warunków.
+       *
+       * Można użyć sprawdź dlugość, ale tu jest spersonalizownay komunikat.
+       *
+       *  Parametry:
+       *   - data => wprowadzona data pisma
+       *  Zwraca:
+       *   - string zawierający komunikat błędu jeżeli taki wystąpił
+       */
+
+      if ($data == '') {
+        return "Data pisma nie może pozostać pusta.<br>Wpisz <em>datę wpływu</em> jeżeli pismo nie ma daty.";
+      }
+
+      return '';
+    }
+
+    public function sprawdzDateWplywu($data) {
+      /*
+       * Sprawdza poprawność wprowadzonej daty wpływu do formularza.
+       * Zasady:
+       *  - pole nie może być puste
+       *  - data wpływu nie może być późniejsza niż dziś
+       *  - data wpływu nie może być wcześniejsza niż najnowasza zarejestrowana korepondencja
+       *
+       *  Ostatni warunek to na wypadek zmiany data w komputerze.
+       *
+       *  Parametry:
+       *   - data => wprowadzona data pisma
+       *  Zwraca:
+       *   - string zawierający komunikat błędu jeżeli taki wystąpił
+       */
+
+      //DO ZAIMPLEMENTOWANIA
+
+      if ($data == '') {
+        return "Data wpływu nie może pozostać pusta.";
+      }
+
+      return '';
+    }
+
+    public function sprawdzDekretacja($dekretacja, $czyFaktura) {
+      /*
+       * Sprawdza poprawność wprowadzonej dekretacji do formularza.
+       * Zasady:
+       *  - pole nie może być puste
+       *  - pracownik musi istnieć
+       *  - pracownik musi być aktywny
+       *  - pomijana przy dodawaniu faktury
+       *
+       *  Parametry:
+       *   - dekretacja => wprowadzona dekretacja
+       *   - czyFaktura => parametr określający czy dodawana jest faktura - 1 oznacza fakturę
+       *  Zwraca:
+       *   - string zawierający komunikat błędu jeżeli taki wystąpił
+       */
+
+      // DO ZAIMPLEMENTOWANIA
+
+      // dodawana faktura - wartość pola nie ma znaczenia
+      if ($czyFaktura == '1') {
+        return '';
+      }
+
+      if ($dekretacja == '') {
+        return "Każde pismo posiada dekretację.";
+      }
+
+      return '';
     }
 
     public function sprawdzJrwa($tekst) {
