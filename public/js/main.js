@@ -208,7 +208,22 @@ function szczegolyPrzychodzace(id) {
 }
 
 function szczegolyWychodzace(id) {
-  console.log(id);
+  // wysyła zapytanie ajax
+  // wstawia otrzymane dane do div szczegolyKorespondencji
+
+  // wyślij zapytanie ajax
+  $.ajax({
+    type: 'GET',
+    url: URLROOT + 'wychodzace/ajax_wychodzace/' + id
+  })
+    .done(function(data) {
+      const pismo = JSON.parse(data);
+      // jeżeli id = -1 to znaczy, że pismo nie istnieje
+      if (pismo.id != '-1') {
+        // wstaw informacje do diva
+        $('#szczegolyKorespondencji').html(tworzHtmlWychodzace(pismo));
+      }
+  });
 }
 
 function szczegolyInne(id) {
@@ -225,6 +240,16 @@ function tworzHtmlPrzychodzace(pismo) {
   html+= `<li class="list-group-item"><u>nadawca</u>: ${pismo['nazwa']}</li>`;
   html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['dotyczy']}</li>`;
   html+= `<li class="list-group-item"><u>liczba zał.</u>: ${pismo['liczba_zalacznikow']}</li>`;
+  html+= '</dl>';
+  return html;
+}
+
+function tworzHtmlWychodzace(pismo) {
+  // tworzy html na podstawie danych pisma przychodzącego
+  let html = '<ul class="list-group list-group-flush">';
+  html+= `<li class="list-group-item"><u>data pisma</u>: ${pismo['utworzone']}</li>`;
+  html+= `<li class="list-group-item"><u>nadawca</u>: ${pismo['nazwa']}</li>`;
+  html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['dotyczy']}</li>`;
   html+= '</dl>';
   return html;
 }

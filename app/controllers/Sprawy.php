@@ -19,6 +19,7 @@
       $this->przychodzacaModel = $this->model('Przychodzaca');
       $this->jrwaModel = $this->model('JrwaM');
       $this->podmiotModel = $this->model('Podmiot');
+      $this->wychodzacaModel = $this->model('Wychodzaca');
 
       $this->validator = new Validator();
     }
@@ -66,6 +67,10 @@
           case 1:
             $przych = $this->przychodzacaModel->pobierzPrzychodzacaPoId($m->id_dokument);
             $m->dokument = 'p' . strtotime($przych->utworzone);
+            break;
+          case 2:
+            $przych = $this->wychodzacaModel->pobierzWychodzacaPoId($m->id_dokument);
+            $m->dokument = 'w' . strtotime($przych->utworzone);
             break;
           default:
             $m->dokument = '=====';
@@ -441,7 +446,7 @@
         $data['podmiot_poczta'] = $poczta;
         $data['dotyczy'] = trim($_POST['dotyczy']);
 
-        $data['podmiot_nazwa_err'] = $this->validator->sprawdzDlugosc($data['podmiot_nazwa'], 4);
+        $data['podmiot_nazwa_err'] = $this->validator->sprawdzPodmiot($data['podmiot_nazwa'], 4, $data['czy_nowy']);
         $data['podmiot_adres_err'] = $this->validator->sprawdzDlugosc($data['podmiot_adres'], 6, $data['czy_nowy']);
         $data['podmiot_poczta_err'] = $this->validator->sprawdzDlugosc($data['podmiot_poczta'], 6, $data['czy_nowy']);
         $data['dotyczy_err'] = $this->validator->sprawdzDlugosc($data['dotyczy'], 10);
@@ -453,20 +458,33 @@
             empty($data['oznaczenie_dp_err']) &&
             empty($data['dotyczy_dp_err'])) {
 
-          $wiadomosc = "Pismo wychodzące zostało dodane pomyślnie.";
+          // sprawdz czy nowy podmiot
+          if ($data['czy_nowy'] == '1') {
+            // przekształć dane na format podmiotu
+            $podm = [
+              'nazwa_podmiotu' => $data['podmiot_nazwa'],
+              'adres_podmiotu' => $data['podmiot_adres'],
+              'poczta_podmiotu' => $data['podmiot_poczta']
+            ];
+            // dodaj nowy podmiot
+            if ($this->podmiotModel->dodajPodmiot($podm)) {
+              $podmiot = $this->podmiotModel->pobierzDanePodmiotuPoNazwie($data['podmiot_nazwa']);
+              // wstaw nazwę z id do danych
+              $data['podmiot_nazwa'] = utworzIdNazwa($podmiot->id, $podmiot->nazwa);
+            }
+          }
+
+          $id_pisma = $this->wychodzacaModel->dodajWychodzaca($data);
+          // dodaj wpis do metryki
+          $this->metrykaModel->dodajMetryke($id, 2, $_SESSION['user_id'], 2, $id_pisma);
+
+          $wiadomosc = "Pismo wychodzące zostało dodane pomyślnie. [$id_pisma]";
           flash('sprawy_szczegoly', $wiadomosc);
           redirect('sprawy/szczegoly/'.$sprawa->id);
-
-        } else {
-          // brudny
-          $this->view('sprawy/dodaj_wychodzace', $data);
         }
-
-      } else {
-
-        // czysty
-        $this->view('sprawy/dodaj_wychodzace', $data);
       }
+
+      $this->view('sprawy/dodaj_wychodzace', $data);
     }
 
 
