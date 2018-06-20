@@ -78,6 +78,9 @@
       case 9:
         $czynnosc = 'Zmiana tematu sprawy';
         break;
+      case 10:
+        $czynnosc = 'Zmiana danych pisma wychodzącego';
+        break;
       case 98:
         $czynnosc = 'Wznowienie sprawy';
         break;

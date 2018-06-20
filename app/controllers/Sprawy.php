@@ -478,7 +478,7 @@
           // dodaj wpis do metryki
           $this->metrykaModel->dodajMetryke($id, 2, $_SESSION['user_id'], 2, $id_pisma);
 
-          $wiadomosc = "Pismo wychodzące zostało dodane pomyślnie. [$id_pisma]";
+          $wiadomosc = "Pismo wychodzące zostało dodane pomyślnie.";
           flash('sprawy_szczegoly', $wiadomosc);
           redirect('sprawy/szczegoly/'.$sprawa->id);
         }

@@ -61,7 +61,12 @@
        *  - wiersz z bazy zawierający wszystkie dane korespondencji
        */
 
-      $sql = "SELECT wychodzace.*, podmioty.nazwa, podmioty.adres_1, podmioty.adres_2, sprawy.znak
+      $sql = "SELECT wychodzace.*,
+                     podmioty.nazwa,
+                     podmioty.adres_1,
+                     podmioty.adres_2,
+                     sprawy.znak,
+                     sprawy.id AS sprawaId
                      FROM wychodzace, podmioty, sprawy
                      WHERE wychodzace.id=:id
                        AND wychodzace.id_podmiot=podmioty.id

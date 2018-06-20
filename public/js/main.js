@@ -250,6 +250,7 @@ function tworzHtmlWychodzace(pismo) {
   html+= `<li class="list-group-item"><u>data pisma</u>: ${pismo['utworzone']}</li>`;
   html+= `<li class="list-group-item"><u>nadawca</u>: ${pismo['nazwa']}</li>`;
   html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['dotyczy']}</li>`;
+  html+= `<li class="list-group-item"><a href="${URLROOT}/wychodzace/edytuj/${pismo['id']}" class="btn btn-info">Edytuj pismo</a></li>`;
   html+= '</dl>';
   return html;
 }
