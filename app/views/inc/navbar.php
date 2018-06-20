@@ -25,6 +25,7 @@
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/podmioty/zestawienie">Podmioty</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/pracownicy/zestawienie">Pracownicy</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/jrwa/zestawienie">JRWA</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/wychodzace/zestawienie/<?php echo date("Y"); ?>">Wychodzące</a>
             </div>
           </li>
           <li class="nav-item">

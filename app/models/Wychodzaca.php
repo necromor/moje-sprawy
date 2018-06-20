@@ -22,6 +22,34 @@
       $this->db = new Database;
     }
 
+    public function pobierzWychodzace($rok) {
+      /*
+       * Pobiera wszystkie dane o pismach wychodzących dodanych w danym roku.
+       *
+       * Parametry:
+       *  - rok => rok dodania pisma do bazy danych
+       * Zwraca:
+       *  - set zawierający dane pism
+       */
+
+      $sql = "SELECT wychodzace.*,
+                     podmioty.nazwa,
+                     podmioty.adres_1,
+                     podmioty.adres_2,
+                     sprawy.znak,
+                     sprawy.id AS sprawaId
+                     FROM wychodzace, podmioty, sprawy
+                     WHERE wychodzace.utworzone LIKE :rok
+                       AND wychodzace.id_podmiot=podmioty.id
+                       AND wychodzace.id_sprawa=sprawy.id
+                     ORDER BY sprawy.znak ASC";
+      $this->db->query($sql);
+      $this->db->bind(':rok', $rok . '%');
+
+      return $this->db->resultSet();
+    }
+
+
 
     public function pobierzWychodzacaPoId($id) {
       /*

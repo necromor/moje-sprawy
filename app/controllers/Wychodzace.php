@@ -18,6 +18,33 @@
       $this->validator = new Validator();
     }
 
+    public function zestawienie($rok) {
+      /*
+       * Tworzy zestaw obiektów Wychodzace
+       *
+       * Obsługuje widok: wychodzace/zestawienie/rok
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      // sprawdź czy nastąpiła zmiana roku
+      // jeżeli tak to przekieruj
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        redirect('wychodzace/zestawienie/' . $_POST['rok']);
+      }
+
+      $pisma = $this->wychodzacaModel->pobierzWychodzace($rok);
+
+      $data = [
+        'title' => 'Zestawienie pism wychodzących',
+        'pisma' => $pisma,
+        'rok' => $rok
+      ];
+
+      $this->view('wychodzace/zestawienie', $data);
+    }
 
    public function ajax_wychodzace($id) {
       /*
