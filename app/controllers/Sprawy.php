@@ -20,6 +20,7 @@
       $this->jrwaModel = $this->model('JrwaM');
       $this->podmiotModel = $this->model('Podmiot');
       $this->wychodzacaModel = $this->model('Wychodzaca');
+      $this->decyzjaModel = $this->model('Decyzja');
 
       $this->validator = new Validator();
     }
@@ -65,12 +66,12 @@
         // 3 - inny dokument
         switch ($m->rodzaj_dokumentu) {
           case 1:
-            $przych = $this->przychodzacaModel->pobierzPrzychodzacaPoId($m->id_dokument);
-            $m->dokument = 'p' . strtotime($przych->utworzone);
+            $dokument = $this->przychodzacaModel->pobierzPrzychodzacaPoId($m->id_dokument);
+            $m->dokument = 'p' . strtotime($dokument->utworzone);
             break;
           case 2:
-            $przych = $this->wychodzacaModel->pobierzWychodzacaPoId($m->id_dokument);
-            $m->dokument = 'w' . strtotime($przych->utworzone);
+            $dokument = $this->wychodzacaModel->pobierzWychodzacaPoId($m->id_dokument);
+            $m->dokument = 'w' . strtotime($dokument->utworzone);
             break;
           default:
             $m->dokument = '=====';
@@ -445,11 +446,16 @@
         $data['podmiot_adres'] = $adres;
         $data['podmiot_poczta'] = $poczta;
         $data['dotyczy'] = trim($_POST['dotyczy']);
+        $data['czy_dp'] = $_POST['radioDP'];
+        $data['oznaczenie_dp'] = trim($_POST['oznaczenieDP']);
+        $data['dotyczy_dp'] = trim($_POST['dotyczyDP']);
 
         $data['podmiot_nazwa_err'] = $this->validator->sprawdzPodmiot($data['podmiot_nazwa'], 4, $data['czy_nowy']);
         $data['podmiot_adres_err'] = $this->validator->sprawdzDlugosc($data['podmiot_adres'], 6, $data['czy_nowy']);
         $data['podmiot_poczta_err'] = $this->validator->sprawdzDlugosc($data['podmiot_poczta'], 6, $data['czy_nowy']);
         $data['dotyczy_err'] = $this->validator->sprawdzDlugosc($data['dotyczy'], 10);
+        $data['oznaczenie_dp_err'] = $this->validator->sprawdzDlugosc($data['oznaczenie_dp'], 1, $data['czy_dp']);
+        $data['dotyczy_dp_err'] = $this->validator->sprawdzDlugosc($data['dotyczy_dp'], 10, $data['czy_dp']);
 
         if (empty($data['podmiot_nazwa_err']) &&
             empty($data['podmiot_adres_err']) &&
@@ -478,7 +484,18 @@
           // dodaj wpis do metryki
           $this->metrykaModel->dodajMetryke($id, 2, $_SESSION['user_id'], 2, $id_pisma);
 
+          if ($data['czy_dp'] == '1') {
+            // dodaj decyzję
+            $decyzja = $this->decyzjaModel->dodajDecyzje($id_pisma, $data['oznaczenie_dp'], $data['dotyczy_dp'], $sprawa->id_jrwa);
+          } elseif ($data['czy_dp'] == '2') {
+            // dodaj postanowienie
+
+          }
+
           $wiadomosc = "Pismo wychodzące zostało dodane pomyślnie.";
+          if ($decyzja) {
+            $wiadomosc .= " Decyzja: $decyzja->numer";
+          }
           flash('sprawy_szczegoly', $wiadomosc);
           redirect('sprawy/szczegoly/'.$sprawa->id);
         }
