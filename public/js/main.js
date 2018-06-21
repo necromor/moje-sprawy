@@ -95,7 +95,19 @@ $('input[name=radioDP]:radio').on('click', function(e) {
     $('#dotyczyDP').val('');
 
     // pobierz kolejny numer decyzji / postanowienia
-    // DO ZAIMPLEMENTOWANIA AJAX
+    const jrwa = $('#idJrwa').val();
+    let adres = URLROOT + 'decyzje/ajax_numer_kolejny/' + jrwa;
+    if (e.target.id == 'radioDP2') {
+      adres = URLROOT + 'postanowienia/ajax_numer_kolejny/' + jrwa;
+    }
+    $.ajax({
+      type: 'GET',
+      url: adres
+    })
+      .done(function(data) {
+        const o = JSON.parse(data);
+          $('#oznaczenieDP').val(o.numer);
+      });
   }
 });
 

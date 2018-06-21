@@ -408,6 +408,7 @@
       $data = [
         'title' => 'Dodaj pismo wychodzące w ramach sprawy ' . $sprawa->znak,
         'id' => $id,
+        'jrwa' => $sprawa->id_jrwa,  //potrzebne przy ustaleniu numeru decyzji/postanowieniu
         'czy_nowy' => 0,
         'podmiot_nazwa' => '',
         'podmiot_adres' => '',

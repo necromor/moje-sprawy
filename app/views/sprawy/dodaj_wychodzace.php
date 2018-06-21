@@ -6,6 +6,8 @@
     <h1 class="col-md-8 mx-auto"><?php echo $data['title'] ?></h1>
   </div>
 
+  <input type="hidden" id="idJrwa" name="idJrwa" value="<?php echo $data['jrwa']; ?>">
+
   <div class="row mb-3"><!-- nadawca -->
     <div class="col-md-8 mx-auto bg-light py-3">
        <div id="danePodmiotu">

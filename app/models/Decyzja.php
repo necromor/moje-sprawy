@@ -63,6 +63,26 @@
       }
     }
 
+    public function pobierzLiczbeDecyzjiWRamachJrwa($jrwa, $rok) {
+      /*
+       * Pobiera liczbę decyzji w ramach podanego jrwa utworzonych w danym roku.
+       *
+       * Parametry:
+       *  - jrwa => id numeru jrwa
+       *  - rok => rok utworzenia decyji
+       * Zwraca:
+       *  - int => liczba decyzji spełniających kryteria
+       */
+
+      $sql = "SELECT COUNT(id) AS liczba FROM decyzje
+                   WHERE id_jrwa=:id_jrwa AND utworzone LIKE :rok";
+      $this->db->query($sql);
+      $this->db->bind(':id_jrwa', $jrwa);
+      $this->db->bind(':rok', $rok . "%");
+      $row = $this->db->single();
+      return $row->liczba;
+    }
+
 
 
   }
