@@ -14,9 +14,10 @@
        */
 
       $this->decyzjaModel = $this->model('Decyzja');
+      $this->wychodzacaModel = $this->model('Wychodzaca');
       $this->jrwaModel = $this->model('JrwaM');
 
-      //$this->validator = new Validator();
+      $this->validator = new Validator();
     }
 
     public function zestawienie($rok, $jrwa='') {
@@ -55,6 +56,77 @@
       ];
 
       $this->view('decyzje/zestawienie', $data);
+    }
+
+    public function edytuj($id) {
+      /*
+       * Obsługuje proces edycji decyzji.
+       *
+       * Zmianie podlega jedynie numer decyzji i dotyczy.
+       *
+       * Pod pomyślnej edycji powrót następuje do zestawienia lub szczegółów sprawy w zależności skąd było wywołanie.
+       *
+       * Obsługuje widok: decyzje/edytuj
+       *
+       * Parametry:
+       *  - id => id decyzji do zmiany
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      // określenie skąd użytkownik przeszedł do edycji pisma
+      if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+        $zrodlo = 'szczegoly';
+        if (strpos($_SERVER['HTTP_REFERER'], 'zestawienie')) {
+          $zrodlo = 'zestawienie';
+        }
+      } else {
+        $zrodlo = $_POST['zrodlo'];
+      }
+
+      $decyzja = $this->decyzjaModel->pobierzDecyzjePoId($id);
+      $pismo = $this->wychodzacaModel->pobierzWychodzacaPoId($decyzja->id_wychodzace);
+
+      $data = [
+        'title' => 'Zmień dane decyzji',
+        'id' => $id,
+        'zrodlo' => $zrodlo,
+        'sprawaId' => $pismo->sprawaId,
+        'rok' => substr($decyzja->utworzone, 0 ,4), //potrzebne do powrotu jak źródło w zestawieniu
+        'numer' => $decyzja->numer,
+        'dotyczy' => $decyzja->dotyczy,
+        'numer_err' => '',
+        'dotyczy_err' => '',
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data['numer'] = trim($_POST['numer']);
+        $data['dotyczy'] = trim($_POST['dotyczy']);
+
+        $data['numer_err'] = $this->validator->sprawdzDlugosc($data['numer'], 1);
+        $data['dotyczy_err'] = $this->validator->sprawdzDlugosc($data['dotyczy'], 10);
+
+        if (empty($data['numer_err']) &&
+            empty($data['dotyczy_err'])) {
+
+          $id_decyzji = $this->decyzjaModel->edytujDecyzja($id, $data['numer'], $data['dotyczy']);
+
+          $wiadomosc = "Decyzja została zmieniona pomyślnie.";
+          if ($zrodlo == 'zestawienie') {
+            flash('decyzje_edytuj', $wiadomosc);
+            redirect('decyzje/zestawienie/'. substr($pismo->utworzone, 0, 4));
+          } else {
+            flash('sprawy_szczegoly', $wiadomosc);
+            redirect('sprawy/szczegoly/'. $pismo->sprawaId);
+          }
+        }
+      }
+
+      $this->view('decyzje/edytuj', $data);
     }
 
     public function ajax_numer_kolejny($jrwa) {

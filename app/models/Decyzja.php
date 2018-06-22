@@ -126,6 +126,44 @@
       return $this->db->resultSet();
     }
 
+    public function pobierzDecyzjePoId($id) {
+      /*
+       * Pobiera wszystkie dane o wybranej decyzji.
+       *
+       * Parametry:
+       *  - id => id szukanej decyzji
+       * Zwraca:
+       *  - obiekt decyzji
+       */
+
+      $sql = "SELECT * FROM decyzje WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      return $this->db->single();
+    }
+
+    public function edytujDecyzja($id, $numer, $dotyczy) {
+      /*
+       * Zmienia dane wybranej decyzji.
+       * Ze względu na wygodę wstawia wszystkie nowe dane bez sprawdzania, które faktycznie się zmieniły.
+       *
+       * Parametry:
+       *  - id => id decyzji do zmiany
+       *  - numer => nowa wartość pola numer decyzji
+       *  - dotyczy => nowa wartość pola dotyczy decyzji
+       * Zwraca:
+       *  - obiekt decyzji
+       */
+
+      $sql = "UPDATE decyzje SET numer=:numer, dotyczy=:dotyczy WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+      $this->db->bind(':numer', $numer);
+      $this->db->bind(':dotyczy', $dotyczy);
+
+      $this->db->execute();
+    }
 
   }
 

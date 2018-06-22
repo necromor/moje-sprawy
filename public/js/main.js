@@ -264,7 +264,7 @@ function tworzHtmlWychodzace(pismo) {
   html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['dotyczy']}</li>`;
   html+= `<li class="list-group-item"><a href="${URLROOT}/wychodzace/edytuj/${pismo['id']}" class="btn btn-info">Edytuj pismo</a></li>`;
   if (pismo['decyzjaId']) {
-    html+= `<li class="list-group-item"><u>decyzja</u>: ${pismo['decyzjaNumer']}</li>`;
+    html+= `<li class="list-group-item"><u>decyzja</u>: <a href="${URLROOT}/decyzje/edytuj/${pismo['decyzjaId']}" title="Zmień dane decyzji">${pismo['decyzjaNumer']}</a></li>`;
     html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['decyzjaDotyczy']}</li>`;
   }
   html+= '</dl>';

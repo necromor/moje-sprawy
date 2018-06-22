@@ -3,6 +3,12 @@
 <h1><?php echo $data['title'] ?> z <?php echo $data['rok']; ?> roku</h1>
 
 <div class="row">
+  <div class="col-md-8 mx-auto">
+  <?php echo flash('decyzje_edytuj'); ?>
+  </div>
+</div>
+
+<div class="row">
   <div class="col-md-4">
     <form class="form-inline" action="<?php echo URLROOT; ?>/decyzje/zestawienie" method="post">
       <label for="rok" class="sr-only">Rok</label>
