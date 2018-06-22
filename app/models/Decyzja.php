@@ -83,6 +83,48 @@
       return $row->liczba;
     }
 
+    public function pobierzDecyzje($rok, $jrwa) {
+      /*
+       * Pobiera wszystkie dane o decyzjach wystawionych w danym roku.
+       *
+       * Parametr jrwa to numer jrwa a nie jego id - prościej w adresie i formularzu
+       *
+       * Parametry:
+       *  - rok => rok wystawienia decyzji
+       *  - jrwa => numer jrwa (nie id)
+       * Zwraca:
+       *  - set zawierający obiekty decyzji; set jest posortowany rosnąco po znaku sprawy i dacie decyzji
+       */
+
+      // użyj wildcard jeżeli nie wybrano jrwa
+      if ($jrwa == '') {
+        $jrwa="%";
+      }
+
+      $sql = "SELECT wychodzace.*,
+                     decyzje.id AS decyzjaId,
+                     decyzje.numer AS decyzjaNumer,
+                     decyzje.dotyczy AS decyzjaDotyczy,
+                     decyzje.utworzone AS decyzjaData,
+                     podmioty.nazwa,
+                     podmioty.adres_1,
+                     podmioty.adres_2,
+                     sprawy.znak,
+                     sprawy.id AS sprawaId
+                     FROM wychodzace, podmioty, sprawy, decyzje, jrwa
+                     WHERE decyzje.utworzone LIKE :rok
+                       AND wychodzace.id_podmiot=podmioty.id
+                       AND wychodzace.id_sprawa=sprawy.id
+                       AND wychodzace.id=decyzje.id_wychodzace
+                       AND decyzje.id_jrwa=jrwa.id
+                       AND jrwa.numer LIKE :jrwa
+                     ORDER BY sprawy.znak, decyzje.utworzone ASC";
+      $this->db->query($sql);
+      $this->db->bind(':rok', $rok . "%");
+      $this->db->bind(':jrwa', $jrwa);
+
+      return $this->db->resultSet();
+    }
 
 
   }

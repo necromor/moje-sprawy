@@ -14,37 +14,48 @@
        */
 
       $this->decyzjaModel = $this->model('Decyzja');
+      $this->jrwaModel = $this->model('JrwaM');
 
       //$this->validator = new Validator();
     }
 
-    //public function zestawienie($rok) {
-    //  /*
-    //   * Tworzy zestaw obiektów Wychodzace
-    //   *
-    //   * Obsługuje widok: wychodzace/zestawienie/rok
-    //   */
+    public function zestawienie($rok, $jrwa='') {
+      /*
+       * Tworzy zestaw obiektów Wychodzace
+       *
+       * Obsługuje widok: decyzje/zestawienie/rok/jrwa
+       */
 
-    //  // tylko zalogowany, ale nie admin
-    //  sprawdzCzyPosiadaDostep(4,0);
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
 
-    //  // sprawdź czy nastąpiła zmiana roku
-    //  // jeżeli tak to przekieruj
-    //  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    //    redirect('wychodzace/zestawienie/' . $_POST['rok']);
-    //  }
+      // sprawdź czy nastąpiła zmiana roku
+      // jeżeli tak to przekieruj
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        // sprawdź czy przesłany został numer jrwa
+        if (isset($_POST['jrwa']) && trim($_POST['jrwa']) != '') {
 
-    //  $pisma = $this->wychodzacaModel->pobierzWychodzace($rok);
+          redirect('decyzje/zestawienie/' . $_POST['rok'] . '/' . $_POST['jrwa']);
+        } else {
+          redirect('decyzje/zestawienie/' . $_POST['rok']);
+        }
+      }
 
-    //  $data = [
-    //    'title' => 'Zestawienie pism wychodzących',
-    //    'pisma' => $pisma,
-    //    'rok' => $rok
-    //  ];
+      $decyzje = $this->decyzjaModel->pobierzDecyzje($rok, $jrwa);
+      $jrwaLista = $this->jrwaModel->pobierzJrwa();
 
-    //  $this->view('wychodzace/zestawienie', $data);
-    //}
+      $data = [
+        'title' => 'Zestawienie decyzji',
+        'rok' => $rok,
+        'jrwa' => $jrwa,
+        'decyzje' => $decyzje,
+        'jrwaLista' => $jrwaLista,
+        'rok' => $rok
+      ];
+
+      $this->view('decyzje/zestawienie', $data);
+    }
 
     public function ajax_numer_kolejny($jrwa) {
        /*
