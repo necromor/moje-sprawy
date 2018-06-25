@@ -267,6 +267,10 @@ function tworzHtmlWychodzace(pismo) {
     html+= `<li class="list-group-item"><u>decyzja</u>: <a href="${URLROOT}/decyzje/edytuj/${pismo['decyzjaId']}" title="Zmień dane decyzji">${pismo['decyzjaNumer']}</a></li>`;
     html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['decyzjaDotyczy']}</li>`;
   }
+  if (pismo['postanowienieId']) {
+    html+= `<li class="list-group-item"><u>postanowienie</u>: <a href="${URLROOT}/postanowienia/edytuj/${pismo['postanowienieId']}" title="Zmień dane postanowienia">${pismo['postanowienieNumer']}</a></li>`;
+    html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['postanowienieDotyczy']}</li>`;
+  }
   html+= '</dl>';
   return html;
 }

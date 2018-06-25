@@ -21,6 +21,7 @@
       $this->podmiotModel = $this->model('Podmiot');
       $this->wychodzacaModel = $this->model('Wychodzaca');
       $this->decyzjaModel = $this->model('Decyzja');
+      $this->postanowienieModel = $this->model('Postanowienie');
 
       $this->validator = new Validator();
     }
@@ -490,12 +491,15 @@
             $decyzja = $this->decyzjaModel->dodajDecyzje($id_pisma, $data['oznaczenie_dp'], $data['dotyczy_dp'], $sprawa->id_jrwa);
           } elseif ($data['czy_dp'] == '2') {
             // dodaj postanowienie
-
+            $postanowienie = $this->postanowienieModel->dodajPostanowienie($id_pisma, $data['oznaczenie_dp'], $data['dotyczy_dp'], $sprawa->id_jrwa);
           }
 
           $wiadomosc = "Pismo wychodzące zostało dodane pomyślnie.";
           if ($decyzja) {
             $wiadomosc .= " Decyzja: $decyzja->numer";
+          }
+          if ($postanowienie) {
+            $wiadomosc .= " Postanowienie: $postanowienie->numer";
           }
           flash('sprawy_szczegoly', $wiadomosc);
           redirect('sprawy/szczegoly/'.$sprawa->id);

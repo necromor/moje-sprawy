@@ -62,6 +62,11 @@
        */
 
       $sql = "SELECT wychodzace.*,
+                     postanowienia.id AS postanowienieId,
+                     postanowienia.numer AS postanowienieNumer,
+                     postanowienia.dotyczy AS postanowienieDotyczy
+                FROM
+                  (SELECT wychodzace.*,
                      decyzje.id AS decyzjaId,
                      decyzje.numer AS decyzjaNumer,
                      decyzje.dotyczy AS decyzjaDotyczy
@@ -77,7 +82,8 @@
                      WHERE wychodzace.id=:id
                        AND wychodzace.id_podmiot=podmioty.id
                        AND wychodzace.id_sprawa=sprawy.id)wychodzace
-                LEFT OUTER JOIN decyzje ON wychodzace.id=decyzje.id_wychodzace";
+                LEFT OUTER JOIN decyzje ON wychodzace.id=decyzje.id_wychodzace)wychodzace
+                LEFT OUTER JOIN postanowienia ON wychodzace.id=postanowienia.id_wychodzace";
       $this->db->query($sql);
       $this->db->bind(':id', $id);
 
