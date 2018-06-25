@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 29, 2018 at 11:30 AM
+-- Generation Time: Jun 25, 2018 at 11:15 AM
 -- Server version: 5.7.22-0ubuntu0.16.04.1
 -- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
@@ -30,6 +30,21 @@ CREATE TABLE `admin` (
   `id` int(11) NOT NULL,
   `login` varchar(10) NOT NULL,
   `haslo` varchar(255) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `decyzje`
+--
+
+CREATE TABLE `decyzje` (
+  `id` int(11) NOT NULL,
+  `id_wychodzace` int(11) NOT NULL,
+  `numer` varchar(255) NOT NULL,
+  `dotyczy` text NOT NULL,
+  `id_jrwa` int(11) NOT NULL,
   `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -79,6 +94,21 @@ CREATE TABLE `podmioty` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `postanowienia`
+--
+
+CREATE TABLE `postanowienia` (
+  `id` int(11) NOT NULL,
+  `id_wychodzace` int(11) NOT NULL,
+  `numer` varchar(255) NOT NULL,
+  `dotyczy` text NOT NULL,
+  `id_jrwa` int(11) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pracownicy`
 --
 
@@ -119,6 +149,18 @@ CREATE TABLE `przychodzace` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `przychodzace_adacta`
+--
+
+CREATE TABLE `przychodzace_adacta` (
+  `id_przychodzace` int(11) NOT NULL,
+  `id_jrwa` int(11) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sprawy`
 --
 
@@ -127,6 +169,23 @@ CREATE TABLE `sprawy` (
   `znak` varchar(20) NOT NULL,
   `temat` text NOT NULL,
   `id_jrwa` int(11) NOT NULL,
+  `zakonczona` datetime DEFAULT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wychodzace`
+--
+
+CREATE TABLE `wychodzace` (
+  `id` int(11) NOT NULL,
+  `id_sprawa` int(11) NOT NULL,
+  `id_podmiot` int(11) NOT NULL,
+  `data_wyjscia` date DEFAULT NULL,
+  `sposob_wyjscia` int(11) NOT NULL DEFAULT '0',
+  `dotyczy` text NOT NULL,
   `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -140,6 +199,12 @@ CREATE TABLE `sprawy` (
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `login` (`login`);
+
+--
+-- Indexes for table `decyzje`
+--
+ALTER TABLE `decyzje`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `jrwa`
@@ -158,6 +223,12 @@ ALTER TABLE `metryka`
 -- Indexes for table `podmioty`
 --
 ALTER TABLE `podmioty`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `postanowienia`
+--
+ALTER TABLE `postanowienia`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -181,6 +252,12 @@ ALTER TABLE `sprawy`
   ADD UNIQUE KEY `znak` (`znak`);
 
 --
+-- Indexes for table `wychodzace`
+--
+ALTER TABLE `wychodzace`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -188,6 +265,11 @@ ALTER TABLE `sprawy`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `decyzje`
+--
+ALTER TABLE `decyzje`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jrwa`
@@ -205,6 +287,11 @@ ALTER TABLE `metryka`
 ALTER TABLE `podmioty`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `postanowienia`
+--
+ALTER TABLE `postanowienia`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `pracownicy`
 --
 ALTER TABLE `pracownicy`
@@ -218,6 +305,11 @@ ALTER TABLE `przychodzace`
 -- AUTO_INCREMENT for table `sprawy`
 --
 ALTER TABLE `sprawy`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `wychodzace`
+--
+ALTER TABLE `wychodzace`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
