@@ -138,7 +138,7 @@
        * Czy sprawa ulega zmianie to DO USTALENIA.
        *
        * Parametry:
-       *  - data => tablica zawierająca dane istniejącego pracownika
+       *  - data => tablica zawierająca dane istniejącego pisma
        * Zwraca:
        *  - boolean
        */

@@ -192,7 +192,7 @@ $('.pokazSzczegoly').click(function () {
       szczegolyWychodzace(podzial[1]);
       break;
     case '3':
-      szczegolyInne(podzial[1]);
+      szczegolyInnyDokument(podzial[1]);
       break;
   }
 
@@ -238,6 +238,25 @@ function szczegolyWychodzace(id) {
   });
 }
 
+function szczegolyInnyDokument(id) {
+  // wysyła zapytanie ajax
+  // wstawia otrzymane dane do div szczegolyKorespondencji
+
+  // wyślij zapytanie ajax
+  $.ajax({
+    type: 'GET',
+    url: URLROOT + 'inne/ajax_inny/' + id
+  })
+    .done(function(data) {
+      const pismo = JSON.parse(data);
+      // jeżeli id = -1 to znaczy, że pismo nie istnieje
+      if (pismo.id != '-1') {
+        // wstaw informacje do diva
+        $('#szczegolyKorespondencji').html(tworzHtmlInnyDokument(pismo));
+      }
+  });
+}
+
 function szczegolyInne(id) {
   console.log(id);
 }
@@ -257,7 +276,7 @@ function tworzHtmlPrzychodzace(pismo) {
 }
 
 function tworzHtmlWychodzace(pismo) {
-  // tworzy html na podstawie danych pisma przychodzącego
+  // tworzy html na podstawie danych pisma wychodzącego
   let html = '<ul class="list-group list-group-flush">';
   html+= `<li class="list-group-item"><u>data pisma</u>: ${pismo['utworzone']}</li>`;
   html+= `<li class="list-group-item"><u>nadawca</u>: ${pismo['nazwa']}</li>`;
@@ -271,6 +290,17 @@ function tworzHtmlWychodzace(pismo) {
     html+= `<li class="list-group-item"><u>postanowienie</u>: <a href="${URLROOT}/postanowienia/edytuj/${pismo['postanowienieId']}" title="Zmień dane postanowienia">${pismo['postanowienieNumer']}</a></li>`;
     html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['postanowienieDotyczy']}</li>`;
   }
+  html+= '</dl>';
+  return html;
+}
+
+function tworzHtmlInnyDokument(pismo) {
+  // tworzy html na podstawie danych innego dokumentu
+  let html = '<ul class="list-group list-group-flush">';
+  html+= `<li class="list-group-item"><u>data dokumentu</u>: ${pismo['utworzone']}</li>`;
+  html+= `<li class="list-group-item"><u>rodzaj</u>: ${pismo['rodzaj']}</li>`;
+  html+= `<li class="list-group-item"><u>dotyczy</u>: ${pismo['dotyczy']}</li>`;
+  html+= `<li class="list-group-item"><a href="${URLROOT}/inne/edytuj/${pismo['id']}" class="btn btn-info">Edytuj dokument</a></li>`;
   html+= '</dl>';
   return html;
 }

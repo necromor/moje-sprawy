@@ -22,6 +22,7 @@
       $this->wychodzacaModel = $this->model('Wychodzaca');
       $this->decyzjaModel = $this->model('Decyzja');
       $this->postanowienieModel = $this->model('Postanowienie');
+      $this->innyModel = $this->model('Inny');
 
       $this->validator = new Validator();
     }
@@ -73,6 +74,10 @@
           case 2:
             $dokument = $this->wychodzacaModel->pobierzWychodzacaPoId($m->id_dokument);
             $m->dokument = 'w' . strtotime($dokument->utworzone);
+            break;
+          case 3:
+            $dokument = $this->innyModel->pobierzInnyDokumentPoId($m->id_dokument);
+            $m->dokument = 'i' . strtotime($dokument->utworzone);
             break;
           default:
             $m->dokument = '=====';
@@ -509,7 +514,63 @@
       $this->view('sprawy/dodaj_wychodzace', $data);
     }
 
+    public function dodaj_inny($id) {
+      /*
+       * Obsługuje proces dodawania innego dokumentu w ramach sprawy.
+       *
+       * Proces dodawania innego dokumentu jest zbliżony do dodawania korespondencji przychodzącej.
+       * Inny dokument to dokument przypisywany tylko do akt sprawy, na przykład:
+       *  - notatka służbowa
+       *  - zwrotka
+       *  - protokół
+       * Nie ma totaj zamkniętego katalogu więc użytkownik ma dużą swobodę co do zawartości pól.
+       * Sprawdzanie tylko dotyczy ilości wpisanych znaków.
+       *
+       * Obsługuje widok: sprawy/dodaj_inny
+       *
+       * Parametry:
+       *  - id => id sprawy, w ramach której dodawany jest inny dokument
+       */
 
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
+
+      $data = [
+        'title' => 'Dodaj inny dokument w ramach sprawy ' . $sprawa->znak,
+        'id' => $id,
+        'rodzaj' => '',
+        'dotyczy' => '',
+        'rodzaj_err' => '',
+        'dotyczy_err' => ''
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data['rodzaj'] = trim($_POST['rodzaj']);
+        $data['dotyczy'] = trim($_POST['dotyczy']);
+
+        $data['rodzaj_err'] = $this->validator->sprawdzDlugosc($data['rodzaj'], 4);
+        $data['dotyczy_err'] = $this->validator->sprawdzDlugosc($data['dotyczy'], 10);
+
+        if (empty($data['rodzaj_err']) &&
+            empty($data['dotyczy_err'])) {
+
+          $id_pisma = $this->innyModel->dodajInnyDokument($data);
+          // dodaj wpis do metryki
+          $this->metrykaModel->dodajMetryke($id, 3, $_SESSION['user_id'], 3, $id_pisma);
+
+          $wiadomosc = "Dodano pomyślnie dokument: " . $data['rodzaj'];
+          flash('sprawy_szczegoly', $wiadomosc);
+          redirect('sprawy/szczegoly/'.$sprawa->id);
+        }
+      }
+
+      $this->view('sprawy/dodaj_inny', $data);
+    }
 
 
     public function ajax_lista($rok, $numer=-1) {

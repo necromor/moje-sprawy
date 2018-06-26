@@ -48,6 +48,8 @@
        *  2 - dodanie wychodzącego
        *  3 - dodanie innego dokumentu
        *  9 - edycja tematu sprawy
+       *  10 - edycja pisma wychodzącego
+       *  11 - edycja innego dokumentu
        *  98 - wznowienie sprawy
        *  99 - zakończenie sprawy
        *
@@ -80,6 +82,9 @@
         break;
       case 10:
         $czynnosc = 'Zmiana danych pisma wychodzącego';
+        break;
+      case 11:
+        $czynnosc = 'Zmiana danych innego dokumentu';
         break;
       case 98:
         $czynnosc = 'Wznowienie sprawy';
