@@ -70,17 +70,17 @@
           case 1:
             $dokument = $this->przychodzacaModel->pobierzPrzychodzacaPoId($m->id_dokument);
             $m->dokument = 'p' . strtotime($dokument->utworzone);
-            $m->szczegoly = $this->tworzHtmlPrzychodzace($dokument);
+            $m->szczegoly = $this->tworzHtmlDokumentu($m->rodzaj_dokumentu, $dokument);
             break;
           case 2:
             $dokument = $this->wychodzacaModel->pobierzWychodzacaPoId($m->id_dokument);
             $m->dokument = 'w' . strtotime($dokument->utworzone);
-            $m->szczegoly = $this->tworzHtmlWychodzace($dokument);
+            $m->szczegoly = $this->tworzHtmlDokumentu($m->rodzaj_dokumentu, $dokument);
             break;
           case 3:
             $dokument = $this->innyModel->pobierzInnyDokumentPoId($m->id_dokument);
             $m->dokument = 'i' . strtotime($dokument->utworzone);
-            $m->szczegoly = $this->tworzHtmlInnyDokument($dokument);
+            $m->szczegoly = $this->tworzHtmlDokumentu($m->rodzaj_dokumentu, $dokument);
             break;
           default:
             $m->dokument = '=====';
@@ -101,43 +101,66 @@
 
 
     private function tworzHtmlPrzychodzace($dokument) {
-      $html = '<ul class="list-group list-group-flush">';
-      $html.= '<li class="list-group-item"><u>nr rej.</u>: ' . $dokument->nr_rejestru . '</li>';
-      $html.= '<li class="list-group-item"><u>znak</u>: ' . $dokument->znak . '</li>';
-      $html.= '<li class="list-group-item"><u>data pisma</u>: ' . $dokument->data_pisma . '</li>';
-      $html.= '<li class="list-group-item"><u>data wpływu</u>: ' . $dokument->data_wplywu . '</li>';
-      $html.= '<li class="list-group-item"><u>nadawca</u>: ' . $dokument->nazwa . '</li>';
-      $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->dotyczy . '</li>';
-      $html.= '<li class="list-group-item"><u>liczba zał.</u>: ' . $dokument->liczba_zalacznikow . '</li>';
-      $html.= '</ul>';
+
+      $html = '<p class="col"><u>nr rejestru</u>: ' . $dokument->nr_rejestru . '</p>';
+      $html.= '<p class="col"><u>znak</u>: ' . $dokument->znak . '</p>';
+      $html.= '<p class="col"><u>nadawca</u>: ' . $dokument->nazwa . '</p>';
+      $html.= '<p class="col-12 py-3"><u>dotyczy</u>: ' . $dokument->dotyczy . '</p>';
+      $html.= '<p class="col"><u>data pisma</u>: ' . $dokument->data_pisma . '</p>';
+      $html.= '<p class="col"><u>data wpływu</u>: ' . $dokument->data_wplywu . '</p>';
+      $html.= '<p class="col"><u>liczba załączników</u>: ' . $dokument->liczba_zalacznikow . '</p>';
       return $html;
     }
 
     private function tworzHtmlWychodzace($dokument) {
-      $html = '<ul class="list-group list-group-flush">';
-      $html.= '<li class="list-group-item"><u>data pisma</u>: ' . $dokument->utworzone . '</li>';
-      $html.= '<li class="list-group-item"><u>odbiorca</u>: ' . $dokument->nazwa . '</li>';
-      $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->dotyczy . '</li>';
-      $html.= '<li class="list-group-item"><a href="' . URLROOT . '/wychodzace/edytuj/' . $dokument->id . '" class="btn btn-info">Edytuj pismo</a></li>';
+
+      $html = '<p class="col"><u>data pisma</u>: ' . substr($dokument->utworzone, 0, 10) . '</p>';
+      $html.= '<p class="col"><u>odbiorca</u>: ' . $dokument->nazwa . '</p>';
+      $html.= '<p class="col-12 py-3"><u>dotyczy</u>: ' . $dokument->dotyczy . '</p>';
       if ($dokument->decyzjaId) {
-        $html.= '<li class="list-group-item"><u>decyzja</u>: <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></li>';
-        $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->decyzjaDotyczy . '</li>';
+        $html.= '<p class="col"><u>decyzja</u>: <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></p>';
+        $html.= '<p class="col"><u>dotyczy</u>: ' . $dokument->decyzjaDotyczy . '</p>';
       }
       if ($dokument->postanowienieId) {
-        $html.= '<li class="list-group-item"><u>postanowienie</u>: <a href="' . URLROOT . '/postanowienia/edytuj/' . $dokument->postanowienieId . '" title="Zmień dane postanowienia">' . $dokument->postanowienieNumer . '</a></li>';
-        $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->postanowienieDotyczy . '</li>';
+        $html.= '<p class="col"><u>postanowienie</u>: <a href="' . URLROOT . '/postanowienia/edytuj/' . $dokument->postanowienieId . '" title="Zmień dane postanowienia">' . $dokument->postanowienieNumer . '</a></p>';
+        $html.= '<p class="col"><u>dotyczy</u>: ' . $dokument->postanowienieDotyczy . '</p>';
       }
-      $html.= '</ul>';
       return $html;
     }
 
     private function tworzHtmlInnyDokument($dokument) {
-      $html = '<ul class="list-group list-group-flush">';
-      $html.= '<li class="list-group-item"><u>data dokumentu</u>: ' . $dokument->utworzone . '</li>';
-      $html.= '<li class="list-group-item"><u>rodzaj</u>: ' . $dokument->rodzaj . '</li>';
-      $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->dotyczy . '</li>';
-      $html.= '<li class="list-group-item"><a href="' . URLROOT . '/inne/edytuj/' . $dokument->id . '" class="btn btn-info">Edytuj dokument</a></li>';
-      $html.= '</ul>';
+
+      $html = '<p class="col"><u>data dokumentu</u>: ' . substr($dokument->utworzone, 0, 10) . '</p>';
+      $html.= '<p class="col"><u>rodzaj</u>: ' . $dokument->rodzaj . '</p>';
+      $html.= '<p class="col-12 py-3"><u>dotyczy</u>: ' . $dokument->dotyczy . '</p>';
+      return $html;
+    }
+
+    private function tworzHtmlDokumentu($rodzaj, $dokument) {
+      $html = '<div class="card border-secondary">
+               <div class="card-header">
+                 <p class="mr-auto d-inline">Szczegóły wybranego dokumentu: </p>';
+      if ($rodzaj == '2') {
+        $html.= '<a href="' . URLROOT . '/wychodzace/edytuj/' . $dokument->id . '" class="btn btn-success float-right">Edytuj dokument</a>';
+      }
+      if ($rodzaj == '3') {
+        $html.= '<a href="' . URLROOT . '/inne/edytuj/' . $dokument->id . '" class="btn btn-success float-right">Edytuj dokument</a>';
+      }
+      $html.= '</div>
+               <div class="card-body">
+               <div class="row">';
+      switch ($rodzaj) {
+        case '1':
+          $html.= $this->tworzHtmlPrzychodzace($dokument);
+          break;
+        case '2':
+          $html.= $this->tworzHtmlWychodzace($dokument);
+          break;
+        case '3':
+          $html.= $this->tworzHtmlInnyDokument($dokument);
+          break;
+      }
+      $html.='</div></div></div>';
       return $html;
     }
 
