@@ -70,14 +70,17 @@
           case 1:
             $dokument = $this->przychodzacaModel->pobierzPrzychodzacaPoId($m->id_dokument);
             $m->dokument = 'p' . strtotime($dokument->utworzone);
+            $m->szczegoly = $this->tworzHtmlPrzychodzace($dokument);
             break;
           case 2:
             $dokument = $this->wychodzacaModel->pobierzWychodzacaPoId($m->id_dokument);
             $m->dokument = 'w' . strtotime($dokument->utworzone);
+            $m->szczegoly = $this->tworzHtmlWychodzace($dokument);
             break;
           case 3:
             $dokument = $this->innyModel->pobierzInnyDokumentPoId($m->id_dokument);
             $m->dokument = 'i' . strtotime($dokument->utworzone);
+            $m->szczegoly = $this->tworzHtmlInnyDokument($dokument);
             break;
           default:
             $m->dokument = '=====';
@@ -96,6 +99,47 @@
       $this->view('sprawy/szczegoly', $data);
     }
 
+
+    private function tworzHtmlPrzychodzace($dokument) {
+      $html = '<ul class="list-group list-group-flush">';
+      $html.= '<li class="list-group-item"><u>nr rej.</u>: ' . $dokument->nr_rejestru . '</li>';
+      $html.= '<li class="list-group-item"><u>znak</u>: ' . $dokument->znak . '</li>';
+      $html.= '<li class="list-group-item"><u>data pisma</u>: ' . $dokument->data_pisma . '</li>';
+      $html.= '<li class="list-group-item"><u>data wpływu</u>: ' . $dokument->data_wplywu . '</li>';
+      $html.= '<li class="list-group-item"><u>nadawca</u>: ' . $dokument->nazwa . '</li>';
+      $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->dotyczy . '</li>';
+      $html.= '<li class="list-group-item"><u>liczba zał.</u>: ' . $dokument->liczba_zalacznikow . '</li>';
+      $html.= '</ul>';
+      return $html;
+    }
+
+    private function tworzHtmlWychodzace($dokument) {
+      $html = '<ul class="list-group list-group-flush">';
+      $html.= '<li class="list-group-item"><u>data pisma</u>: ' . $dokument->utworzone . '</li>';
+      $html.= '<li class="list-group-item"><u>odbiorca</u>: ' . $dokument->nazwa . '</li>';
+      $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->dotyczy . '</li>';
+      $html.= '<li class="list-group-item"><a href="' . URLROOT . '/wychodzace/edytuj/' . $dokument->id . '" class="btn btn-info">Edytuj pismo</a></li>';
+      if ($dokument->decyzjaId) {
+        $html.= '<li class="list-group-item"><u>decyzja</u>: <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></li>';
+        $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->decyzjaDotyczy . '</li>';
+      }
+      if ($dokument->postanowienieId) {
+        $html.= '<li class="list-group-item"><u>postanowienie</u>: <a href="' . URLROOT . '/postanowienia/edytuj/' . $dokument->postanowienieId . '" title="Zmień dane postanowienia">' . $dokument->postanowienieNumer . '</a></li>';
+        $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->postanowienieDotyczy . '</li>';
+      }
+      $html.= '</ul>';
+      return $html;
+    }
+
+    private function tworzHtmlInnyDokument($dokument) {
+      $html = '<ul class="list-group list-group-flush">';
+      $html.= '<li class="list-group-item"><u>data dokumentu</u>: ' . $dokument->utworzone . '</li>';
+      $html.= '<li class="list-group-item"><u>rodzaj</u>: ' . $dokument->rodzaj . '</li>';
+      $html.= '<li class="list-group-item"><u>dotyczy</u>: ' . $dokument->dotyczy . '</li>';
+      $html.= '<li class="list-group-item"><a href="' . URLROOT . '/inne/edytuj/' . $dokument->id . '" class="btn btn-info">Edytuj dokument</a></li>';
+      $html.= '</ul>';
+      return $html;
+    }
 
     public function dodaj() {
       /*

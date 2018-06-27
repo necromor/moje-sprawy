@@ -41,12 +41,18 @@
         <td><?php echo $m->czynnosc; ?></td>
         <td>
           <?php if ($m->rodzaj_dokumentu != 0 ) : ?>
-          <button class="btn btn-block btn-info pokazSzczegoly" id="<?php echo $m->rodzaj_dokumentu . '-' . $m->id_dokument; ?>" title="Wyświetl szczegóły pisma">
+          <button class="btn btn-block btn-info"
+                  title="Wyświetl szczegóły pisma" data-toggle="collapse" data-target="#szczegoly_<?php echo $m->id; ?>">
           <?php echo $m->dokument; ?>
           </button>
           <?php else : ?>
           <?php echo $m->dokument; ?>
           <?php endif; ?>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="5" class="collapse" id="szczegoly_<?php echo $m->id; ?>">
+         <?php echo $m->szczegoly; ?>
         </td>
       </tr>
       <?php endforeach; ?>
@@ -55,15 +61,6 @@
   </div><!-- /metryka -->
 
   <div class="col-md-3 col-12">
-    <details id="detPisma">
-      <summary>Szczegóły wybranego dokumentu</summary>
-      <div id="szczegolyKorespondencji">
-      <ul class="list-group list-group-flush">
-      <li class="list-group-item list-group-item-warning">Nie wybrano dokumentu!</li>
-      <li class="list-group-item list-group-item-info">Kliknij na identyfikator dokumentu aby zobaczyć jego szczegóły.</li>
-      </ul>
-      </div>
-    </details>
     <h2>Operacje</h2>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_przychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Przypisz przychodzące</a>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_wychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Dodaj wychodzące</a>
