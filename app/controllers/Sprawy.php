@@ -192,6 +192,9 @@
       // tylko zalogowany, ale nie admin
       sprawdzCzyPosiadaDostep(4,0);
 
+      // czy sprawa nie jest zakończona
+      $this->sprawdzCzyZakonczona($id);
+
       $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
 
       $data = [
@@ -274,7 +277,7 @@
       // tylko zalogowany, ale nie admin
       sprawdzCzyPosiadaDostep(4,0);
 
-      // nie wznawiaj sprawy nie zakończonej sprawy
+      // nie wznawiaj nie zakończonej sprawy
       if (!$this->sprawaModel->czyZakonczona($id)) {
         $wiadomosc = "Sprawa nie jest zakończona!";
         flash('sprawy_szczegoly', $wiadomosc);
@@ -354,6 +357,9 @@
       // tylko zalogowany, ale nie admin
       sprawdzCzyPosiadaDostep(4,0);
 
+      // czy sprawa nie jest zakończona
+      $this->sprawdzCzyZakonczona($id);
+
       // jeżeli link ma tylko jeden parametr to wyświetl zestawienie
       if ($pismo == 0) {
 
@@ -407,6 +413,9 @@
 
       // tylko zalogowany, ale nie admin
       sprawdzCzyPosiadaDostep(4,0);
+
+      // czy sprawa nie jest zakończona
+      $this->sprawdzCzyZakonczona($id);
 
       $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
       $podmioty = $this->podmiotModel->pobierzPodmioty();
@@ -535,6 +544,9 @@
       // tylko zalogowany, ale nie admin
       sprawdzCzyPosiadaDostep(4,0);
 
+      // czy sprawa nie jest zakończona
+      $this->sprawdzCzyZakonczona($id);
+
       $sprawa = $this->sprawaModel->pobierzSprawePoId($id);
 
       $data = [
@@ -652,6 +664,26 @@
       $znak = substr($znak, 0, -1);
 
       return $znak;
+    }
+
+    private function sprawdzCzyZakonczona($id) {
+      /*
+       * Funkcja, która kontroluje czy sprawa jest zakończona.
+       * Do zakończonej sprawy nie można dodać nowych dokumentów czy też ponowniej jej zakończyć.
+       *
+       * Jeżeli sprawa jest zakończona przekierowuje na stronę szczegółów
+       * z komunikatem że sprawa jest zakończona.
+       *
+       * Parametry:
+       *  - id => id sprawy
+       */
+
+     if ($this->sprawaModel->czyZakonczona($id)) {
+          $wiadomosc = "Operacja nie jest możliwa! Sprawa jest zakończona.";
+          flash('sprawy_szczegoly', $wiadomosc, 'alert alert-danger');
+          redirect('sprawy/szczegoly/'.$id);
+     }
+
     }
 
 
