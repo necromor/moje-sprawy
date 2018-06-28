@@ -100,70 +100,6 @@
     }
 
 
-    private function tworzHtmlPrzychodzace($dokument) {
-
-      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">nr rejestru:</span> ' . $dokument->nr_rejestru . '</p>';
-      $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">znak:</span> ' . $dokument->znak . '</p>';
-      $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">nadawca:</span> ' . $dokument->nazwa . '</p>';
-      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
-      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . $dokument->data_pisma . '</p>';
-      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data wpływu:</span> ' . $dokument->data_wplywu . '</p>';
-      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">liczba załączników:</span> ' . $dokument->liczba_zalacznikow . '</p>';
-      return $html;
-    }
-
-    private function tworzHtmlWychodzace($dokument) {
-
-      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . substr($dokument->utworzone, 0, 10) . '</p>';
-      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">odbiorca:</span> ' . $dokument->nazwa . '</p>';
-      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
-      if ($dokument->decyzjaId) {
-        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer decyzji:</span> <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></p>';
-        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść decyzji:</span> ' . $dokument->decyzjaDotyczy . '</p>';
-      }
-      if ($dokument->postanowienieId) {
-        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer postanowienia:</span> <a href="' . URLROOT . '/postanowienia/edytuj/' . $dokument->postanowienieId . '" title="Zmień dane postanowienia">' . $dokument->postanowienieNumer . '</a></p>';
-        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść postanowienia:</span> ' . $dokument->postanowienieDotyczy . '</p>';
-      }
-      return $html;
-    }
-
-    private function tworzHtmlInnyDokument($dokument) {
-
-      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">data dokumentu:</span> ' . substr($dokument->utworzone, 0, 10) . '</p>';
-      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">rodzaj:</span> ' . $dokument->rodzaj . '</p>';
-      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
-      return $html;
-    }
-
-    private function tworzHtmlDokumentu($rodzaj, $dokument) {
-      $html = '<div class="card border-secondary">
-               <div class="card-header">
-                 <p class="mr-auto d-inline">Szczegóły wybranego dokumentu: </p>';
-      if ($rodzaj == '2') {
-        $html.= '<a href="' . URLROOT . '/wychodzace/edytuj/' . $dokument->id . '" class="btn btn-success float-right">Edytuj dokument</a>';
-      }
-      if ($rodzaj == '3') {
-        $html.= '<a href="' . URLROOT . '/inne/edytuj/' . $dokument->id . '" class="btn btn-success float-right">Edytuj dokument</a>';
-      }
-      $html.= '</div>
-               <div class="card-body">
-               <div class="row">';
-      switch ($rodzaj) {
-        case '1':
-          $html.= $this->tworzHtmlPrzychodzace($dokument);
-          break;
-        case '2':
-          $html.= $this->tworzHtmlWychodzace($dokument);
-          break;
-        case '3':
-          $html.= $this->tworzHtmlInnyDokument($dokument);
-          break;
-      }
-      $html.='</div></div></div>';
-      return $html;
-    }
-
     public function dodaj() {
       /*
        * Obsługuje proces dodawania nowej sprawy.
@@ -751,6 +687,106 @@
           redirect('sprawy/szczegoly/'.$id);
      }
 
+    }
+
+    private function tworzHtmlPrzychodzace($dokument) {
+      /*
+       * Funkcja pomocnicza, która tworzy html dla danych pisma przychodzącego
+       *
+       * Parametry:
+       *  - dokument => obiekt pisma przychodzącego
+       * Zwraca:
+       *  - string - html z danymi pisma przychodzącego
+       */
+
+      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">nr rejestru:</span> ' . $dokument->nr_rejestru . '</p>';
+      $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">znak:</span> ' . $dokument->znak . '</p>';
+      $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">nadawca:</span> ' . $dokument->nazwa . '</p>';
+      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . $dokument->data_pisma . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data wpływu:</span> ' . $dokument->data_wplywu . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">liczba załączników:</span> ' . $dokument->liczba_zalacznikow . '</p>';
+      return $html;
+    }
+
+    private function tworzHtmlWychodzace($dokument) {
+      /*
+       * Funkcja pomocnicza, która tworzy html dla danych pisma wychodzącego
+       *
+       * Parametry:
+       *  - dokument => obiekt pisma wychodzącego
+       * Zwraca:
+       *  - string - html z danymi pisma wychodzącego
+       */
+
+      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . substr($dokument->utworzone, 0, 10) . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">odbiorca:</span> ' . $dokument->nazwa . '</p>';
+      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
+      if ($dokument->decyzjaId) {
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer decyzji:</span> <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść decyzji:</span> ' . $dokument->decyzjaDotyczy . '</p>';
+      }
+      if ($dokument->postanowienieId) {
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer postanowienia:</span> <a href="' . URLROOT . '/postanowienia/edytuj/' . $dokument->postanowienieId . '" title="Zmień dane postanowienia">' . $dokument->postanowienieNumer . '</a></p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść postanowienia:</span> ' . $dokument->postanowienieDotyczy . '</p>';
+      }
+      return $html;
+    }
+
+    private function tworzHtmlInnyDokument($dokument) {
+      /*
+       * Funkcja pomocnicza, która tworzy html dla danych innego dokumentu
+       *
+       * Parametry:
+       *  - dokument => obiekt innego dokumentu
+       * Zwraca:
+       *  - string - html z danymi innego dokumentu
+       */
+
+      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">data dokumentu:</span> ' . substr($dokument->utworzone, 0, 10) . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">rodzaj:</span> ' . $dokument->rodzaj . '</p>';
+      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
+      return $html;
+    }
+
+    private function tworzHtmlDokumentu($rodzaj, $dokument) {
+      /*
+       * Funkcja pomocnicza, która tworzy html dla danych dokumentu
+       * Zawiera wspólne elementy dla wszystkich rodzajów dokumentu.
+       * Elementy szczegółowe w zależności od rodzaju są pobierane z pomocniczych funkcji.
+       *
+       * Parametry:
+       *  - rodzaj => rodzaj dokumentu
+       *  - dokument => obiekt danego dokumentu
+       * Zwraca:
+       *  - string - html z danymi danego dokumentu
+       */
+
+      $html = '<div class="card border-secondary">
+               <div class="card-header">
+                 <p class="mr-auto d-inline">Szczegóły wybranego dokumentu: </p>';
+      if ($rodzaj == '2') {
+        $html.= '<a href="' . URLROOT . '/wychodzace/edytuj/' . $dokument->id . '" class="btn btn-success float-right">Edytuj dokument</a>';
+      }
+      if ($rodzaj == '3') {
+        $html.= '<a href="' . URLROOT . '/inne/edytuj/' . $dokument->id . '" class="btn btn-success float-right">Edytuj dokument</a>';
+      }
+      $html.= '</div>
+               <div class="card-body">
+               <div class="row">';
+      switch ($rodzaj) {
+        case '1':
+          $html.= $this->tworzHtmlPrzychodzace($dokument);
+          break;
+        case '2':
+          $html.= $this->tworzHtmlWychodzace($dokument);
+          break;
+        case '3':
+          $html.= $this->tworzHtmlInnyDokument($dokument);
+          break;
+      }
+      $html.='</div></div></div>';
+      return $html;
     }
 
 

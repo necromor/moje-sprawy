@@ -75,31 +75,6 @@
     }
 
 
-    public function ajax_inny($id) {
-       /*
-        * Pobiera dane innego dokumentu i drukuje je w postaci json.
-        * Zastosowanie do zapytania ajax.
-        * Jeżeli dokument nie istnieje w miejsu id wstawiona zostaje wartość -1
-        *
-        * Funkcja nie obsługuje widoku.
-        *
-        * Parametry:
-        *  - id => id pobieranego dokumentu
-        * Zwraca:
-        *  - echo json postaci: { id:, rodzaj:, itd... }
-        */
-
-       // tylko zalogowany
-       sprawdzCzyPosiadaDostep(4,0);
-
-       $pismo = $this->innyModel->pobierzInnyDokumentPoId($id);
-       if ($pismo) {
-         echo json_encode($pismo);
-       } else {
-         echo '{"id":"-1"}';
-       }
-    }
-
 
 
   }
