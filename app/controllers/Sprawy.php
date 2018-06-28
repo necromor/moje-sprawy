@@ -102,37 +102,37 @@
 
     private function tworzHtmlPrzychodzace($dokument) {
 
-      $html = '<p class="col"><u>nr rejestru</u>: ' . $dokument->nr_rejestru . '</p>';
-      $html.= '<p class="col"><u>znak</u>: ' . $dokument->znak . '</p>';
-      $html.= '<p class="col"><u>nadawca</u>: ' . $dokument->nazwa . '</p>';
-      $html.= '<p class="col-12 py-3"><u>dotyczy</u>: ' . $dokument->dotyczy . '</p>';
-      $html.= '<p class="col"><u>data pisma</u>: ' . $dokument->data_pisma . '</p>';
-      $html.= '<p class="col"><u>data wpływu</u>: ' . $dokument->data_wplywu . '</p>';
-      $html.= '<p class="col"><u>liczba załączników</u>: ' . $dokument->liczba_zalacznikow . '</p>';
+      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">nr rejestru:</span> ' . $dokument->nr_rejestru . '</p>';
+      $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">znak:</span> ' . $dokument->znak . '</p>';
+      $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">nadawca:</span> ' . $dokument->nazwa . '</p>';
+      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . $dokument->data_pisma . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data wpływu:</span> ' . $dokument->data_wplywu . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">liczba załączników:</span> ' . $dokument->liczba_zalacznikow . '</p>';
       return $html;
     }
 
     private function tworzHtmlWychodzace($dokument) {
 
-      $html = '<p class="col"><u>data pisma</u>: ' . substr($dokument->utworzone, 0, 10) . '</p>';
-      $html.= '<p class="col"><u>odbiorca</u>: ' . $dokument->nazwa . '</p>';
-      $html.= '<p class="col-12 py-3"><u>dotyczy</u>: ' . $dokument->dotyczy . '</p>';
+      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . substr($dokument->utworzone, 0, 10) . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">odbiorca:</span> ' . $dokument->nazwa . '</p>';
+      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
       if ($dokument->decyzjaId) {
-        $html.= '<p class="col"><u>decyzja</u>: <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></p>';
-        $html.= '<p class="col"><u>dotyczy</u>: ' . $dokument->decyzjaDotyczy . '</p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer decyzji:</span> <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść decyzji:</span> ' . $dokument->decyzjaDotyczy . '</p>';
       }
       if ($dokument->postanowienieId) {
-        $html.= '<p class="col"><u>postanowienie</u>: <a href="' . URLROOT . '/postanowienia/edytuj/' . $dokument->postanowienieId . '" title="Zmień dane postanowienia">' . $dokument->postanowienieNumer . '</a></p>';
-        $html.= '<p class="col"><u>dotyczy</u>: ' . $dokument->postanowienieDotyczy . '</p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer postanowienia:</span> <a href="' . URLROOT . '/postanowienia/edytuj/' . $dokument->postanowienieId . '" title="Zmień dane postanowienia">' . $dokument->postanowienieNumer . '</a></p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść postanowienia:</span> ' . $dokument->postanowienieDotyczy . '</p>';
       }
       return $html;
     }
 
     private function tworzHtmlInnyDokument($dokument) {
 
-      $html = '<p class="col"><u>data dokumentu</u>: ' . substr($dokument->utworzone, 0, 10) . '</p>';
-      $html.= '<p class="col"><u>rodzaj</u>: ' . $dokument->rodzaj . '</p>';
-      $html.= '<p class="col-12 py-3"><u>dotyczy</u>: ' . $dokument->dotyczy . '</p>';
+      $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">data dokumentu:</span> ' . substr($dokument->utworzone, 0, 10) . '</p>';
+      $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">rodzaj:</span> ' . $dokument->rodzaj . '</p>';
+      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
       return $html;
     }
 

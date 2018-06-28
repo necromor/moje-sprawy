@@ -50,11 +50,13 @@
           <?php endif; ?>
         </td>
       </tr>
+      <?php if ($m->rodzaj_dokumentu != 0 ) : ?>
       <tr>
         <td colspan="5" class="collapse" id="szczegoly_<?php echo $m->id; ?>">
          <?php echo $m->szczegoly; ?>
         </td>
       </tr>
+      <?php endif; ?>
       <?php endforeach; ?>
       </tbody>
     </table>
