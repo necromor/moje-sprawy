@@ -700,7 +700,7 @@
        */
 
       $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">nr rejestru:</span> ' . $dokument->nr_rejestru . '</p>';
-      $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">znak:</span> ' . $dokument->znak . '</p>';
+      $html.= '<p class="col-sm-4 col-12"><span class="badge badge-dark p-2">znak:</span> ' . $dokument->znak . '</p>';
       $html.= '<p class="col-sm-5 col-12"><span class="badge badge-dark p-2">nadawca:</span> ' . $dokument->nazwa . '</p>';
       $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
       $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . $dokument->data_pisma . '</p>';
