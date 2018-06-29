@@ -57,7 +57,14 @@
      *  - max => dolny limit - służy głównie przy oddzielaniu admina
      */
     if (!czyPosiadaDostep($min, $max)) {
-      redirect('pages');
+        redirect('pages');
+      }
+
+    //czy posiada ustalony wzor znaku
+    if (!$_SESSION['wzor_znaku'] && !strpos($_SERVER['REQUEST_URI'], 'ustaw_znak')) {
+        $wiadomosc = "Przed podjęciem pracy musisz ustawić wzoru znaku sprawy.";
+        flash('pracownicy_ustaw_znak', $wiadomosc);
+        redirect('pracownicy/ustaw_znak');
     }
   }
 

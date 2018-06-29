@@ -257,6 +257,7 @@
       unset($_SESSION['user_id']);
       unset($_SESSION['imie_nazwisko']);
       unset($_SESSION['poziom']);
+      unset($_SESSION['wzor_znaku']);
       session_destroy();
 
       redirect('pracownicy/zaloguj');
@@ -327,6 +328,68 @@
       }
 
       $this->view('pracownicy/zmien_haslo', $data);
+    }
+
+    public function ustaw_znak() {
+      /*
+       * Obsługuje proces ustawienia wzoru znaku sprawy.
+       * Sposób działania jest identyczy jak funkcji dodaj().
+       *
+       * Proces ustawienia wzoru znaku sprawy wymaga ustawienia przedrostka i/lub przyrostka.
+       * Przedrostek jest obowiązkowy - przynajmniej 2 znaki
+       *
+       * Obsługuje widok: pracownicy/ustaw_znak
+       */
+
+      // zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $przedrostek = $this->pracownikModel->pobierzPrzedrostek($_SESSION['user_id']);
+      $przyrostek = $this->pracownikModel->pobierzPrzyrostek($_SESSION['user_id']);
+
+      // ustaw podglądowy wzór znaku sprawy
+      $separator = '.';
+      $nrJrwa = '1234';
+      $nrSprawy = '567';
+      $rok = Date("Y");
+      $wzor = $przedrostek.$separator.$nrJrwa.$separator.$nrSprawy.$separator.$rok.$separator.$przyrostek;
+
+      // skróć znak jeżeli nie ma przedrostka
+      if ($przyrostek == '') {
+        $wzor = substr($wzor, 0, -1);
+      }
+
+      $data = [
+        'title' => 'Ustaw wzór znaku sprawy',
+        'przedrostek' => $przedrostek,
+        'przyrostek' => $przyrostek,
+        'przedrostek_err' => '',
+        'wzor' => $wzor //przykładowy znak na podstawie obecnych zmian - bieżący podgląd przy pomocy js
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $data['przedrostek'] = trim($_POST['przedrostek']);
+        $data['przyrostek'] = trim($_POST['przyrostek']);
+
+        $data['przedrostek_err'] = $this->validator->sprawdzDlugosc($data['przedrostek'], 2);
+
+        if (empty($data['przedrostek_err'])) {
+
+          $this->pracownikModel->ustawWzorZnakuSprawy($_SESSION['user_id'], $data['przedrostek'], $data['przyrostek']);
+          $_SESSION['wzor_znaku'] = true;
+          $wiadomosc = "Wzór znaku sprawy został zapisany.";
+          flash('pracownicy_ustaw_znak', $wiadomosc);
+          redirect('pracownicy/ustaw_znak');
+
+        } else {
+          $this->view('pracownicy/ustaw_znak', $data);
+        }
+      } else {
+
+        $this->view('pracownicy/ustaw_znak', $data);
+      }
     }
 
    public function aktywuj($id) {
@@ -448,6 +511,8 @@
 
       $_SESSION['imie_nazwisko'] = $this->pracownikModel->pobierzImieNazwisko($id);
       $_SESSION['poziom'] = $this->pracownikModel->pobierzPoziomDostepu($id);
+      $_SESSION['wzor_znaku'] = $this->pracownikModel->czyPosiadaWzorZnaku($id);
+
       redirect('pages'); 
    }
 

@@ -656,15 +656,17 @@
       $separator = '.';
       $rok = date('Y');
       $nrSprawy = $this->sprawaModel->pobierzLiczbeSpraw($jrwa, $rok) + 1;
-      $przedrostek = 'PZD';
-      $przyrostek = '';
+      $przedrostek = $this->pracownikModel->pobierzPrzedrostek($_SESSION['user_id']);
+      $przyrostek = $this->pracownikModel->pobierzPrzyrostek($_SESSION['user_id']);
       $obiektJrwa = $this->jrwaModel->pobierzJrwaPoId($jrwa);
       $nrJrwa = $obiektJrwa->numer;
 
       $znak = $przedrostek.$separator.$nrJrwa.$separator.$nrSprawy.$separator.$rok.$separator.$przyrostek;
 
       // skróć znak jeżeli nie ma przedrostka
-      $znak = substr($znak, 0, -1);
+      if ($przyrostek == '') {
+        $znak = substr($znak, 0, -1);
+      }
 
       return $znak;
     }

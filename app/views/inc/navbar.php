@@ -47,6 +47,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="zalogowany" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zalogowano jako: <?php echo $_SESSION['imie_nazwisko']; ?></a>
             <div class="dropdown-menu" aria-labelledby="zalogowany">
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/pracownicy/zmien_haslo">Zmień hasło</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/pracownicy/ustaw_znak">Ustaw wzór znaku sprawy</a>
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/pracownicy/wyloguj">Wyloguj</a>
             </div>
 

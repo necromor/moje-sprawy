@@ -249,3 +249,28 @@ function ustawListeNumerowSpraw(numery) {
   $('#listaSpraw').html(html);
 }
 
+// tworzy podgląd wzoru znaku sprawy
+$('#przedrostek').on('keyup', tworzWzorZnakuSprawy);
+$('#przyrostek').on('keyup', tworzWzorZnakuSprawy);
+
+function tworzWzorZnakuSprawy() {
+  const przedrostek = $('#przedrostek').val();
+  const przyrostek = $('#przyrostek').val();
+  const jrwa = '1234';
+  const sprawa = '567';
+  const rok = (new Date()).getFullYear();
+
+  let znak = `${przedrostek}.${jrwa}.${sprawa}.${rok}.${przyrostek}`;
+  if (przyrostek == '') {
+    console.log('pusty');
+    znak = znak.substring(0, znak.length - 1);
+  }
+
+  $('#wzor_znaku').text(znak);
+}
+
+
+
+
+
+

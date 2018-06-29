@@ -107,6 +107,45 @@
       return $row->poziom;
     }
 
+    public function pobierzPrzedrostek($id) {
+      /*
+       * Pobiera przedrostek znaku sprawy dla pracownika na podstawie podanego id.
+       *
+       * Parametry:
+       *  - id => id szukanego pracownika
+       * Zwraca:
+       *  - string => przedrostek znaku sprawy
+       */
+
+      $sql = "SELECT przedrostek FROM pracownicy WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+
+      return $row->przedrostek;
+    }
+
+    public function pobierzPrzyrostek($id) {
+      /*
+       * Pobiera przyrostek znaku sprawy dla pracownika na podstawie podanego id.
+       *
+       * Parametry:
+       *  - id => id szukanego pracownika
+       * Zwraca:
+       *  - string => przyrostek znaku sprawy
+       */
+
+      $sql = "SELECT przyrostek FROM pracownicy WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+
+      return $row->przyrostek;
+    }
+
+
     public function pobierzPracownikow() {
       /*
        * Pobiera listę danych aktywnych pracowników posortowaną rosnąco po nazwisku.
@@ -206,6 +245,19 @@
       } else {
         return true;
       }
+    }
+
+    public function czyPosiadaWzorZnaku($id) {
+      /*
+       * Sprawdza czy pracownik z danym id posiada wzór znaku.
+       *
+       * Parametry:
+       *  - id => id pracownika dla którego sprawdzamy wzór znaku
+       * Zwraca:
+       *  - boolean
+       */
+
+      return ($this->pobierzPrzedrostek($id) != '');
     }
 
     public function dodajPracownika($data) {
@@ -311,6 +363,31 @@
       $this->db->bind(':haslo', $haslo);
       $this->db->bind(':id', $id);
       $this->db->bind(':zmiana_hasla', $zmiana_hasla);
+
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function ustawWzorZnakuSprawy($id, $przedrostek, $przyrostek) {
+      /*
+       * Ustawia wzór znaku sprawy dla pracownika o podanym id.
+       *
+       * Parametry:
+       *  - id => id pracownika
+       *  - przedrostek => przedrostek wzoruz znaku sprawy
+       *  - przyrostek => przyrostek wzoruz znaku sprawy
+       * Zwraca:
+       *  - boolean
+       */
+
+      $sql = "UPDATE pracownicy SET przedrostek=:przedrostek, przyrostek=:przyrostek WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+      $this->db->bind(':przedrostek', $przedrostek);
+      $this->db->bind(':przyrostek', $przyrostek);
 
       if ($this->db->execute()) {
         return true;
