@@ -18,10 +18,9 @@
   <caption>Zestawienie pism wychodzących, dodanych w roku <?php echo $data['rok']; ?>.</caption>
   <thead class="thead-dark">
   <tr>
-    <th class="align-middle">Data pisma</th>
-    <th class="align-middle">Znak sprawy</th>
+    <th class="align-middle">Znak sprawy <br> [Data pisma]</th>
     <th class="align-middle">Odbiorca</th>
-    <th class="align-middle">Dotyczy</th>
+    <th class="align-middle w-25">Dotyczy</th>
     <th class="align-middle">Dostarczone</th>
     <th class="align-middle">Uwagi</th>
   </tr>
@@ -29,18 +28,39 @@
   <tbody>
   <?php foreach($data['pisma'] as $pismo) : ?>
   <tr>
-    <td class="align-middle"><a href="<?php echo URLROOT; ?>/wychodzace/edytuj/<?php echo $pismo->id; ?>" title="Zmień dane pisma"><?php echo $pismo->utworzone; ?></a></td>
-    <td class="align-middle"><a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $pismo->sprawaId; ?>" title="Zobacz szczegóły sprawy"><?php echo $pismo->znak; ?></a></td>
+    <td class="align-middle">
+      <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $pismo->sprawaId; ?>" title="Zobacz szczegóły sprawy"><?php echo $pismo->znak; ?></a>
+      <br>[<a href="<?php echo URLROOT; ?>/wychodzace/edytuj/<?php echo $pismo->id; ?>" title="Zmień dane pisma"><?php echo substr($pismo->utworzone,0, 10); ?></a>]
+    </td>
     <td class="align-middle"><?php echo $pismo->nazwa; ?></br>
         <?php echo $pismo->adres_1; ?><br>
         <?php echo $pismo->adres_2; ?></td>
     <td class="align-middle"><?php echo $pismo->dotyczy; ?></td>
+    <td class="align-middle">
     <?php if($pismo->data_wyjscia == NULL) : ?>
-    <td class="align-middle">pismo nie zostało dostarczone</td>
+      oznacz wysłane:
+      <div class="btn-group" role="group" aria-label="Oznaczenie sposobu wysyłki">
+      <a href="<?php echo URLROOT; ?>/wychodzace/odbior/<?php echo $pismo->id; ?>/1" class="btn btn-primary">osobiście</a>
+        <a href="<?php echo URLROOT; ?>/wychodzace/odbior/<?php echo $pismo->id; ?>/2" class="btn btn-secondary">pocztą</a>
+      </div>
     <?php else : ?>
-    <td class="align-middle">sposób odbioru</td>
+      <?php if($pismo->sposob_wyjscia == '1') : ?>
+        odebrane osobiście dnia:
+      <?php else : ?>
+        wysłane dnia:
+      <?php endif; ?>
+      <br><?php echo substr($pismo->data_wyjscia, 0, 10); ?>
     <?php endif; ?>
-    <td class="align-middle">decyzja czy postanowienie</td>
+    </td>
+    <td class="align-middle">
+      <?php if($pismo->decyzjaId) : ?>
+        decyzja<br> <?php echo $pismo->decyzjaNumer; ?>
+      <?php elseif($pismo->postanowienieId) : ?>
+        postanowienie<br> <?php echo $pismo->postanowienieNumer; ?>
+      <?php else : ?>
+        =====
+      <?php endif; ?>
+    </td>
   </tr>
   <?php endforeach; ?>
   </tbody>

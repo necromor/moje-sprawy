@@ -6,7 +6,12 @@
    *  - dodawanie nowej korespondencji w ramach sprawy
    *  - zwykłe pismo lub decyzja lub postanowienie (osobne modele)
    *  - edycję istniejącej korespondencji
-   *  - tworzenie zestawień korespondencji ?
+   *  - tworzenie zestawień korespondencji
+   *
+   *  Sposób wyjścia pisma:
+   *  0 - pismo nie wyszło (data jest NULL)
+   *  1 - odebrane osobiście
+   *  2 - wysłane pocztą - dodatkowe numery mogą służyć do określenia sposobu przesyłki
    *
    */
 
@@ -33,6 +38,17 @@
        */
 
       $sql = "SELECT wychodzace.*,
+                     postanowienia.id AS postanowienieId,
+                     postanowienia.numer AS postanowienieNumer,
+                     postanowienia.dotyczy AS postanowienieDotyczy
+                FROM
+                  (SELECT wychodzace.*,
+                     decyzje.id AS decyzjaId,
+                     decyzje.numer AS decyzjaNumer,
+                     decyzje.dotyczy AS decyzjaDotyczy
+                FROM
+                  (SELECT
+                     wychodzace.*,
                      podmioty.nazwa,
                      podmioty.adres_1,
                      podmioty.adres_2,
@@ -41,14 +57,15 @@
                      FROM wychodzace, podmioty, sprawy
                      WHERE wychodzace.utworzone LIKE :rok
                        AND wychodzace.id_podmiot=podmioty.id
-                       AND wychodzace.id_sprawa=sprawy.id
-                     ORDER BY sprawy.znak ASC";
+                       AND wychodzace.id_sprawa=sprawy.id)wychodzace
+                LEFT OUTER JOIN decyzje ON wychodzace.id=decyzje.id_wychodzace)wychodzace
+                LEFT OUTER JOIN postanowienia ON wychodzace.id=postanowienia.id_wychodzace
+                ORDER BY wychodzace.znak ASC";
       $this->db->query($sql);
       $this->db->bind(':rok', $rok . '%');
 
       return $this->db->resultSet();
     }
-
 
 
     public function pobierzWychodzacaPoId($id) {
