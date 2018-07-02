@@ -167,6 +167,49 @@
       $this->view('wychodzace/edytuj', $data);
     }
 
+    public function odbior($id, $rodzaj) {
+      /*
+       * Obsługuje proces dodania daty i sposobu odbioru pisma wychodzącego.
+       *
+       * Pod pomyślnej edycji powrót następuje do zestawienia lub szczegółów sprawy w zależności skąd było wywołanie.
+       *
+       * Nie obsługuje widoku
+       *
+       * Parametry:
+       *  - id => id pisma wychodzącego do zmiany
+       *  - rodzaj => rodzaj sposobu odbioru: 1 - osobiście, 2 - poczta
+       */
+
+      // tylko zalogowany, ale nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      // określenie skąd użytkownik przeszedł do edycji pisma
+      if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+        $zrodlo = 'szczegoly';
+        if (strpos($_SERVER['HTTP_REFERER'], 'zestawienie')) {
+          $zrodlo = 'zestawienie';
+        }
+      } else {
+        $zrodlo = $_POST['zrodlo'];
+      }
+
+      $pismo = $this->wychodzacaModel->pobierzWychodzacaPoId($id);
+      $sposob = "odebrane osobiście";
+      if ($rodzaj != '1') {
+        $sposob = "wysłane pocztą";
+      }
+
+      $this->wychodzacaModel->oznaczWyslane($id, $rodzaj);
+      $wiadomosc = "Pismo wychodzące zostało oznaczone jako $sposob";
+      if ($zrodlo == 'zestawienie') {
+        flash('wychodzace_edytuj', $wiadomosc);
+        redirect('wychodzace/zestawienie/'. substr($pismo->utworzone, 0, 4));
+      } else {
+        flash('sprawy_szczegoly', $wiadomosc);
+        redirect('sprawy/szczegoly/'. $pismo->sprawaId);
+      }
+
+    }
 
 
 

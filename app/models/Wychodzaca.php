@@ -176,6 +176,33 @@
       }
     }
 
+    public function oznaczWyslane($id, $rodzaj) {
+      /*
+       * Ustawia datę odbioru/wysyłki pisma wychodzącego.
+       * Data odbioru/wysyłki to data obecna.
+       *
+       * Parametry:
+       *  - id => id pisma odbieranego/wysyłanego
+       *  - rodzaj => sposób odbioru / wysyłki - 1 - osobiście, 2 - pocztą
+       * Zwraca:
+       *  - boolean
+       */
+
+      $data = date("Y-m-d H:i:s");
+
+      $sql = "UPDATE wychodzace SET data_wyjscia=:data, sposob_wyjscia=:rodzaj WHERE id=:id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+      $this->db->bind(':data', $data);
+      $this->db->bind(':rodzaj', $rodzaj);
+
+      // zmień dane w bazie
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
 
   }
