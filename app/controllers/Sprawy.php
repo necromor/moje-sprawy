@@ -723,6 +723,24 @@
 
       $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . substr($dokument->utworzone, 0, 10) . '</p>';
       $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">odbiorca:</span> ' . $dokument->nazwa . '</p>';
+      if ($dokument->data_wyjscia != NULL) {
+        $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">data wyjścia:</span> ';
+        if ($dokument->sposob_wyjscia == '1') {
+          $html.='odebrane osobiście dnia: ';
+        } else {
+          $html.='wysłane dnia:';
+        }
+        $html.= substr($dokument->data_wyjscia, 0, 10);
+        $html.= '</p>';
+      } else {
+        $html.= '<div class="col-12 py-sm-3">
+                 <span class="badge badge-dark p-2 mr-3">oznacz sposób odbioru:</span> 
+                 <div class="btn-group" role="group" aria-label="Oznaczenie sposobu wysyłki">
+                   <a href="' . URLROOT . '/wychodzace/odbior/' . $dokument->id . '/1" class="btn btn-primary">osobiście</a>
+                   <a href="' . URLROOT . '/wychodzace/odbior/' . $dokument->id . '/2" class="btn btn-secondary">pocztą</a>
+                 </div>
+                 </div>';
+      }
       $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $dokument->dotyczy . '</p>';
       if ($dokument->decyzjaId) {
         $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer decyzji:</span> <a href="' . URLROOT . '/decyzje/edytuj/' . $dokument->decyzjaId . '" title="Zmień dane decyzji">' . $dokument->decyzjaNumer . '</a></p>';

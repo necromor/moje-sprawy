@@ -38,7 +38,7 @@
     <td class="align-middle"><?php echo $pismo->dotyczy; ?></td>
     <td class="align-middle">
     <?php if($pismo->data_wyjscia == NULL) : ?>
-      oznacz wysłane:
+      oznacz odbiór:
       <div class="btn-group" role="group" aria-label="Oznaczenie sposobu wysyłki">
       <a href="<?php echo URLROOT; ?>/wychodzace/odbior/<?php echo $pismo->id; ?>/1" class="btn btn-primary">osobiście</a>
         <a href="<?php echo URLROOT; ?>/wychodzace/odbior/<?php echo $pismo->id; ?>/2" class="btn btn-secondary">pocztą</a>
