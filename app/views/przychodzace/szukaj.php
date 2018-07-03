@@ -37,6 +37,22 @@
       </thead>
       <tbody>
       <?php foreach($data['pisma'] as $pismo) : ?>
+      <tr>
+        <td><?php echo $pismo->nr_rejestru; ?></td>
+        <td><?php echo $pismo->znak; ?></td>
+        <td><?php echo $pismo->nazwa; ?></td>
+        <td>
+          <button class="btn btn-block btn-info" title="Zobacz szczegóły korespondencji"
+                  data-toggle="collapse" data-target="#szczegoly_<?php echo $pismo->id; ?>">
+            pokaż
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" class="collapse" id="szczegoly_<?php echo $pismo->id; ?>">
+          <?php echo $pismo->szczegoly; ?>
+        </td>
+      </tr>
       <?php endforeach; ?>
       </tbody>
     </table>

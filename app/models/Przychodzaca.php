@@ -357,4 +357,49 @@
        return intval($row->total) + 1;
     }
 
+    public function szukajPrzychodzace($data) {
+      /*
+       * Szuka korespondencji przychodzącej na podstawie określonych kryterów.
+       * Nie mamy wpływu ile kryterów jest podanych i jaka kombinacja więc
+       * wszystkie wyszukiwania opierają się nie na = a LIKE.
+       * Dla pól nazwy i dotyczy zastosowano mechanizm %wartosc%, dla pozostałych wartosc%.
+       *
+       * Parametry:
+       *  - data => zbiór danych z formularza, możliwe pola to:
+       *             - numer rejestru
+       *             - znka pisma
+       *             - data pisma
+       *             - data wpływu
+       *             - treść dotyczy
+       *             - nazwa nadawcy (podmiotu)
+       * Zwraca:
+       *  - set zawierający dane korespondencji posortowane rosnąco według daty utworzenia
+       */
+
+      $sql = "SELECT
+              przychodzace.*,
+              podmioty.nazwa,
+              podmioty.adres_1,
+              podmioty.adres_2
+              FROM przychodzace, podmioty
+              WHERE
+                nr_rejestru LIKE :nr_rej
+                AND znak LIKE :znak
+                AND data_pisma LIKE :data_pisma
+                AND data_wplywu LIKE :data_wplywu
+                AND dotyczy LIKE :dotyczy
+                AND podmioty.nazwa LIKE :nazwa
+                AND przychodzace.id_podmiot=podmioty.id
+              ORDER BY przychodzace.utworzone ASC";
+      $this->db->query($sql);
+      $this->db->bind(':nr_rej', $data['nr_rej'] . '%');
+      $this->db->bind(':znak', $data['znak'] . '%');
+      $this->db->bind(':data_pisma', $data['data_pisma'] . '%');
+      $this->db->bind(':data_wplywu', $data['data_wplywu'] . '%');
+      $this->db->bind(':dotyczy', '%' . $data['dotyczy'] . '%');
+      $this->db->bind(':nazwa', '%' . $data['nazwa'] . '%');
+
+      return $this->db->resultSet();
+    }
+
   }

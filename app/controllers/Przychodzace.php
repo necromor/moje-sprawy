@@ -520,8 +520,15 @@
         $data['nazwa'] = trim($_POST['nazwa']);
         $data['dotyczy'] = trim($_POST['dotyczy']);
 
-        // tymczasowo
-        $data['czy_wyniki'] = 0;
+        $pisma = $this->przychodzacaModel->szukajPrzychodzace($data);
+
+        // dodaj szczególy pisma, które będa rozwinięte w widoku po kliknięciu guzika
+        foreach ($pisma as $pismo) {
+          $pismo->szczegoly = $this->tworzHtmlSzczegoly($pismo);
+        }
+
+        $data['pisma'] = $pisma;
+        $data['czy_wyniki'] = count($data['pisma']);
 
       }
 
@@ -560,6 +567,12 @@
        $podmiot = (object) ['nazwa' => '', 'adres_1' => '', 'adres_2' => ''];
      }
      return $podmiot;
+   }
+
+   private function tworzHtmlSzczegoly($pismo) {
+     // JEŻELI FAKTURA TO SPRAWDŹ UPRAWNIENIA
+
+     return "szczegóły pisma $pismo->znak";
    }
 
 
