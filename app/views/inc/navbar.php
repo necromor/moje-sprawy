@@ -36,6 +36,13 @@
           <li class="nav-item">
             <a class="nav-link" href="<?php echo URLROOT; ?>/przychodzace/moje">Moje pisma</a>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="szukaj" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Szukaj</a>
+            <div class="dropdown-menu" aria-labelledby="zestawienia">
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/przychodzace/szukaj">Przychodzących</a>
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/wychodzace/szukaj">Wychodzących</a>
+            </div>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="<?php echo URLROOT; ?>/pages/about">About</a>
           </li>

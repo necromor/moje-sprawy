@@ -472,6 +472,64 @@
    }
 
 
+   public function szukaj() {
+      /*
+       * Obsługuje proces wyszukiwania korespondencji przychodzącej.
+       * Korespondencję można wyszukać na podstawie jednego lub kilku wypełnioych pól.
+       * Lista kryteriów, po których można wyszukać korespondencję:
+       *  - numer rejestru
+       *  - znak pisma
+       *  - data pisma / data wpływu
+       *  - nazwa nadawcy
+       *  - treść dotyczy
+       * Funkcja nie sprawdza co znajduje się w polach.
+       * Na podstawie otrzymanych danych zwraca się do modelu o podanie wyników.
+       *
+       * Ze względu na ograniczenia w dostępie do faktur tylko dla księgowości i sekretariatu
+       * szczegóły faktur będa ukryte dla zwykłych pracowników.
+       *
+       * Alternatywą jest ograniczenie wyszukiwania tylko do pism, ale to może rodzić niezrozumienie
+       * gdy pojawią się dziury w numerach rejestrów.
+       *
+       * Obsługuje widok: przychodzace/szukaj
+       */
+
+      // tylko zalogowany, nie admin
+      sprawdzCzyPosiadaDostep(4,0);
+
+      $data = [
+        'title' => 'Szukaj korespondencji przychodzącej',
+        'nr_rej' => '',
+        'znak' => '',
+        'data_pisma' => '',
+        'data_wplywu' => '',
+        'nazwa' => '',
+        'dotyczy' => '',
+        'czy_wyniki' => -1, // -1 oznacza, że nie było jeszcze wyszukiwania - pokaż stronę główną wyszukiwania
+        'pisma' => []
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+
+        $data['nr_rej'] = trim($_POST['nr_rej']);
+        $data['znak'] = trim($_POST['znak']);
+        $data['data_pisma'] = trim($_POST['data_pisma']);
+        $data['data_wplywu'] = trim($_POST['data_wplywu']);
+        $data['nazwa'] = trim($_POST['nazwa']);
+        $data['dotyczy'] = trim($_POST['dotyczy']);
+
+        // tymczasowo
+        $data['czy_wyniki'] = 0;
+
+      }
+
+      $this->view('przychodzace/szukaj', $data);
+   }
+
+
+
    /*
     * FUNKCJE POMOCNICE
     */
