@@ -570,10 +570,83 @@
    }
 
    private function tworzHtmlSzczegoly($pismo) {
-     // JEŻELI FAKTURA TO SPRAWDŹ UPRAWNIENIA
+     /*
+      * Funkcja pomocnicza, która tworzy html dla danych dokumentu
+      * Elementy szczegółowe w zależności od rodzaju: pismo czy faktura 
+      * są pobierane z pomocniczych funkcji.
+      *
+      * Użytkownicy z poziomem dostępu nie sekretariat lub księgowość
+      * nie mają dostępu do szczegółów faktur.
+      *
+      * Parametry:
+      *  - pismo => obiekt korespondencji
+      * Zwraca:
+      *  - string - html z danymi danego dokumentu
+      */
 
-     return "szczegóły pisma $pismo->znak";
+     // zabezpieczenie widoku faktur
+     if ($_SESSION['poziom'] > 1 && $pismo->czy_faktura == '1') {
+       return "<p>Nie masz uprawnień do oglądania szczegółów faktur!</p>";
+     }
+
+     $html = '<div class="card border-secondary">
+              <div class="card-body">
+              <div class="row">';
+     $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data pisma:</span> ' . $pismo->data_pisma. '</p>';
+     $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">data wpływu:</span> ' . $pismo->data_wplywu. '</p>';
+     $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $pismo->dotyczy . '</p>';
+     if ($pismo->czy_faktura == '0') {
+       $html.= $this->tworzHtmlPismo($pismo);
+     } else {
+       $html.= $this->tworzHtmlFaktura($pismo);
+     }
+     $html.='</div></div></div>';
+     return $html;
    }
 
+   private function tworzHtmlPismo($pismo) {
+     /*
+      * Funkcja pomocnicza, która tworzy html dla danych pisma przychodzącego, tj:
+      * liczba załączników i dekretacja
+      *
+      * Dodatkowo informacje czy ad acta lub przypisane do sprawy.
+      *
+      * Parametry:
+      *  - pismo => obiekt pisma przychodzącego
+      * Zwraca:
+      *  - string - html z danymi pisma przychodzącego
+      */
+
+     $imie_nazwisko = $this->pracownikModel->pobierzImieNazwisko($pismo->id_pracownik);
+     $jrwa = $this->przychodzacaModel->pobierzJrwaAA($pismo->id);
+     $sprawa = $this->przychodzacaModel->pobierzSprawePrzychodzacego($pismo->id);
+
+     $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">liczba załączników:</span> ' . $pismo->liczba_zalacznikow . '</p>';
+     $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">zadekretowane do:</span> ' . $imie_nazwisko . '</p>';
+     if ($jrwa) {
+       $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">pismo oznaczone jako ad acta w grupie jrwa:</span> ' . $jrwa->numer . '</p>';
+     }
+     if ($sprawa) {
+       $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">pismo przypisane do sprawy:</span> 
+              <a href="' . URLROOT . '/sprawy/szczegoly/' . $sprawa->id . '" title="Zobacz szczegóły sprawy">' . $sprawa->znak . '</a></p>';
+     }
+     return $html;
+   }
+
+   private function tworzHtmlFaktura($pismo) {
+     /*
+      * Funkcja pomocnicza, która tworzy html dla danych faktury, tj:
+      * kwota i numer w rejestrze faktur
+      *
+      * Parametry:
+      *  - pismo => obiekt faktury
+      * Zwraca:
+      *  - string - html z danymi faktury
+      */
+
+     $html = '<p class="col-sm col-12"><span class="badge badge-dark p-2">kwota faktury:</span> ' . $pismo->kwota . '</p>';
+     $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer w rejestrze faktur:</span> ' . $pismo->nr_rejestru_faktur . '</p>';
+     return $html;
+   }
 
   }

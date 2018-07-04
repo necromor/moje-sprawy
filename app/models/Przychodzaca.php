@@ -302,6 +302,31 @@
       }
     }
 
+    public function pobierzJrwaAA($id) {
+      /*
+       * Pobiera obiekt jrwa pisma oznaczonego jako ad acta.
+       * Jeżeli pismo nie jest oznaczone jako ad acta zwraca NULL
+       *
+       * Parametry:
+       *  - id => id szukanego pisma
+       * Zwraca:
+       *  - string => numer jrwa lub -1 gdy pismo nie jest ad acta
+       */
+
+      $sql = "SELECT jrwa.* FROM przychodzace_adacta, jrwa
+                     WHERE przychodzace_adacta.id_przychodzace=:id
+                      AND przychodzace_adacta.id_jrwa=jrwa.id";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+      if ($this->db->rowCount() == 0) {
+        return NULL;
+      } else {
+        return $row;
+      }
+    }
+
     public function czyMoznaDodacPismoDoSprawy($id) {
       /*
        * Sprawdza czy podane pismo przypisane już jest do sprawy lub oznaczone jako ad acta.
@@ -321,6 +346,32 @@
       $row = $this->db->single();
       return $this->db->rowCount() == 0;
 
+    }
+
+    public function pobierzSprawePrzychodzacego($id) {
+      /*
+       * Pobiera dane sprawy, do której pismo przychodzące jest przypisane.
+       * Jeżeli pismo nie jest przypisane do żadnej sprawy to zwraca NULL
+       *
+       * Parametry:
+       *  - id => id szukanego pisma
+       * Zwraca:
+       *  - obiekt sprawy lub NULL
+       */
+
+      $sql = "SELECT sprawy.* FROM sprawy, metryka
+                     WHERE metryka.rodzaj_dokumentu='1'
+                      AND metryka.id_dokument=:id
+                      AND sprawy.id=metryka.id_sprawa";
+      $this->db->query($sql);
+      $this->db->bind(':id', $id);
+
+      $row = $this->db->single();
+      if ($this->db->rowCount() == 0) {
+        return NULL;
+      } else {
+        return $row;
+      }
     }
 
     private function tworzNrRejestru($data) {
