@@ -181,12 +181,16 @@
           $nr_jrwa = $this->jrwaModel->pobierzJrwaPoNumerze($data['jrwa']);
           $jrwa = $nr_jrwa->id;
 
-          //ZAIMPLEMENTOWAĆ SPRAWDZENIE CZY PISMO MOŻNA OZNACZYĆ AD ACTA
+          if ($this->przychodzacaModel->czyMoznaDodacPismoDoSprawy($id)) {
+            $this->przychodzacaModel->oznaczAA($id, $jrwa);
 
-          $this->przychodzacaModel->oznaczAA($id, $jrwa);
+            $wiadomosc = "Pismo o numerze rejestru <strong>$pismo->nr_rejestru</strong> zostało przypisane do numeru jrwa <strong>$nr_jrwa->numer</strong> jako ad acta.";
+            flash('moje_info', $wiadomosc);
+          } else {
+            $wiadomosc = "Pismo już jest przypisane do sprawy lub oznaczone jako ad/acta.";
+            flash('moje_info', $wiadomosc, 'alert alert-danger');
+          }
 
-          $wiadomosc = "Pismo o numerze rejestru <strong>$pismo->nr_rejestru</strong> zostało przypisane do numeru jrwa <strong>$nr_jrwa->numer</strong> jako ad acta.";
-          flash('moje_info', $wiadomosc);
           redirect('przychodzace/moje');
         }
 

@@ -327,27 +327,6 @@
       }
     }
 
-    public function czyMoznaDodacPismoDoSprawy($id) {
-      /*
-       * Sprawdza czy podane pismo przypisane już jest do sprawy lub oznaczone jako ad acta.
-       *
-       * Parametry:
-       *  - id => id szukanego pisma
-       * Zwraca:
-       *  - boolean => true jeżeli pismo bez sprawy i nie ad acta
-       */
-
-      // ZAIMPLEMENTOWAĆ SPRAWDZANIE W AD ACTA
-
-      $sql = "SELECT * FROM metryka WHERE rodzaj_dokumentu='1' AND id_dokument=:id";
-      $this->db->query($sql);
-      $this->db->bind(':id', $id);
-
-      $row = $this->db->single();
-      return $this->db->rowCount() == 0;
-
-    }
-
     public function pobierzSprawePrzychodzacego($id) {
       /*
        * Pobiera dane sprawy, do której pismo przychodzące jest przypisane.
@@ -372,6 +351,19 @@
       } else {
         return $row;
       }
+    }
+
+    public function czyMoznaDodacPismoDoSprawy($id) {
+      /*
+       * Sprawdza czy podane pismo przypisane już jest do sprawy lub oznaczone jako ad acta.
+       *
+       * Parametry:
+       *  - id => id szukanego pisma
+       * Zwraca:
+       *  - boolean => true jeżeli pismo bez sprawy i nie ad acta
+       */
+
+      return (($this->pobierzSprawePrzychodzacego($id) == NULL) && ($this->pobierzJrwaAA($id) == NULL));
     }
 
     private function tworzNrRejestru($data) {
