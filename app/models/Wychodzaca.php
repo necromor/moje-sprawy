@@ -204,5 +204,46 @@
       }
     }
 
+    public function szukajWychodzace($data) {
+      /*
+       * Szuka pism wychodzących na podstawie określonych kryterów.
+       * Nie mamy wpływu ile kryterów jest podanych i jaka kombinacja więc
+       * wszystkie wyszukiwania opierają się nie na = a LIKE.
+       * Dla pól znak, nazwa i dotyczy zastosowano mechanizm %wartosc%, dla pozostałych wartosc%.
+       *
+       * Parametry:
+       *  - data => zbiór danych z formularza, możliwe pola to:
+       *             - znka sprawy
+       *             - data pisma
+       *             - treść dotyczy
+       *             - nazwa odbiorcy (podmiotu)
+       * Zwraca:
+       *  - set zawierający dane pism wychodzących posortowane rosnąco według daty utworzenia
+       */
+
+      $sql = "SELECT
+              wychodzace.*,
+              sprawy.znak,
+              sprawy.id AS sprawaId,
+              podmioty.nazwa,
+              podmioty.adres_1,
+              podmioty.adres_2
+              FROM wychodzace, podmioty, sprawy
+              WHERE
+                    sprawy.znak LIKE :znak
+                AND wychodzace.utworzone LIKE :data_pisma
+                AND dotyczy LIKE :dotyczy
+                AND podmioty.nazwa LIKE :nazwa
+                AND wychodzace.id_podmiot=podmioty.id
+                AND wychodzace.id_sprawa=sprawy.id
+              ORDER BY wychodzace.utworzone ASC";
+      $this->db->query($sql);
+      $this->db->bind(':znak', '%' . $data['znak'] . '%');
+      $this->db->bind(':data_pisma', $data['data_pisma'] . '%');
+      $this->db->bind(':dotyczy', '%' . $data['dotyczy'] . '%');
+      $this->db->bind(':nazwa', '%' . $data['nazwa'] . '%');
+
+      return $this->db->resultSet();
+    }
 
   }

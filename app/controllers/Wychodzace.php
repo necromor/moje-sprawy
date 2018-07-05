@@ -211,6 +211,76 @@
 
     }
 
+    public function szukaj() {
+       /*
+        * Obsługuje proces wyszukiwania pism wychodzących.
+        * Pisma można wyszukać na podstawie jednego lub kilku wypełnioych pól.
+        * Lista kryteriów, po których można wyszukać pisma:
+        *  - znak sprawy
+        *  - data pisma
+        *  - nazwa odbiorcy
+        *  - treść dotyczy
+        * Funkcja nie sprawdza co znajduje się w polach.
+        * Na podstawie otrzymanych danych zwraca się do modelu o podanie wyników.
+        *
+        * Obsługuje widok: wychodzace/szukaj
+        */
+
+       // tylko zalogowany, nie admin
+       sprawdzCzyPosiadaDostep(4,0);
+
+       $data = [
+         'title' => 'Szukaj pism wychodzących',
+         'znak' => '',
+         'data_pisma' => '',
+         'nazwa' => '',
+         'dotyczy' => '',
+         'czy_wyniki' => -1, // -1 oznacza, że nie było jeszcze wyszukiwania - pokaż stronę główną wyszukiwania
+         'pisma' => []
+       ];
+
+       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+
+         $data['znak'] = trim($_POST['znak']);
+         $data['data_pisma'] = trim($_POST['data_pisma']);
+         $data['nazwa'] = trim($_POST['nazwa']);
+         $data['dotyczy'] = trim($_POST['dotyczy']);
+
+         $pisma = $this->wychodzacaModel->szukajWychodzace($data);
+
+         // dodaj szczególy pisma, które będa rozwinięte w widoku po kliknięciu guzika
+         foreach ($pisma as $pismo) {
+           $pismo->szczegoly = $this->tworzHtmlSzczegoly($pismo);
+         }
+
+         $data['pisma'] = $pisma;
+         $data['czy_wyniki'] = count($data['pisma']);
+
+       }
+
+       $this->view('wychodzace/szukaj', $data);
+    }
+
+    private function tworzHtmlSzczegoly($pismo) {
+      /*
+       * Funkcja pomocnicza, która tworzy html dla danych pisma
+       * Dodatkowo umieszcza informację dotyczącą decyzji lub postanowienia jeżeli istnieją.
+       *
+       * Parametry:
+       *  - pismo => obiekt korespondencji
+       * Zwraca:
+       *  - string - html z danymi danego dokumentu
+       */
+
+      $html = '<div class="card border-secondary">
+               <div class="card-body">
+               <div class="row">';
+      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $pismo->dotyczy . '</p>';
+      $html.='</div></div></div>';
+      return $html;
+    }
 
 
   }
