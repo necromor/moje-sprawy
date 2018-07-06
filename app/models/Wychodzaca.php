@@ -221,22 +221,49 @@
        *  - set zawierający dane pism wychodzących posortowane rosnąco według daty utworzenia
        */
 
-      $sql = "SELECT
-              wychodzace.*,
-              sprawy.znak,
-              sprawy.id AS sprawaId,
-              podmioty.nazwa,
-              podmioty.adres_1,
-              podmioty.adres_2
-              FROM wychodzace, podmioty, sprawy
-              WHERE
-                    sprawy.znak LIKE :znak
-                AND wychodzace.utworzone LIKE :data_pisma
-                AND dotyczy LIKE :dotyczy
-                AND podmioty.nazwa LIKE :nazwa
-                AND wychodzace.id_podmiot=podmioty.id
-                AND wychodzace.id_sprawa=sprawy.id
-              ORDER BY wychodzace.utworzone ASC";
+      //$sql = "SELECT
+      //        wychodzace.*,
+      //        sprawy.znak,
+      //        sprawy.id AS sprawaId,
+      //        podmioty.nazwa,
+      //        podmioty.adres_1,
+      //        podmioty.adres_2
+      //        FROM wychodzace, podmioty, sprawy
+      //        WHERE
+      //              sprawy.znak LIKE :znak
+      //          AND wychodzace.utworzone LIKE :data_pisma
+      //          AND dotyczy LIKE :dotyczy
+      //          AND podmioty.nazwa LIKE :nazwa
+      //          AND wychodzace.id_podmiot=podmioty.id
+      //          AND wychodzace.id_sprawa=sprawy.id
+      //        ORDER BY wychodzace.utworzone ASC";
+      $sql = "SELECT wychodzace.*,
+                     postanowienia.id AS postanowienieId,
+                     postanowienia.numer AS postanowienieNumer,
+                     postanowienia.dotyczy AS postanowienieDotyczy
+                FROM
+                  (SELECT wychodzace.*,
+                     decyzje.id AS decyzjaId,
+                     decyzje.numer AS decyzjaNumer,
+                     decyzje.dotyczy AS decyzjaDotyczy
+                FROM
+                  (SELECT
+                     wychodzace.*,
+                     podmioty.nazwa,
+                     podmioty.adres_1,
+                     podmioty.adres_2,
+                     sprawy.znak,
+                     sprawy.id AS sprawaId
+                     FROM wychodzace, podmioty, sprawy
+                     WHERE
+                           sprawy.znak LIKE :znak
+                       AND wychodzace.utworzone LIKE :data_pisma
+                       AND dotyczy LIKE :dotyczy
+                       AND podmioty.nazwa LIKE :nazwa
+                       AND wychodzace.id_podmiot=podmioty.id
+                       AND wychodzace.id_sprawa=sprawy.id)wychodzace
+                LEFT OUTER JOIN decyzje ON wychodzace.id=decyzje.id_wychodzace)wychodzace
+                LEFT OUTER JOIN postanowienia ON wychodzace.id=postanowienia.id_wychodzace";
       $this->db->query($sql);
       $this->db->bind(':znak', '%' . $data['znak'] . '%');
       $this->db->bind(':data_pisma', $data['data_pisma'] . '%');

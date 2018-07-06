@@ -728,7 +728,7 @@
         if ($dokument->sposob_wyjscia == '1') {
           $html.='odebrane osobiście dnia: ';
         } else {
-          $html.='wysłane dnia:';
+          $html.='wysłane dnia: ';
         }
         $html.= substr($dokument->data_wyjscia, 0, 10);
         $html.= '</p>';

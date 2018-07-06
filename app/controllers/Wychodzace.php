@@ -277,7 +277,33 @@
       $html = '<div class="card border-secondary">
                <div class="card-body">
                <div class="row">';
-      $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">dotyczy:</span> ' . $pismo->dotyczy . '</p>';
+      $html.= '<p class="col-12"><span class="badge badge-dark p-2">dotyczy:</span> ' . $pismo->dotyczy . '</p>';
+      if ($pismo->data_wyjscia != NULL) {
+        $html.= '<p class="col-12 py-sm-3"><span class="badge badge-dark p-2">data wyjścia:</span> ';
+        if ($pismo->sposob_wyjscia == '1') {
+          $html.='odebrane osobiście dnia: ';
+        } else {
+          $html.='wysłane dnia: ';
+        }
+        $html.= substr($pismo->data_wyjscia, 0, 10);
+        $html.= '</p>';
+      } else {
+        $html.= '<div class="col-12 py-sm-3">
+                 <span class="badge badge-dark p-2 mr-3">oznacz sposób odbioru:</span> 
+                 <div class="btn-group" role="group" aria-label="Oznaczenie sposobu wysyłki">
+                   <a href="' . URLROOT . '/wychodzace/odbior/' . $pismo->id . '/1" class="btn btn-primary">osobiście</a>
+                   <a href="' . URLROOT . '/wychodzace/odbior/' . $pismo->id . '/2" class="btn btn-secondary">pocztą</a>
+                 </div>
+                 </div>';
+      }
+      if ($pismo->decyzjaId) {
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer decyzji:</span> <a href="' . URLROOT . '/decyzje/edytuj/' . $pismo->decyzjaId . '" title="Zmień dane decyzji">' . $pismo->decyzjaNumer . '</a></p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść decyzji:</span> ' . $pismo->decyzjaDotyczy . '</p>';
+      }
+      if ($pismo->postanowienieId) {
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">numer postanowienia:</span> <a href="' . URLROOT . '/postanowienia/edytuj/' . $pismo->postanowienieId . '" title="Zmień dane postanowienia">' . $pismo->postanowienieNumer . '</a></p>';
+        $html.= '<p class="col-sm col-12"><span class="badge badge-dark p-2">treść postanowienia:</span> ' . $pismo->postanowienieDotyczy . '</p>';
+      }
       $html.='</div></div></div>';
       return $html;
     }
