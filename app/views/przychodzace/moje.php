@@ -46,7 +46,7 @@
   <h2 class="col-12">Ostatnie sprawy z moją aktywnością</h2>
 
   <?php foreach($data['sprawy'] as $s) : ?>
-  <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $s->id; ?>" class="btn btn-info col-auto mx-2" title="Zobacz szczegóły sprawy"><?php echo $s->znak; ?></a>
+  <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $s->id; ?>" class="btn btn-info col-auto m-2" title="Zobacz szczegóły sprawy"><?php echo $s->znak; ?></a>
   <?php endforeach; ?>
 
 </div><!-- /row -->
