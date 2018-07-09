@@ -19,6 +19,19 @@
       $this->validator = new Validator();
     }
 
+    public function index() {
+      /*
+       * Służy ona do obsługi wszystkich adresów, które nie mają odzwierciedleń w funkcjach.
+       *
+       * Z uwagi na konstrukcję TraversyMVC żądania nie mające funkcji
+       * będa wyświetlać błąd jeżeli nie będzie index.
+       *
+       * Przekierowuje na 'pages', które dzieli w zależności od poziomu dostępu.
+       */
+
+      redirect('pages');
+    }
+
     public function edytuj($id) {
       /*
        * Obsługuje proces edycji innego dokumentu.
