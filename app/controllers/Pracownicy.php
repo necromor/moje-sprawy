@@ -651,7 +651,7 @@
         $_SESSION['user_id'] = 0;
         $_SESSION['imie_nazwisko'] = 'admin';
         $_SESSION['poziom'] = -1;
-        // tymczasowo
+        $_SESSION['wzor_znaku'] = true;
         redirect('pracownicy/zestawienie');
     }
 
