@@ -10,7 +10,15 @@
               'title' => 'Moje Sprawy'
               ];
 
-      $this->view('pages/index', $data );
+      if (isset($_SESSION['poziom'])) {
+        if ($_SESSION['poziom'] == '-1') {
+          redirect('pracownicy/zestawienie');
+        } else {
+          redirect('przychodzace/moje');
+        }
+      } else {
+        redirect('pracownicy/zaloguj');
+      }
     }
 
     public function about() {
