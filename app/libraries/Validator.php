@@ -14,7 +14,7 @@
        */
 
       $this->podmiotModel = $this->model('Podmiot');
-      //$this->przychodzacaModel = $this->model('Przychodzaca');
+      $this->przychodzacaModel = $this->model('Przychodzaca');
       $this->pracownikModel = $this->model('Pracownik');
       $this->jrwaModel = $this->model('JrwaM');
     }
@@ -98,7 +98,6 @@
        * Sprawdza poprawność wprowadzonej daty wpływu do formularza.
        * Zasady:
        *  - pole nie może być puste
-       *  - data wpływu nie może być późniejsza niż dziś
        *  - data wpływu nie może być wcześniejsza niż najnowasza zarejestrowana korepondencja
        *
        *  Ostatni warunek to na wypadek zmiany data w komputerze.
@@ -109,10 +108,12 @@
        *   - string zawierający komunikat błędu jeżeli taki wystąpił
        */
 
-      //DO ZAIMPLEMENTOWANIA
-
       if ($data == '') {
         return "Data wpływu nie może pozostać pusta.";
+      }
+
+      if ($this->przychodzacaModel->czySaPismaZPozniejszaData($data)) {
+        return "W systemie zarejestrowano już pisma z późniejszą datą wpływu.";
       }
 
       return '';

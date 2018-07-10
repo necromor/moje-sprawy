@@ -445,4 +445,27 @@
       return $this->db->resultSet();
     }
 
+    public function czySaPismaZPozniejszaData($data) {
+      /*
+       * Funkcja która sprawdza czy w bazie danych istnieją pisma posiadające 
+       * datę wpływu późniejszą niż podana.
+       *
+       * Zastosowanie:
+       *   głównie do sprawdzenia czy podczas rejestracji korespondencji przychodzącej
+       *   nie dochodzi do kombinacji
+       *
+       * Parametry:
+       *  - data => data będąca maksymalną
+       * Zwraca:
+       *  - boolean => true jeżeli są
+       */
+
+       $sql = "SELECT COUNT(id) as total FROM przychodzace WHERE data_wplywu > :data";
+       $this->db->query($sql);
+       $this->db->bind(':data', $data);
+       $row = $this->db->single();
+
+       return $row->total > 0;
+    }
+
   }
