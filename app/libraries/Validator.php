@@ -135,8 +135,6 @@
        *   - string zawierający komunikat błędu jeżeli taki wystąpił
        */
 
-      // DO ZAIMPLEMENTOWANIA
-
       // dodawana faktura - wartość pola nie ma znaczenia
       if ($czyFaktura == '1') {
         return '';
@@ -144,6 +142,17 @@
 
       if ($dekretacja == '') {
         return "Każde pismo posiada dekretację.";
+      }
+
+      $id = pobierzIdNazwy($dekretacja);
+      $pracownik = $this->pracownikModel->pobierzPracownikaPoId($id);
+
+      if (!$pracownik){
+        return "Podano nieistniejącego pracownika.";
+      }
+
+      if ($pracownik->aktywny == '0') {
+        return "Podany pracownik jest nieaktywny.";
       }
 
       return '';
