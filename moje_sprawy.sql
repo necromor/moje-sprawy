@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 25, 2018 at 11:15 AM
+-- Generation Time: Jul 13, 2018 at 10:42 AM
 -- Server version: 5.7.22-0ubuntu0.16.04.1
 -- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
@@ -45,6 +45,20 @@ CREATE TABLE `decyzje` (
   `numer` varchar(255) NOT NULL,
   `dotyczy` text NOT NULL,
   `id_jrwa` int(11) NOT NULL,
+  `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `inne`
+--
+
+CREATE TABLE `inne` (
+  `id` int(11) NOT NULL,
+  `id_sprawa` int(11) NOT NULL,
+  `rodzaj` varchar(255) NOT NULL,
+  `dotyczy` text NOT NULL,
   `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -121,6 +135,8 @@ CREATE TABLE `pracownicy` (
   `zmiana_hasla` datetime NOT NULL,
   `poziom` int(1) NOT NULL,
   `aktywny` int(1) NOT NULL,
+  `przedrostek` varchar(255) NOT NULL,
+  `przyrostek` varchar(255) NOT NULL,
   `utworzone` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -207,6 +223,12 @@ ALTER TABLE `decyzje`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `inne`
+--
+ALTER TABLE `inne`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `jrwa`
 --
 ALTER TABLE `jrwa`
@@ -245,6 +267,12 @@ ALTER TABLE `przychodzace`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `przychodzace_adacta`
+--
+ALTER TABLE `przychodzace_adacta`
+  ADD UNIQUE KEY `utworzone` (`utworzone`);
+
+--
 -- Indexes for table `sprawy`
 --
 ALTER TABLE `sprawy`
@@ -270,6 +298,11 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `decyzje`
 --
 ALTER TABLE `decyzje`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `inne`
+--
+ALTER TABLE `inne`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jrwa`
