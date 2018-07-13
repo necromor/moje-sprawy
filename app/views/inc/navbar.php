@@ -90,11 +90,6 @@
           </li>
 
         <?php endif; ?>
-
-
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo URLROOT; ?>/pages/about">About</a>
-          </li>
         </ul>
 
         <ul class="navbar-nav ml-auto">

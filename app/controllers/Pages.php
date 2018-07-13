@@ -21,11 +21,4 @@
       }
     }
 
-    public function about() {
-      $data = [
-              'title' => 'About us'
-              ];
-      $this->view('pages/about', $data);
-    }
-
   }
