@@ -51,8 +51,9 @@ Wpisujesz tutaj taki sam adres jak w punkcie powyżej ale tym razem z końcowym 
 # Pierwsze kroki w systemie
 
 ## Utworzenie konta admina:
-Jeżeli wszystko przebiegło bez błędów po wpisaniu adresu serwisu powinnieneś zostać przeniesiony na stronę */pracownicy/dodaj_admin*.
-Utworzenie konta admina jest niezbędne do jakiejkolwiek pracy z systemem i polega jedynie na podaniu hasła i jego powtórzeniu.
+Jeżeli wszystko przebiegło bez błędów po wpisaniu adresu serwisu powinnieneś zostać przeniesiony na stronę */pracownicy/zaloguj*.
+Przed zalogowaniem konieczne jest jednak utworzenie konta administratora systemu. W tym celu udaj się pod adres */pracownicy/dodaj_admin*.
+Utworzenie konta admina to operacja jednorazowa, która polega jedynie na podaniu hasła i jego powtórzeniu.
 **W systemie może istnieć tylko jedno konto admina.**
 
 W przypadku zgubienia/zapomnienia hasła admina jedyną opcją jest usunięcie całego wiersza z bazy danych z tabeli admin. Operacja taka nie naruszy danych zarejestrowanych pracowników.
