@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
-<form action="<?php URLROOT; ?>/jrwa/dodaj" method="post">
+<form action="<?php echo URLROOT; ?>/jrwa/dodaj" method="post">
 
   <div class="row">
     <h1 class="col-md-8 mx-auto"><?php echo $data['title'] ?></h1>

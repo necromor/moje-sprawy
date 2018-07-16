@@ -7,7 +7,7 @@
 
   <div class="row">
 
-  <form class="form-inline mx-auto my-3"  action="<?php URLROOT; ?>/sprawy/wybierz" method="post">
+  <form class="form-inline mx-auto my-3"  action="<?php echo URLROOT; ?>/sprawy/wybierz" method="post">
     <label for="znak" class="sr-only">Znak sprawy:</label>
     <input type="text" class="form-control form-control-lg mr-sm-2 mb-2 w-50" id="znak" name="znak" list="listaSpraw" value="<?php echo $data['znak']; ?>" placeholder="Wpisz znak sprawy">
     <button type="submit" class="btn btn-primary btn-lg mb-2">Zobacz szczegóły</button>

@@ -22,7 +22,7 @@
   </div>
 </div>
 
-<form action="<?php URLROOT; ?>/przychodzace/adacta/<?php echo $data['id']; ?>" method="post">
+<form action="<?php echo URLROOT; ?>/przychodzace/adacta/<?php echo $data['id']; ?>" method="post">
 
   <div class="row">
     <div class="col-md-8 mx-auto">

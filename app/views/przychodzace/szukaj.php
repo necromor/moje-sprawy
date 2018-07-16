@@ -61,7 +61,7 @@
   </div><!-- /wyniki szukania -->
 
   <div class="col-md-4 col-12">
-    <form action="<?php URLROOT; ?>/przychodzace/szukaj" method="post">
+    <form action="<?php echo URLROOT; ?>/przychodzace/szukaj" method="post">
 
       <div class="form-group row">
         <label for="nr_rej" class="col-12 col-form-label">Numer rejestru:</label>

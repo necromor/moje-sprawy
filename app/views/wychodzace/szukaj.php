@@ -61,7 +61,7 @@
   </div><!-- /wyniki szukania -->
 
   <div class="col-md-4 col-12">
-    <form action="<?php URLROOT; ?>/wychodzace/szukaj" method="post">
+    <form action="<?php echo URLROOT; ?>/wychodzace/szukaj" method="post">
 
       <div class="form-group row">
         <label for="znak" class="col-12 col-form-label">Znak sprawy:</label>
