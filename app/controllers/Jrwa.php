@@ -228,8 +228,8 @@
         $elementy[1] = trim($elementy[1]);
 
         // sprawdzenie poszczególnych numerów i opisów
-        $err_numer = $this->sprawdzNumer($elementy[0]);
-        $err_opis = $this->sprawdzOpis($elementy[1]);
+        $err_numer = $this->validator->sprawdzNumerJrwa($elementy[0]);
+        $err_opis = $this->validator->sprawdzDlugosc($elementy[1], 8);
         if (!empty($err_numer) || !empty($err_opis)) {
           return "$err_numer <br> $err_opis";
         }
