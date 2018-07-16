@@ -39,6 +39,10 @@ Przykładowy adres dla dodawania korespondencji przychodzącej wygląda tak http
 Załóżmy, że chcesz aby Twoja aplikacja dostępna była pod adresem: https://mojadomena.pl/moje-sprawy/ a adres dla dodawania konrespondencji przychodzącej był https://mojadomena.pl/moje-sprawy/przychodzace/dodaj
 W tym celu w zmiennej URLROOT wpiszesz wartość https://mojadomena.pl/moje-sprawy (pamiętaj, bez slasza na końcu).
 
+## Konfiguracja .htaccess
+W pliku *public/.htaccess* należy zmienić linię 4 *Rewrite Base /public*.
+Nawiązując do adresu wymienionego wyżej w tym miejscu powinno być *Rewrite Base /moje-sprawy/public*
+
 ## Konfiguracja javascript:
 W pliku *public/js/main.js* należy zmienić stałą URLROOT. Jeżeli nic się nie zmieniło to znajduje się ona w drugiej linii tego pliku.
 Wpisujesz tutaj taki sam adres jak w punkcie powyżej ale tym razem z końcowym slaszem!
