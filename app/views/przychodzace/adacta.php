@@ -40,11 +40,12 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Oznacz jako ad acta</button>
-      <a href="<?php echo URLROOT; ?>/przychodzace/moje" class="btn btn-info"><i class="fa fa-angle-double-left"></i> Wróć do Twoich pism</a>
-    </div>
+  <div class="row">
+    <button type="submit" class="btn btn-primary offset-md-4 col-md-4">Oznacz jako ad acta</button>
+  </div>
+
+  <div class="row my-4">
+    <a href="<?php echo URLROOT; ?>/przychodzace/moje" class="btn btn-info offset-md-4 col-md-4"><i class="fa fa-angle-double-left"></i> Wróć do Twoich pism</a>
   </div>
 
   <!-- lista -->

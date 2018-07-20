@@ -9,24 +9,27 @@
 </div>
 
 <div class="row">
-  <div class="col-md-4">
+
+  <div class="col-md-5">
     <form class="form-inline" action="<?php echo URLROOT; ?>/decyzje/zestawienie" method="post">
       <label for="rok" class="sr-only">Rok</label>
       <input type="number" name="rok" id="rok" class="form-control mr-sm-2 mb-2" value="<?php echo $data['rok']; ?>" min="2016" max="2100" step="1">
-      <button type="submit" class="btn btn-primary mb-2">Zmień rok zestawienia</button>
+      <button type="submit" class="btn btn-primary mb-2 col">Zmień rok zestawienia</button>
     </form>
     </div>
-    <div class="col-md-8">
+
+    <div class="col-md-7">
     <form class="form-inline" action="<?php echo URLROOT; ?>/decyzje/zestawienie" method="post">
     <input type="hidden" name="rok" value="<?php echo $data['rok']; ?>">
       <label for="numerJrwa" class="sr-only">Numer jrwa</label>
-      <input type="text" name="jrwa" id="numerJrwa" class="form-control mr-sm-2 mb-2" list="listaJrwa" value="<?php echo $data['jrwa']; ?>">
-      <button type="submit" class="btn btn-primary mb-2">Pokaż decyzje wybranego jrwa</button>
+      <input type="text" name="jrwa" id="numerJrwa" class="form-control mr-sm-2 mb-2 col-12 col-sm-4" list="listaJrwa" value="<?php echo $data['jrwa']; ?>">
+      <button type="submit" class="btn btn-primary mb-2 col">Pokaż decyzje wybranego jrwa</button>
     </form>
   </div>
+
 </div>
 
-<table class="table table-hover">
+<table class="table table-hover table-responsive-md">
   <caption>Zestawienie decyzji wystawionych w roku <?php echo $data['rok']; ?>.</caption>
   <thead class="thead-dark">
   <tr>

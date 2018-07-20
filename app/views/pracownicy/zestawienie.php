@@ -8,7 +8,7 @@
     </div>
   </div>
 
-<table class="table table-hover">
+<table class="table table-hover table-responsive-md">
   <caption>Zestawienie pracowników wraz z ich określonym poziomem dostępu i statusem aktywności.</caption>
   <thead class="thead-dark">
   <tr>

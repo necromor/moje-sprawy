@@ -26,15 +26,16 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Zatwierdź zmiany</button>
-      <?php if ($data['zrodlo'] == 'zestawienie') : ?>
-      <a href="<?php echo URLROOT; ?>/decyzje/zestawienie/<?php echo $data['rok']; ?>" class="btn btn-info"><i class="fa fa-angle-double-left"></i> Wróć do zestawienia</a>
-      <?php else : ?>
-      <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['sprawaId']; ?>" class="btn btn-info"><i class="fa fa-angle-double-left"></i> Wróć do szczegółów sprawy</a>
-      <?php endif; ?>
-    </div>
+  <div class="row">
+    <button type="submit" class="btn btn-primary offset-md-4 col-md-4">Zatwierdź zmiany</button>
+  </div>
+
+  <div class="row my-4">
+    <?php if ($data['zrodlo'] == 'zestawienie') : ?>
+    <a href="<?php echo URLROOT; ?>/decyzje/zestawienie/<?php echo $data['rok']; ?>" class="btn btn-info offset-md-4 col-md-4"><i class="fa fa-angle-double-left"></i> Wróć do zestawienia</a>
+    <?php else : ?>
+    <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['sprawaId']; ?>" class="btn btn-info offset-md-4 col-md-4"><i class="fa fa-angle-double-left"></i> Wróć do szczegółów sprawy</a>
+    <?php endif; ?>
   </div>
 
 </form>

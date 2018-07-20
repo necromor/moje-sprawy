@@ -18,11 +18,12 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Zatwierdź zmianę tematu</button>
-      <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['id']; ?>" class="btn btn-info"><i class="fa fa-angle-double-left"></i> Wróć do szczegółów sprawy</a>
-    </div>
+  <div class="row">
+    <button type="submit" class="btn btn-primary offset-md-4 col-md-4">Zatwierdź zmianę tematu</button>
+  </div>
+
+  <div class="row my-4">
+    <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['id']; ?>" class="btn btn-info offset-md-4 col-md-4"><i class="fa fa-angle-double-left"></i> Wróć do szczegółów sprawy</a>
   </div>
 
 </form>

@@ -3,24 +3,27 @@
 <h1><?php echo $data['title'] ?> z <?php echo $data['rok']; ?> roku</h1>
 
 <div class="row">
-  <div class="col-md-4">
+
+  <div class="col-md-5">
     <form class="form-inline" action="<?php echo URLROOT; ?>/przychodzace/faktury" method="post">
       <label for="rok" class="sr-only">Rok</label>
       <input type="number" name="rok" id="rok" class="form-control mr-sm-2 mb-2" value="<?php echo $data['rok']; ?>" min="2016" max="2100" step="1">
-      <button type="submit" class="btn btn-primary mb-2">Zmień rok zestawienia</button>
+      <button type="submit" class="btn btn-primary mb-2 col">Zmień rok zestawienia</button>
     </form>
     </div>
-    <div class="col-md-8">
+
+    <div class="col-md-7">
     <form class="form-inline" action="<?php echo URLROOT; ?>/przychodzace/faktury" method="post">
       <input type="hidden" name="rok" value="<?php echo $data['rok']; ?>">
       <label for="rok" class="sr-only">Nazwa wystawcy</label>
-      <input type="text" name="wystawca" id="wystawca" class="form-control mr-sm-2 mb-2" list="listaPodmiotow" value="<?php echo $data['wybrany']; ?>">
-      <button type="submit" class="btn btn-primary mb-2">Pokaż faktury wybranego wystawcy</button>
+      <input type="text" name="wystawca" id="wystawca" class="form-control mr-sm-2 mb-2 col-12 col-sm" list="listaPodmiotow" value="<?php echo $data['wybrany']; ?>">
+      <button type="submit" class="btn btn-primary mb-2 col">Pokaż faktury wybranego wystawcy</button>
     </form>
   </div>
+
 </div>
 
-<table class="table table-hover">
+<table class="table table-hover table-responsive-md">
   <caption>Zestawienie faktur, które wpłynęły w roku <?php echo $data['rok']; ?>.</caption>
   <thead class="thead-dark">
   <tr>

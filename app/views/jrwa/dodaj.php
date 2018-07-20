@@ -10,19 +10,19 @@
     <div class="col-md-8 mx-auto">
 
         <div class="form-group row py-2">
-          <div class="form-check form-check-inline offset-3">
+          <div class="form-check col-9 offset-3">
             <input class="form-check-input" type="radio" name="czyGrupa" id="radioPojedynczy" value="0" <?php if($data['czy_grupa'] == '0') {echo "checked";} ?>>
             <label class="form-check-label" for="radioPojedynczy">Pojedynczy numer</label>
           </div>
-          <div class="form-check form-check-inline">
+          <div class="form-check col-9 offset-3">
             <input class="form-check-input" type="radio" name="czyGrupa" id="radioGrupa" value="1" <?php if($data['czy_grupa'] == '1') {echo "checked";} ?>>
             <label class="form-check-label" for="radioGrupa">Grupę numerów</label>
           </div>
         </div>
 
         <div class="form-group row" id="jrwaPojedynczy1">
-          <label for="numer" class="col-6 col-sm-4 col-form-label">Numer jrwa:</label>
-          <input type="number" class="form-control col-6 col-sm-3" id="numer" name="numer" min="0" max="9999" value="<?php echo $data['numer']; ?>">
+          <label for="numer" class="col-sm-4 col-form-label">Numer jrwa:</label>
+          <input type="number" class="form-control col-sm-7 col-md-3" id="numer" name="numer" min="0" max="9999" value="<?php echo $data['numer']; ?>">
           <span class="invalid-feedback offset-sm-4 d-block"><?php echo $data['numer_err']; ?></span>
         </div>
 
@@ -41,11 +41,7 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-4 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Dodaj</button>
-    </div>
-  </div>
+  <button type="submit" class="btn btn-primary col-sm-4 offset-sm-4">Dodaj</button>
 
 </form>
 

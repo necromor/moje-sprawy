@@ -9,8 +9,8 @@
 
   <form class="form-inline mx-auto my-3"  action="<?php echo URLROOT; ?>/sprawy/wybierz" method="post">
     <label for="znak" class="sr-only">Znak sprawy:</label>
-    <input type="text" class="form-control form-control-lg mr-sm-2 mb-2 w-50" id="znak" name="znak" list="listaSpraw" value="<?php echo $data['znak']; ?>" placeholder="Wpisz znak sprawy">
-    <button type="submit" class="btn btn-primary btn-lg mb-2">Zobacz szczegóły</button>
+    <input type="text" class="form-control form-control-lg mr-sm-2 mb-2 col-12 col-sm" id="znak" name="znak" list="listaSpraw" value="<?php echo $data['znak']; ?>" placeholder="Wpisz znak sprawy">
+    <button type="submit" class="btn btn-primary btn-lg mb-2 col">Zobacz szczegóły</button>
   </form>
   </div>
 
@@ -28,7 +28,7 @@
       <input type="number" name="filtrujRok" id="filtrujRok" class="form-control mr-sm-2 mb-2" value="<?php echo Date('Y'); ?>" min="2016" max="2100" step="1">
       <label for="filtrujJrwa" class="sr-only">Numer jrwa</label>
       <input type="text" name="filtrujJrwa" id="filtrujJrwa" class="form-control mr-sm-2 mb-2" list="listaJrwa" placeholder="numer JRWA">
-      <button type="button" class="btn btn-info mb-2" id="filtrujListe">Filtruj listę</button>
+      <button type="button" class="btn btn-info mb-2 col" id="filtrujListe">Filtruj listę</button>
     </div>
 
   </div>

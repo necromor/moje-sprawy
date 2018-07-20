@@ -13,7 +13,7 @@
 
   <div class="col-md-9 col-12">
     <h2>Metryka sprawy</h2>
-    <table class="table table-hover">
+    <table class="table table-hover table-responsive-md">
       <caption>Metryka sprawy</caption>
       <thead class="thead-dark">
       <tr>
@@ -62,7 +62,7 @@
     </table>
   </div><!-- /metryka -->
 
-  <div class="col-md-3 col-12">
+  <div class="col-md-3 col-12 mb-4">
     <h2>Operacje</h2>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_przychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Przypisz przychodzące</a>
     <a href="<?php echo URLROOT; ?>/sprawy/dodaj_wychodzace/<?php echo $data['id']; ?>" class="btn btn-block btn-info">Dodaj wychodzące</a>

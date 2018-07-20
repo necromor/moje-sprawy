@@ -10,8 +10,8 @@
     <div class="col-md-8 mx-auto">
 
         <div class="form-group row">
-          <label for="numer" class="col-6 col-sm-4 col-form-label">Numer jrwa:</label>
-          <input type="number" class="form-control col-6 col-sm-3" id="numer" name="numer" min="0" max="9999" value="<?php echo $data['numer']; ?>">
+          <label for="numer" class="col-sm-4 col-form-label">Numer jrwa:</label>
+          <input type="number" class="form-control col-sm-7 col-md-3" id="numer" name="numer" min="0" max="9999" value="<?php echo $data['numer']; ?>">
           <span class="invalid-feedback offset-sm-4 d-block"><?php echo $data['numer_err']; ?></span>
         </div>
 
@@ -24,11 +24,7 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-4 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Zatwierdź zmiany</button>
-    </div>
-  </div>
+  <button type="submit" class="btn btn-primary col-sm-4 offset-sm-4">Zatwierdź zmiany</button>
 
 </form>
 

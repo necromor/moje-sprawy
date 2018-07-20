@@ -14,7 +14,7 @@
   <h2 class="col-12">Moje pisma bez sprawy i nie oznaczone ad acta</h2>
 
   <div class="col-12">
-    <table class="table table-hover">
+    <table class="table table-hover table-responsive-md">
       <caption>Zestawienie pism przychodzących bez sprawy i nie oznaczonych jako ad acta, które zadekretowane są do zalogowanego pracownika.</caption>
       <thead class="thead-dark">
       <tr>

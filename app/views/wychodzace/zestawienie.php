@@ -11,10 +11,10 @@
 <form class="form-inline" action="<?php echo URLROOT; ?>/wychodzace/zestawienie" method="post">
   <label for="rok" class="sr-only">Rok</label>
   <input type="number" name="rok" id="rok" class="form-control mr-sm-2 mb-2" value="<?php echo $data['rok']; ?>" min="2016" max="2100" step="1">
-  <button type="submit" class="btn btn-primary mb-2">Zmień rok zestawienia</button>
+  <button type="submit" class="btn btn-primary mb-2 col-12 col-sm-6 col-lg-3">Zmień rok zestawienia</button>
 </form>
 
-<table class="table table-hover">
+<table class="table table-hover table-responsive-md">
   <caption>Zestawienie pism wychodzących, dodanych w roku <?php echo $data['rok']; ?>.</caption>
   <thead class="thead-dark">
   <tr>

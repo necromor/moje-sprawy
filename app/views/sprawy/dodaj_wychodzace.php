@@ -13,11 +13,11 @@
        <div id="danePodmiotu">
 
         <div class="form-group row py-2">
-            <div class="form-check form-check-inline offset-3">
+            <div class="form-check col-9 offset-3">
               <input class="form-check-input" type="radio" name="czyNowy" id="radioIstniejacy" value="0" <?php if($data['czy_nowy'] == '0') {echo "checked";} ?>>
               <label class="form-check-label" for="radioIstniejacy">Istniejący nadawca</label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="form-check col-9 offset-3">
               <input class="form-check-input" type="radio" name="czyNowy" id="radioNowy" value="1" <?php if($data['czy_nowy'] == '1') {echo "checked";} ?>>
               <label class="form-check-label" for="radioNowy">Nowy nadawca</label>
             </div>
@@ -60,15 +60,15 @@
     <div class="col-md-8 mx-auto bg-light py-3">
 
         <div class="form-group row py-2">
-          <div class="form-check form-check-inline offset-3">
+          <div class="form-check col-9 offset-3">
             <input class="form-check-input" type="radio" name="radioDP" id="radioDP0" value="0" <?php if($data['czy_dp'] == '0') {echo "checked";} ?>>
             <label class="form-check-label" for="radioDP0">Zwykłe pismo</label>
           </div>
-          <div class="form-check form-check-inline">
+          <div class="form-check col-9 offset-3">
             <input class="form-check-input" type="radio" name="radioDP" id="radioDP1" value="1" <?php if($data['czy_dp'] == '1') {echo "checked";} ?>>
             <label class="form-check-label" for="radioDP1">Decyzja</label>
           </div>
-          <div class="form-check form-check-inline">
+          <div class="form-check col-9 offset-3">
             <input class="form-check-input" type="radio" name="radioDP" id="radioDP2" value="2" <?php if($data['czy_dp'] == '2') {echo "checked";} ?>>
             <label class="form-check-label" for="radioDP2">Postanowienie</label>
           </div>
@@ -89,11 +89,12 @@
     </div>
   </div><!-- /decyzja-postanowienie -->
 
-  <div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Dodaj pismo</button>
-      <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['id']; ?>" class="btn btn-info"><i class="fa fa-angle-double-left"></i> Wróć do szczegółów sprawy</a>
-    </div>
+  <div class="row">
+    <button type="submit" class="btn btn-primary offset-md-4 col-md-4">Dodaj pismo</button>
+  </div>
+
+  <div class="row my-4">
+    <a href="<?php echo URLROOT; ?>/sprawy/szczegoly/<?php echo $data['id']; ?>" class="btn btn-info offset-md-4 col-md-4"><i class="fa fa-angle-double-left"></i> Wróć do szczegółów sprawy</a>
   </div>
 
   <!-- listy -->

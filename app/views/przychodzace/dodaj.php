@@ -17,11 +17,11 @@
        <div id="danePodmiotu">
 
         <div class="form-group row py-2">
-            <div class="form-check form-check-inline offset-3">
+            <div class="form-check col-9 offset-3">
               <input class="form-check-input" type="radio" name="czyNowy" id="radioIstniejacy" value="0" <?php if($data['czy_nowy'] == '0') {echo "checked";} ?>>
               <label class="form-check-label" for="radioIstniejacy">Istniejący nadawca</label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="form-check col-9 offset-3">
               <input class="form-check-input" type="radio" name="czyNowy" id="radioNowy" value="1" <?php if($data['czy_nowy'] == '1') {echo "checked";} ?>>
               <label class="form-check-label" for="radioNowy">Nowy nadawca</label>
             </div>
@@ -82,11 +82,11 @@
     <div class="col-md-8 mx-auto bg-light py-3">
 
         <div class="form-group row py-2">
-          <div class="form-check form-check-inline offset-3">
+          <div class="form-check col-9 offset-3">
             <input class="form-check-input" type="radio" name="czyFaktura" id="radioPismo" value="0" <?php if($data['czy_faktura'] == '0') {echo "checked";} ?>>
             <label class="form-check-label" for="radioPismo">Pismo</label>
           </div>
-          <div class="form-check form-check-inline">
+          <div class="form-check col-9 offset-3">
             <input class="form-check-input" type="radio" name="czyFaktura" id="radioFaktura" value="1" <?php if($data['czy_faktura'] == '1') {echo "checked";} ?>>
             <label class="form-check-label" for="radioFaktura">Faktura</label>
           </div>
@@ -113,11 +113,7 @@
     </div>
   </div><!-- /pismo-faktura -->
 
-  <div class="form-group row">
-    <div class="col-sm-4 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Dodaj</button>
-    </div>
-  </div>
+  <button type="submit" class="btn btn-primary col-sm-4 offset-sm-4 mb-4">Dodaj</button>
 
   <!-- listy -->
   <datalist id="listaPodmiotow">

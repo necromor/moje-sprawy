@@ -9,7 +9,7 @@
 <div class="row">
 
   <div class="col-12">
-    <table class="table table-hover">
+    <table class="table table-hover table-responsive-md">
       <caption>Zestawienie pism przychodzących bez sprawy i nie oznaczonych jako ad acta, które zadekretowane są do zalogowanego pracownika.</caption>
       <thead class="thead-dark">
       <tr>

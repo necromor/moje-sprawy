@@ -28,11 +28,7 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-4 offset-sm-4">
-      <button type="submit" class="btn btn-primary">Zarejestruj sprawę</button>
-    </div>
-  </div>
+  <button type="submit" class="btn btn-primary col-sm-4 offset-sm-4">Zarejestruj sprawę</button>
 
   <!-- lista -->
   <datalist id="listaJrwa">
