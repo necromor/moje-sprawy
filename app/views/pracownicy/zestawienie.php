@@ -25,8 +25,8 @@
   <tr <?php if ($pracownik->aktywny == 'Nie') { echo 'class="table-danger"';} ?>>
     <td class="align-middle text-center"><a href="<?php echo URLROOT; ?>/pracownicy/edytuj/<?php echo $pracownik->id; ?>" title="Zmień dane pracownika">
         <?php echo $pracownik->id; ?></a></td>
-    <td><?php echo $pracownik->imie; ?> <?php echo $pracownik->nazwisko; ?></td>
-    <td><?php echo $pracownik->login; ?></td>
+    <td class="align-middle"><?php echo $pracownik->imie; ?> <?php echo $pracownik->nazwisko; ?></td>
+    <td class="align-middle"><?php echo $pracownik->login; ?></td>
     <td class="align-middle"><?php echo $pracownik->poziom; ?></td>
     <td class="align-middle">
       <div class="btn-group" role="group" aria-label="Przyciski aktywacji deaktywacji">
