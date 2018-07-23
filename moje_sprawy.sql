@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 13, 2018 at 10:42 AM
+-- Generation Time: Jul 23, 2018 at 12:15 PM
 -- Server version: 5.7.22-0ubuntu0.16.04.1
 -- PHP Version: 7.0.30-0ubuntu0.16.04.1
 
@@ -192,6 +192,17 @@ CREATE TABLE `sprawy` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ustawienia`
+--
+
+CREATE TABLE `ustawienia` (
+  `id` int(11) NOT NULL,
+  `waznosc_hasla` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `wychodzace`
 --
 
@@ -280,6 +291,12 @@ ALTER TABLE `sprawy`
   ADD UNIQUE KEY `znak` (`znak`);
 
 --
+-- Indexes for table `ustawienia`
+--
+ALTER TABLE `ustawienia`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `wychodzace`
 --
 ALTER TABLE `wychodzace`
@@ -338,6 +355,11 @@ ALTER TABLE `przychodzace`
 -- AUTO_INCREMENT for table `sprawy`
 --
 ALTER TABLE `sprawy`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `ustawienia`
+--
+ALTER TABLE `ustawienia`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `wychodzace`

@@ -4,6 +4,7 @@
    *  - dodanie admina, gdy nie istnieje
    *  - logowanie
    *  - zmianę hasła
+   *  - ustawianie terminu ważności hasła (nie ma sensu tworzyć osobnego modelu dla jednej funkcji)
    *
    * W systemie istnieje tylko jedno konto admina, które
    * posiada orębną tabelę w bazie danych.
@@ -104,6 +105,39 @@
       $row = $this->db->single();
 
       return password_verify($haslo, $row->haslo);
+    }
+
+    public function pobierzTerminWaznosciHasla() {
+      /*
+       * Zwraca termin ważności hasła z tabeli ustawienia
+       *
+       * Parametry:
+       *  - brak
+       * Zwraca:
+       *  - int => termin ważności hasła w dniach; 0 oznacza, że hasła nie mają terminu ważności
+       */
+
+      $sql = "SELECT waznosc_hasla FROM ustawienia WHERE id='1'";
+      $this->db->query($sql);
+      $row = $this->db->single();
+
+      return $row->waznosc_hasla;
+    }
+
+    public function ustawTerminWaznosciHasla($termin) {
+      /*
+       * Ustawia termin ważności hasła w tabeli ustawienia
+       *
+       * Parametry:
+       *  - termin => nowy termin w dniach
+       * Zwraca:
+       *  - brak
+       */
+
+      $sql = "UPDATE ustawienia SET waznosc_hasla=:termin WHERE id='1'";
+      $this->db->query($sql);
+      $this->db->bind(':termin', $termin);
+      $this->db->execute();
     }
 
 

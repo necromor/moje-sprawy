@@ -499,15 +499,19 @@
       *  - boolean => true jeżeli liczba dni przekroczyła limit
       */
 
-      // tymczasowo - docelowo z bazy danych
-      $limit = 60;
+      $limit = $this->adminModel->pobierzTerminWaznosciHasla();
+
+      // 0 oznacza, że termin ważności nie jest sprawdzany
+      if ($limit == 0) {
+        return false;
+      }
 
       // php 5.3 +
       $teraz = new DateTime();
       $oz = new DateTime($zmiana);
       $roznica = $oz->diff($teraz);
 
-      return ($roznica->d > $limit);
+      return (($roznica->m * 30 + $roznica->d) > $limit);
    }
 
    private function zalogujPracownika($id) {

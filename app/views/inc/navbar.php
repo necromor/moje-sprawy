@@ -23,6 +23,12 @@
               <a class="dropdown-item" href="<?php echo URLROOT; ?>/jrwa/zestawienie">JRWA</a>
             </div>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="ustawienia" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ustawienia</a>
+            <div class="dropdown-menu" aria-labelledby="ustawienia">
+              <a class="dropdown-item" href="<?php echo URLROOT; ?>/ustawienia/zmien_termin">Ważność hasła</a>
+            </div>
+          </li>
 
         <?php elseif(isset($_SESSION['poziom']) && $_SESSION['poziom'] == '0'): ?>
           <li class="nav-item dropdown">
