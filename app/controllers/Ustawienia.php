@@ -44,11 +44,8 @@
       // tylko admin
       sprawdzCzyPosiadaDostep(-1,-1);
 
+      // zawsze będzie - docelowy ustawiany przy tworzeniu konta admina
       $termin = $this->adminModel->pobierzTerminWaznosciHasla();
-      // zabezpieczenie przy pierwszym ustawianiu
-      if(!$termin) {
-        $termin = 0;
-      }
 
       $data = [
         'title' => 'Ustaw termin ważności hasła',

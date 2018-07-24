@@ -574,6 +574,10 @@
         if (empty($data['haslo1_err']) &&
             empty($data['haslo2_err'])) {
 
+          // utwórz termin ważności hasła - 0 czyli bez sprawdzania
+          // admin sobie sam ustawi po zalogowaniu
+          $this->adminModel->ustawTerminWaznosciHasla(0);
+
           $data['haslo1'] = password_hash($data['haslo1'], PASSWORD_DEFAULT);
 
           $this->adminModel->dodajAdmina($data);

@@ -73,6 +73,11 @@ Dodawanie pism wychodzących odbywa się tylko w ramach sprawy, a sprawy zakład
 Pozycje jrwa można dodawać pojedynczo lub (co jest bardziej prawdopodobne przy pierwszym dodawaniu) grupowo.
 Niestety nie jestem w stanie dostosować grupowego dodawania do dowolnego formatu w jakim posiadasz swoje numery jrwa, dlatego też zastosowałem taki, który będzie łatwy do przetworzenia w systemie, ale również nie powinien sprawiać trudności w stworzeniu przy wykorzystaniu jakiegoś skryptu zewnętrznego.
 
+## Ustawienie terminu ważności hasła
+W momencie tworzenia konta admina termin ważności hasła zostaje ustawiony na 0, co oznacza, że termin ważności hasła nie jest sprawdzany.
+W celu zmiany terminu ważności należy udać się pod link *ustawienia/zmien_termin* i wpisać żądaną wartość w dniach. Maksymalnie można wpisać 366.
+Po upływnie wyznaczonej liczby dni użytkownik zostanie zmuszony do zmiany hasła.
+
 
 
 
